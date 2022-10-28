@@ -3,32 +3,32 @@ import pygame
 from abc import ABC, abstractproperty
 
 
-class Entity(ABC):
-    @abstractproperty
-    def image(self):
-        pass
 
-    def get_figure(self):
-        return self.image
-
-class Car(Entity):
+class Train(Moving):
     image = 'Gene youre awesome'
+    position_x = 0
+    position_y = 0
 
-class Station(Entity):
+
+class Station(Moving):
     image = 'Gene is a genius'
+    position_x = 0
+    position_y = 0
 
 class Person(Entity):
     image = 'Gene is so hot'
+    position_x = 0
+
+class Railway(Entity):
+    image = 'Gene is '
+    position_x = 0
 
 
 def main():
-    print("Starting simulation...")
-    lamborgini = Car()
-    print(lamborgini.get_figure())
-    nørrebro = Station()
-    print(nørrebro.get_figure())
-    gene = Person()
-    print(gene.get_figure())
+    pygame.init()
+
+    # Set up the drawing window
+    screen = pygame.display.set_mode([1000, 700])
     return
 
 
