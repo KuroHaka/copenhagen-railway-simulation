@@ -20,9 +20,3 @@ class Moving(Entity):
 
     def display_element(self):
         self.image
-
-class Connection():
-    def __init__(self, station_a, x, y, passengers):
-        self.station_a = station_a
-        self.station_b = station_b
-        self.distance = distance
