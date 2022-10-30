@@ -24,7 +24,7 @@ class Station:
                    json_dct['passengers'])
 
 
-json_str = '[{"name": "station_a", "x": 10, "y": 20, "passengers": 10}, {"name": "station_b", "x": 10, "y": 40, "passengers": 30}]'
+json_str = '[{"name": "station_a","passengers": 10}, {"name": "station_b","passengers": 30}]'
 trains = json.loads(json_str, object_hook=Station.from_json)
 print(trains[0].passengers)
 
