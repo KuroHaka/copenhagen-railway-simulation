@@ -1,6 +1,8 @@
 import json
+from .Entity import Entity
 
-class Station:
+
+class Station(Entity):
 
     def __init__(self, name, x, y, passengers):
         self.name = name
@@ -22,6 +24,13 @@ class Station:
     def from_json(json_dct):
       return Station(json_dct['name'],
                    json_dct['passengers'])
+
+
+class Connection(Entity):
+
+    def __init__(self, station_start:Station, station_end:Station):
+        self.station_start = station_start
+        self.station_end = station_end
 
 
 json_str = '[{"name": "station_a","passengers": 10}, {"name": "station_b","passengers": 30}]'
