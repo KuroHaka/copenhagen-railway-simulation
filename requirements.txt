@@ -1,0 +1,4 @@
+mpmath==1.2.1
+networkx==2.8.8
+pygame==2.1.2
+simpy==4.0.1
