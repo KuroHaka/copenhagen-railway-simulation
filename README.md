@@ -3,7 +3,6 @@
 ### To update dependencies
 ```shell
 pip install -r requirements.txt
-pip freeze > requirements.txt
 ```
 
 ### To add dependencies
