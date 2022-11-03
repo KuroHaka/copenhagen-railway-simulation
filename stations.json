@@ -1,0 +1,428 @@
+{
+   "Edge 0": {
+      "Station A": "Valby",
+      "Station B": "Langgade",
+      "Distance (km)": "0,82",
+      "": "Frederiksunds linjen"
+   },
+   "Edge 1": {
+      "Station A": "Langgade",
+      "Station B": "Peter Bangs Vej",
+      "Distance (km)": "1,24",
+      "": ""
+   },
+   "Edge 2": {
+      "Station A": "Peter Bangs Vej",
+      "Station B": "Flintholm",
+      "Distance (km)": "0,9",
+      "": ""
+   },
+   "Edge 3": {
+      "Station A": "Flintholm",
+      "Station B": "Vanl\u00f8se",
+      "Distance (km)": "0,48",
+      "": ""
+   },
+   "Edge 4": {
+      "Station A": "Vanl\u00f8se",
+      "Station B": "Jyllingevej",
+      "Distance (km)": "0,96",
+      "": ""
+   },
+   "Edge 5": {
+      "Station A": "Jyllingevej",
+      "Station B": "Islev",
+      "Distance (km)": "1,12",
+      "": ""
+   },
+   "Edge 6": {
+      "Station A": "Islev",
+      "Station B": "Husum",
+      "Distance (km)": "1,22",
+      "": ""
+   },
+   "Edge 7": {
+      "Station A": "Husum",
+      "Station B": "Herlev",
+      "Distance (km)": "1,71",
+      "": ""
+   },
+   "Edge 8": {
+      "Station A": "Herlev",
+      "Station B": "Skovlunde",
+      "Distance (km)": "2,56",
+      "": ""
+   },
+   "Edge 9": {
+      "Station A": "Skovlunde",
+      "Station B": "Malmparken",
+      "Distance (km)": "1,12",
+      "": ""
+   },
+   "Edge 10": {
+      "Station A": "Malmparken",
+      "Station B": "Ballerup",
+      "Distance (km)": "1,86",
+      "": ""
+   },
+   "Edge 11": {
+      "Station A": "Ballerup",
+      "Station B": "M\u00e5l\u00f8v",
+      "Distance (km)": "3,15",
+      "": ""
+   },
+   "Edge 12": {
+      "Station A": "M\u00e5l\u00f8v",
+      "Station B": "Kildedal",
+      "Distance (km)": "2,04",
+      "": ""
+   },
+   "Edge 13": {
+      "Station A": "Kildedal",
+      "Station B": "Veks\u00f8",
+      "Distance (km)": "3,06",
+      "": ""
+   },
+   "Edge 14": {
+      "Station A": "Veks\u00f8",
+      "Station B": "Stenl\u00f8se",
+      "Distance (km)": "3,80",
+      "": ""
+   },
+   "Edge 15": {
+      "Station A": "Stenl\u00f8se",
+      "Station B": "Egedal",
+      "Distance (km)": "1,54",
+      "": ""
+   },
+   "Edge 16": {
+      "Station A": "Egedal",
+      "Station B": "\u00d8lstykke",
+      "Distance (km)": "2,55",
+      "": ""
+   },
+   "Edge 17": {
+      "Station A": "\u00d8lstykke",
+      "Station B": "Frederikssund",
+      "Distance (km)": "9,18",
+      "": "Hiller\u00f8d linje"
+   },
+   "Edge 18": {
+      "Station A": "Hiller\u00f8d",
+      "Station B": "Aller\u00f8d",
+      "Distance (km)": "7,08",
+      "": ""
+   },
+   "Edge 19": {
+      "Station A": "Aller\u00f8d",
+      "Station B": "Birker\u00f8d",
+      "Distance (km)": "5,36",
+      "": ""
+   },
+   "Edge 20": {
+      "Station A": "Birker\u00f8d",
+      "Station B": "Holte",
+      "Distance (km)": "4,64",
+      "": ""
+   },
+   "Edge 21": {
+      "Station A": "Holte",
+      "Station B": "Virum",
+      "Distance (km)": "1,33",
+      "": ""
+   },
+   "Edge 22": {
+      "Station A": "Virum",
+      "Station B": "Sorgenfri",
+      "Distance (km)": "1,79",
+      "": ""
+   },
+   "Edge 23": {
+      "Station A": "Sorgenfri",
+      "Station B": "Lyngby",
+      "Distance (km)": "1,93",
+      "": ""
+   },
+   "Edge 24": {
+      "Station A": "Lyngby",
+      "Station B": "J\u00e6rgenborg",
+      "Distance (km)": "1,36",
+      "": ""
+   },
+   "Edge 25": {
+      "Station A": "J\u00e6rgenborg",
+      "Station B": "Gentofte",
+      "Distance (km)": "1,47",
+      "": ""
+   },
+   "Edge 26": {
+      "Station A": "Gentofte",
+      "Station B": "Bernstoftevej",
+      "Distance (km)": "1,49",
+      "": ""
+   },
+   "Edge 27": {
+      "Station A": "K\u00f8ge",
+      "Station B": "\u00d8lby",
+      "Distance (km)": "2,52",
+      "": "K\u00f8ge-str\u00e6kningen op til \u00e5marken se https://da.wikipedia.org/wiki/Linje_A"
+   },
+   "Edge 28": {
+      "Station A": "\u00d8lby",
+      "Station B": "K\u00f8ge Nord",
+      "Distance (km)": "2,16",
+      "": ""
+   },
+   "Edge 29": {
+      "Station A": "K\u00f8ge Nord",
+      "Station B": "Jersie",
+      "Distance (km)": "3,22",
+      "": ""
+   },
+   "Edge 30": {
+      "Station A": "Jersie",
+      "Station B": "Solr\u00f8d Strand",
+      "Distance (km)": "1,54",
+      "": ""
+   },
+   "Edge 31": {
+      "Station A": "Solr\u00f8d Strand",
+      "Station B": "Karlslunde",
+      "Distance (km)": "4,86",
+      "": ""
+   },
+   "Edge 32": {
+      "Station A": "Karlslunde",
+      "Station B": "Greve",
+      "Distance (km)": "2,36",
+      "": ""
+   },
+   "Edge 33": {
+      "Station A": "Greve",
+      "Station B": "Hundige",
+      "Distance (km)": "2,95",
+      "": ""
+   },
+   "Edge 34": {
+      "Station A": "Hundige",
+      "Station B": "Ish\u00f8j",
+      "Distance (km)": "3,35",
+      "": ""
+   },
+   "Edge 35": {
+      "Station A": "Ish\u00f8j",
+      "Station B": "Vallensb\u00e6k",
+      "Distance (km)": "2,24",
+      "": ""
+   },
+   "Edge 36": {
+      "Station A": "Vallensb\u00e6k",
+      "Station B": "Br\u00f8ndby Strand",
+      "Distance (km)": "2,11",
+      "": ""
+   },
+   "Edge 37": {
+      "Station A": "Br\u00f8ndby Strand",
+      "Station B": "Aved\u00f8re",
+      "Distance (km)": "2,08",
+      "": ""
+   },
+   "Edge 38": {
+      "Station A": "Aved\u00f8re",
+      "Station B": "Friheden",
+      "Distance (km)": "1,77",
+      "": ""
+   },
+   "Edge 39": {
+      "Station A": "Friheden",
+      "Station B": "\u00c5marken",
+      "Distance (km)": "1,62",
+      "": ""
+   },
+   "Edge 40": {
+      "Station A": "Carlsberg",
+      "Station B": "Dybb\u00f8lsbro",
+      "Distance (km)": "1,54",
+      "": "Det centrale afsnit"
+   },
+   "Edge 41": {
+      "Station A": "Dybb\u00f8lsbro",
+      "Station B": "Hellerup",
+      "Distance (km)": "7,44",
+      "": ""
+   },
+   "Edge 42": {
+      "Station A": "Hellerup",
+      "Station B": "K\u00f8benhavn H",
+      "Distance (km)": "7,51",
+      "": ""
+   },
+   "Edge 43": {
+      "Station A": "K\u00f8benhavn H",
+      "Station B": "Nordhavn",
+      "Distance (km)": "6,52",
+      "": ""
+   },
+   "Edge 44": {
+      "Station A": "Nordhavn",
+      "Station B": "N\u00f8rreport",
+      "Distance (km)": "5,3",
+      "": ""
+   },
+   "Edge 45": {
+      "Station A": "N\u00f8rreport",
+      "Station B": "Svanem\u00f8llen",
+      "Distance (km)": "3,9",
+      "": ""
+   },
+   "Edge 46": {
+      "Station A": "Svanem\u00f8llen",
+      "Station B": "Valby",
+      "Distance (km)": "8,1",
+      "": ""
+   },
+   "Edge 47": {
+      "Station A": "Valby",
+      "Station B": "Vesterport",
+      "Distance (km)": "3,9",
+      "": ""
+   },
+   "Edge 48": {
+      "Station A": "Vesterport",
+      "Station B": "\u00d8sterport",
+      "Distance (km)": "2,7",
+      "": ""
+   },
+   "Edge 49": {
+      "Station A": "Farum",
+      "Station B": "V\u00e6rl\u00f8se",
+      "Distance (km)": "4,36",
+      "": ""
+   },
+   "Edge 50": {
+      "Station A": "V\u00e6rl\u00f8se",
+      "Station B": "Hareskov",
+      "Distance (km)": "2,82",
+      "": ""
+   },
+   "Edge 51": {
+      "Station A": "Hareskov",
+      "Station B": "Skovbrinet",
+      "Distance (km)": "1,99",
+      "": ""
+   },
+   "Edge 52": {
+      "Station A": "Skovbrinet",
+      "Station B": "Bagsv\u00e6rd",
+      "Distance (km)": "1,41",
+      "": ""
+   },
+   "Edge 53": {
+      "Station A": "Bagsv\u00e6rd",
+      "Station B": "Steng\u00e5rden",
+      "Distance (km)": "1,37",
+      "": ""
+   },
+   "Edge 54": {
+      "Station A": "Steng\u00e5rden",
+      "Station B": "Buddinge",
+      "Distance (km)": "1,74",
+      "": ""
+   },
+   "Edge 55": {
+      "Station A": "Buddinge",
+      "Station B": "Kildebakke",
+      "Distance (km)": "0,95",
+      "": ""
+   },
+   "Edge 56": {
+      "Station A": "Kildebakke",
+      "Station B": "Vangede",
+      "Distance (km)": "1,15",
+      "": ""
+   },
+   "Edge 57": {
+      "Station A": "Vangede",
+      "Station B": "Dysseg\u00e5rd",
+      "Distance (km)": "1,16",
+      "": ""
+   },
+   "Edge 58": {
+      "Station A": "Dysseg\u00e5rd",
+      "Station B": "Emdrup",
+      "Distance (km)": "1,33",
+      "": ""
+   },
+   "Edge 59": {
+      "Station A": "Emdrup",
+      "Station B": "Ryparken",
+      "Distance (km)": "2,00",
+      "": ""
+   },
+   "Edge 60": {
+      "Station A": "",
+      "Station B": "",
+      "Distance (km)": "",
+      "": ""
+   },
+   "Edge 61": {
+      "Station A": "",
+      "Station B": "",
+      "Distance (km)": "",
+      "": ""
+   },
+   "Edge 62": {
+      "Station A": "H\u00f8je Tasstrup",
+      "Station B": "Tasstrup",
+      "Distance (km)": "2,08",
+      "": "H\u00f8je Tasstrup-str\u00e6kningen"
+   },
+   "Edge 63": {
+      "Station A": "Tasstrup",
+      "Station B": "Albertslund",
+      "Distance (km)": "5,49",
+      "": "H\u00f8je Tasstrup-str\u00e6kningen"
+   },
+   "Edge 64": {
+      "Station A": "Albertslund",
+      "Station B": "Glostrup",
+      "Distance (km)": "2,86",
+      "": "H\u00f8je Tasstrup-str\u00e6kningen"
+   },
+   "Edge 65": {
+      "Station A": "Glostrup",
+      "Station B": "Brondby\u00f8ster",
+      "Distance (km)": "2,63",
+      "": "H\u00f8je Tasstrup-str\u00e6kningen"
+   },
+   "Edge 66": {
+      "Station A": "Brondby\u00f8ster",
+      "Station B": "R\u00f8dovre",
+      "Distance (km)": "1,15",
+      "": "H\u00f8je Tasstrup-str\u00e6kningen"
+   },
+   "Edge 67": {
+      "Station A": "R\u00f8dovre",
+      "Station B": "Hvidovre",
+      "Distance (km)": "1",
+      "": "H\u00f8je Tasstrup-str\u00e6kningen"
+   },
+   "Edge 68": {
+      "Station A": "",
+      "Station B": "",
+      "Distance (km)": "",
+      "": ""
+   },
+   "Edge 69": {
+      "Station A": "Charlottelund",
+      "Station B": "Ordrup",
+      "Distance (km)": "1,5",
+      "": "Klampenborg-str\u00e6kningen"
+   },
+   "Edge 70": {
+      "Station A": "Ordrup",
+      "Station B": "Klampenborg",
+      "Distance (km)": "1,59",
+      "": "Klampenborg-str\u00e6kningen"
+   }
+}
