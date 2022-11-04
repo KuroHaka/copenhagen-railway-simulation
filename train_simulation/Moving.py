@@ -1,4 +1,4 @@
-from Entity import Entity
+from .Entity import Entity
 from abc import abstractproperty
 import json
 
@@ -25,6 +25,11 @@ import json
 
 
 class Moving(Entity):
+
+    @abstractproperty
+    def image(self):
+        pass
+
     def position_x(self):
         pass
 
@@ -38,6 +43,8 @@ class Carrier(Moving):
     pass
 
 class Train(Moving):
+    image = ""
+
     #Amount of passengers on train
     _passengers = 0
 
