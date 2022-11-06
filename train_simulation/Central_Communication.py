@@ -60,21 +60,22 @@ def initSim():
             trains[train.getUID()] = train
 
 
-
+#tickLength is the amount of "seconds" every tick
 def tickTrain(tickLength):
     for train in trains:
         timeleft = tickLength
 
+        #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using all whole tickLength)
         if trains[train].moving():
             timeLeft = trains[train].keepMoving(timeleft)
 
-
+        #If train is at a station, we need to find where to go next
         if not trains[train].moving():
             nextStation = None
             distance = None
             cameFrom, atStation = trains[train].cameFromAtStation()
 
-            #This is the case the very first
+            #This case is needed when trains are just initialised
             if not cameFrom:
                 _, nextStation = trains[train].goingFromTo()
                 for connection in connections:
@@ -83,7 +84,7 @@ def tickTrain(tickLength):
                             distance = connection.distance
                             break
             
-
+            #Find the next connection and move to next station
             else:
                 for connection in connections:
                     if atStation == connection.station_start.name or atStation == connection.station_end.name:
@@ -100,8 +101,9 @@ def tickTrain(tickLength):
 
             if not nextStation or not distance:
                 print(f"Something wrong with train {train}")
-            trains[train].moveTo(nextStation,distance,tickLength)
-            print(nextStation,distance)
+
+            trains[train].moveTo(nextStation,distance,timeLeft)
+            #print(nextStation,distance)
 
 
 #def tickCarrier(speed):
