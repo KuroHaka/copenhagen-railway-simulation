@@ -27,7 +27,11 @@
         We can't TICK the trains and the stations seperately, it has to be done together (unless the train know of all passengers of all stations)
 
         Can the same idea be done in this file?
+        
 
+
+    #TODO
+        Turn the train at the end of the line
 """
 
 
@@ -63,11 +67,11 @@ def initSim():
 #tickLength is the amount of "seconds" every tick
 def tickTrain(tickLength):
     for train in trains:
-        timeleft = tickLength
+        timeLeft = tickLength
 
         #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using all whole tickLength)
         if trains[train].moving():
-            timeLeft = trains[train].keepMoving(timeleft)
+            timeLeft = trains[train].keepMoving(timeLeft)
 
         #If train is at a station, we need to find where to go next
         if not trains[train].moving():
@@ -118,7 +122,7 @@ def main():
 
     initSim()
 
-    for i in range(8):
+    for i in range(20):
         trains['0'].printInformation()
         print()
         tickTrain(60)
