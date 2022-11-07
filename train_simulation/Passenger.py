@@ -7,7 +7,7 @@ class Passenger:
     _departureTime = datetime
     _id = ''
     #is travel time needed?
-    _travelTime = datetime
+    _travelTimeEnd = datetime
 
     def __init__(self,currentlocation,destination,departuetime):
         self._currentlocation = currentlocation
@@ -45,21 +45,8 @@ class Passenger:
 
 
 #Testing delete this
-import PassengerGroup
-
 
 p1 = Passenger('Lyngby','kbh h',datetime.now())
 print('test')
-p1.printInformation()
-p2 = Passenger('Lyngby','1',datetime.now())
-p3 = Passenger('Lyngby','2',datetime.now())
-p4 = Passenger('Lyngby','3',datetime.now())
-
-grouparray = Passenger[p1,p2,p3,p4]
-g1 = PassengerGroup(grouparray)
-
-print(g1)
-
-
-#
+p1.printInformation();
 
