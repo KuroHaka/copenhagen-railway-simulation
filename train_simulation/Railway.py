@@ -26,7 +26,7 @@ class Connection(Entity):
     def __init__(self, station_start, station_end, distance):
         self.station_start = Station(station_start, 0)
         self.station_end = Station(station_end, 0)
-        self.distance = distance
+        self.distance = distance*1000
 
     @staticmethod
     def from_json(json_dct):
