@@ -11,22 +11,37 @@
   <body>
     <section style="display: table; width: 100%;">
       <div style="position: absolute; left: 0px; width: 50%;">
-        <img src="/static/map_minmal.png" alt="map" style="width: 600px;">
+        <img src="/static/map_minmal.png" alt="map" style="width: 800px;">
       </div>
       <div style="position: absolute; right: 0px; width: 50%;">
         <form 
           class="pure-form-aligned">
           <fieldset style="background-color: #e3e3e3; padding-top: 70px; padding-left: 100px; padding-bottom: 70px;">
             <div class="pure-control-group">
-              <label for="aligned-name">Number of Trains</label>
-              <input type="number" id="aligned-name" placeholder="#Trains" min = 0 />
+              <label for="Number of Trains">Number of Trains</label>
+              <input type="number" id="Number of Trains" placeholder="#Numbers" min = 0 />
             </div>
             <div class="pure-control-group">
-              <label for="aligned-name">Number of Passengers</label>
-              <input type="number" id="aligned-name" placeholder="#passengers" min = 0 />
+              <label for="Number of Passengers">Number of Passengers</label>
+              <input type="number" id="Number of Passengers" placeholder="#Numbers" min = 0 />
             </div>
-            <div class="pure-controls">
-              <button class="pure-button pure-button-primary">Run simulation</button>
+            <div class="pure-control-group">
+              <label for="Number of Stations">Weights of Stations</label>
+              <input type="number" id="Number of Stations" placeholder="#Numbers" min = 0 />
+            </div>
+            <div class="pure-control-group">
+              <label for="Number of Stations">Starting_trains</label>
+              <input type="number" id="Number of Stations" placeholder="#Numbers" min = 0 />
+            </div>
+
+            <div class="Run Simulation">
+              <button class="Run Simulation">Run Simulation</button>
+            </div>
+            <div class="Load Model">
+              <button class="Load Model">Load Model</button>
+            </div>
+            <div class="Save Model">
+              <button class="Save Model">Save Model</button>
             </div>
           </fieldset>
         </form>
