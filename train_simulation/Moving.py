@@ -1,4 +1,4 @@
-from Entity import Entity
+from .Entity import Entity
 from abc import abstractproperty
 import json
 
