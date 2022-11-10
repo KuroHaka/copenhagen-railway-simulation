@@ -10,9 +10,24 @@
   </head>
   <body>
     <section style="display: table; width: 100%;">
-      <div style="float:left; left: 0px; width: 50%;">
-        <img src="/static/map_minmal.png" alt="map" style="height:70%;width:90%;">
+
+      <div id="MAP" style="float:left;height:45%;width:55%;">
+
+        <form action="">
+          <div class="map">
+          <fieldset style="background-color: #e3e3e3; padding-top: 0%; padding-left: 0%;padding-right: 0%; padding-bottom: 0%;">
+            <legend>MAP</legend>
+            
+            <div class="MAP" style="float:left; left: 5%;right: 0; width: 100%;">
+              <img src="/static/map_minmal.png" alt="map" style="height:70%;width:90%;">
+             
+            </div> 
+
+          </fieldset>
+          </div>
+        </form>
       </div>
+
 
       <div class="Load Model">
         <button class="Load Model">Load Model</button>
@@ -25,7 +40,7 @@
 
         <form action="">
           <div class="pure-form-aligned">
-          <fieldset style="background-color: #e3e3e3; padding-top: 10px; padding-left: 20px;padding-right: 0px; padding-bottom: 20px;">
+          <fieldset style="background-color: #e3e3e3; padding-top: 5%; padding-left: 5%;padding-right: 5%; padding-bottom: 5%;">
             <legend>Input Information:</legend>
             <div class="pure-control-group">
               <label for="Number of Persons">Number of Persons</label>
@@ -46,19 +61,40 @@
             <div class="pure-control-group">
               <label for="Number of Stations">Starting_trains</label>
               <input type="text" id="Number of Stations" placeholder="#String" />
-            </div>
-            
-            
-            
+            </div> 
             <input type="radio" name="Switchers" value="Carriers">Carriers
             <input type="radio" name="Switchers" value="Trains">Trains
             <div class="Run Simulation" style= "float:right;" >
               <button class="Run Simulation">Run Simulation</button>
             </div>
 
+            <div class="Reset" style= "float:right;" >
+              <button class="Reset">Reset</button>&emsp;&emsp;
+            </div>
+
+           
           </fieldset>
         </form>
       </div>
+
+      <div id="Output Information" style="float:right;height:30%;width:40%;">
+
+        <form action="">
+          <div class="pure-form-aligned">
+          <fieldset style="background-color: #e3e3e3; padding-top: 10px; padding-left: 20px;padding-right: 0px; padding-bottom: 20px;">
+            <legend>Output Information:</legend>
+            
+            <div class="commuting time">
+              <label for="commuting time">Commuting Time</label>
+              <output type="number" id="commuting time" placeholder="#Numbers">
+            </div> 
+
+          </fieldset>
+          </div>
+        </form>
+      </div>
+
     </section>
+  
   </body>
 </html>
