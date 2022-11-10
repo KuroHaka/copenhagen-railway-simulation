@@ -10,23 +10,5 @@ def hello_there(name = None):  # process functions
         name=name
     )
 
-@app.route('/')
-def index():
-    return {
-        "msg": "success",
-        "data": "welcome to use flask."
-    }
-
-
-def user_info(u_id):
-    return {
-        "msg": "success",
-        "data": {
-            "id": u_id,
-            "username": 'yuz',
-            "age": 18
-        }
-    }
-
 if __name__=='__main__':
     app.run()

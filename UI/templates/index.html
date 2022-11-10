@@ -10,39 +10,52 @@
   </head>
   <body>
     <section style="display: table; width: 100%;">
-      <div style="position: absolute; left: 0px; width: 50%;">
-        <img src="/static/map_minmal.png" alt="map" style="width: 800px;">
+      <div style="float:left; left: 0px; width: 50%;">
+        <img src="/static/map_minmal.png" alt="map" style="height:70%;width:90%;">
       </div>
-      <div style="position: absolute; right: 0px; width: 50%;">
-        <form 
-          class="pure-form-aligned">
-          <fieldset style="background-color: #e3e3e3; padding-top: 70px; padding-left: 100px; padding-bottom: 70px;">
+
+      <div class="Load Model">
+        <button class="Load Model">Load Model</button>
+      </div>
+      <div class="Save Model">
+        <button class="Save Model">Save Model</button>
+      </div>
+
+      <div id="Input Information" style="float:right;height:30%;width:40%;">
+
+        <form action="">
+          <div class="pure-form-aligned">
+          <fieldset style="background-color: #e3e3e3; padding-top: 10px; padding-left: 20px;padding-right: 0px; padding-bottom: 20px;">
+            <legend>Input Information:</legend>
+            <div class="pure-control-group">
+              <label for="Number of Persons">Number of Persons</label>
+              <input type="number" id="Number of Persons" placeholder="#Numbers" min = 0 />
+            </div>
+            <div class="pure-control-group">
+              <label for="Number of Stations">Number of Stations</label>
+              <input type="number" id="Number of Stations" placeholder="#Numbers" min = 0 />
+            </div>
+            <div class="pure-control-group">
+              <label for="Weights of Stations">Weights of Stations</label>
+              <input type="number" id="Weights of Stations" placeholder="#Numbers" min = 0 />
+            </div>
             <div class="pure-control-group">
               <label for="Number of Trains">Number of Trains</label>
               <input type="number" id="Number of Trains" placeholder="#Numbers" min = 0 />
             </div>
             <div class="pure-control-group">
-              <label for="Number of Passengers">Number of Passengers</label>
-              <input type="number" id="Number of Passengers" placeholder="#Numbers" min = 0 />
-            </div>
-            <div class="pure-control-group">
-              <label for="Number of Stations">Weights of Stations</label>
-              <input type="number" id="Number of Stations" placeholder="#Numbers" min = 0 />
-            </div>
-            <div class="pure-control-group">
               <label for="Number of Stations">Starting_trains</label>
-              <input type="number" id="Number of Stations" placeholder="#Numbers" min = 0 />
+              <input type="text" id="Number of Stations" placeholder="#String" />
             </div>
-
-            <div class="Run Simulation">
+            
+            
+            
+            <input type="radio" name="Switchers" value="Carriers">Carriers
+            <input type="radio" name="Switchers" value="Trains">Trains
+            <div class="Run Simulation" style= "float:right;" >
               <button class="Run Simulation">Run Simulation</button>
             </div>
-            <div class="Load Model">
-              <button class="Load Model">Load Model</button>
-            </div>
-            <div class="Save Model">
-              <button class="Save Model">Save Model</button>
-            </div>
+
           </fieldset>
         </form>
       </div>
