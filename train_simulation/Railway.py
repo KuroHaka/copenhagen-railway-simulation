@@ -42,8 +42,8 @@ class Connection(Entity):
     #stations_json = json.load(open('assets/stations.json', mode="r", encoding="utf-8"))
     image = ""
     def __init__(self, station_start, station_end, distance):
-        self.station_start = station_start
-        self.station_end = station_end
+        self.station_start = Station(station_start,0,0,0)
+        self.station_end = Station(station_end,0,0,0)
         self.distance = distance*1000
 
     @classmethod
