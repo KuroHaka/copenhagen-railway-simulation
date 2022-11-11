@@ -40,6 +40,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.animation import FuncAnimation
+from matplotlib.animation import PillowWriter
 import networkx as nx
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
@@ -196,6 +197,7 @@ def main():
         #plot background image
         img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
         imgplot = plt.imshow(img)
+        # ani.save("simple_animation.gif", dpi=300, writer=PillowWriter(fps=1))
         plt.show()
     else:
         for i in range(20):
