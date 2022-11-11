@@ -173,10 +173,11 @@ class Train(Moving):
         else:
             passengerAmount = self.availablePassengerSpace()
             for i,passenger in enumerate(station.passengers):
-                self._passengers.append(passenger)
-                station.sub_passenger(passenger)
                 if i >= passengerAmount:
                     break
+                self._passengers.append(passenger)
+                station.sub_passenger(passenger)
+                
     
 
     def disembarkPassengers(self, station):
@@ -308,7 +309,7 @@ class Train(Moving):
         print(f"distanceToStation: {self._distanceToStation}")
         print(f"distanceMovedTowardsStation: {self._distanceMovedTowardsStation}")
         print(f"distanceFromStationToDecelerate: {self._distanceFromStationToDecelerate}")
-        print(f"passengers: {len(self._passengers)}")
+        #print(f"passengers: {len(self._passengers)}")
         print(f"availablePassengerSpace: {self.availablePassengerSpace()}")
 
     def getUID(self):

@@ -171,20 +171,21 @@ def main():
 
 
     initSim()
-    # tickPersonGeneration(1,60)
-    # print(stations['Hillerød'].passengers)
-    # stations['Hillerød'].sub_passenger(stations['Hillerød'].passengers[0])
-    # print(stations['Hillerød'].passengers)
+    tickPersonGeneration(1,60)
+    print(stations['Hillerød'].passengers)
+    tickTrain(tickLength)
+    tickTrain(tickLength)
+    print(stations['Hillerød'].passengers)
+    printAllTrainInformation()
 
-    for i in range(60):
-        #trains['0'].printInformation()
-        #printAllTrainInformation()
-        printAllPassengersInStations()
-        print()
-        tickPersonGeneration(weight,tickLength)
-        print(stations['Hillerød'].passengers)
-        tickTrain(tickLength)
-        print()
+    # for i in range(60):
+    #     #trains['0'].printInformation()
+    #     printAllTrainInformation()
+    #     #printAllPassengersInStations()
+    #     print()
+    #     tickPersonGeneration(weight,tickLength)
+    #     tickTrain(tickLength)
+    #     print()
 
 
     return
