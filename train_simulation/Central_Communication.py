@@ -28,10 +28,15 @@
 
         Can the same idea be done in this file?
         
-
+    
 
     #TODO
-        Turn the train at the end of the line
+        Turn around train -- DONE
+        Board/disembark passengers -- DONE (though they are just numbers right now)
+        
+        Collision detection -- Made a rudementray collision avoidance, a train wont move onto a connection, if there is another train there (accounts for direction).
+
+        Generate passengers -- we generate some numbers
 """
 
 
@@ -40,36 +45,63 @@ import os, sys, json
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
-connectionFilePath = os.path.join(dirname, '../assets/stations.json')
+stationsFilePath = os.path.join(dirname, '../assets/stations.json')
+connectionsFilePath = os.path.join(dirname, '../assets/connections.json')
 trainsFilePath = os.path.join(dirname, '../assets/trains.json')
 
 from train_simulation.Moving import Train
-from train_simulation.Railway import *
-from train_simulation.Person import Person
+from train_simulation.Railway import Station,Connection
+from train_simulation.Person import Passenger
 
 connections = []
 trains = {}
+stations = {}
+allPassengersGenerated = []
+
+cumulativeTick = 0
 
 def initSim():
 
     global connections
     global trains
+    global stations
 
-    with open(connectionFilePath, mode="r", encoding="utf-8") as connectionsFile:
+
+    with open(stationsFilePath, mode="r", encoding="utf-8") as stationsFile:
+        stationsArray = json.load(stationsFile, object_hook=Station.from_json)
+        for station in stationsArray:
+            stations[station.name] = station
+
+    with open(connectionsFilePath, mode="r", encoding="utf-8") as connectionsFile:
         connections = json.load(connectionsFile, object_hook=Connection.from_json)
 
     with open(trainsFilePath, mode="r", encoding="utf-8") as trainsFile:
         trainsArray = json.load(trainsFile, object_hook=Train.loadFromJSON)
         for train in trainsArray:
             trains[train.getUID()] = train
+            trains[train.getUID()]._atStation = stations[trains[train.getUID()]._atStation]
+            trains[train.getUID()]._movingTo = stations[trains[train.getUID()]._movingTo]
+
+
+#Tick the generation of people
+def tickPersonGeneration(weight, tickLength):
+    global cumulativeTick
+    cumulativeTick += tickLength
+    # for station in stations:
+    #     stations[station].add_passengers(round(10*weight*(tickLength/60)))
+    passenger = Passenger('Hillerød','Bernstorffsvej',cumulativeTick)
+    stations['Hillerød'].add_passenger(passenger)
+    allPassengersGenerated.append(passenger)
+
 
 
 #tickLength is the amount of "seconds" every tick
 def tickTrain(tickLength):
+    skip = False
     for train in trains:
         timeLeft = tickLength
 
-        #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using all whole tickLength)
+        #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using the whole tickLength)
         if trains[train].moving():
             timeLeft = trains[train].keepMoving(timeLeft)
 
@@ -83,32 +115,42 @@ def tickTrain(tickLength):
             if not cameFrom:
                 _, nextStation = trains[train].goingFromTo()
                 for connection in connections:
-                    if atStation == connection.station_start.name or atStation == connection.station_end.name:
-                        if nextStation == connection.station_start.name or nextStation == connection.station_end.name:
+                    if atStation.name == connection.station_start or atStation.name == connection.station_end:
+                        if nextStation.name == connection.station_start or nextStation.name == connection.station_end:
+                            nextStation = stations[nextStation.name]
                             distance = connection.distance
                             break
             
             #Find the next connection and move to next station
             else:
                 for connection in connections:
-                    if atStation == connection.station_start.name or atStation == connection.station_end.name:
-                        if cameFrom == connection.station_start.name or cameFrom == connection.station_end.name:
+                    if atStation.name == connection.station_start or atStation.name == connection.station_end:
+                        if cameFrom.name == connection.station_start or cameFrom.name == connection.station_end:
                             continue
-                        if atStation != connection.station_start.name:
-                            nextStation = connection.station_start.name
+                        if atStation.name != connection.station_start:
+                            nextStation = stations[connection.station_start]
                             distance = connection.distance
                             break
-                        elif atStation != connection.station_end.name:
-                            nextStation = connection.station_end.name
+                        elif atStation.name != connection.station_end:
+                            nextStation = stations[connection.station_end]
                             distance = connection.distance
                             break
+            #If we cannot find a connection, we must be at the end of the line, and we have to turn around
+            if not nextStation:
+                print(f"Train: {train} turned around")
+                (nextStation,distance) = trains[train].turnAround()
 
-            if not nextStation or not distance:
-                print(f"Something wrong with train {train}")
+            if not distance:
+                print(f"Distance of train {train} is fucked")
 
-            trains[train].moveTo(nextStation,distance,timeLeft)
-            #print(nextStation,distance)
-
+            for train2 in trains:
+                if trains[train2].moving() and train != train2 and trains[train2]._movingTo == nextStation and trains[train2]._movingFrom == trains[train]._atStation:
+                    skip = True
+                    break
+            
+            trains[train].moveTo(nextStation,distance,timeLeft, skip)
+            if skip:
+                skip = False
 
 #def tickCarrier(speed):
 
@@ -117,16 +159,33 @@ def printAllTrainInformation():
         trains[train].printInformation()
         print()
 
+def printAllPassengersInStations():
+    for station in stations:
+        print(stations[station].name, stations[station].passengers)
+
 def main():
     #pygame.init()
 
-    initSim()
+    weight = 1
+    tickLength = 60
 
-    for i in range(20):
-        trains['0'].printInformation()
-        print()
-        tickTrain(60)
-        print()
+
+    initSim()
+    tickPersonGeneration(1,60)
+    print(stations['Hillerød'].passengers)
+    tickTrain(tickLength)
+    tickTrain(tickLength)
+    print(stations['Hillerød'].passengers)
+    printAllTrainInformation()
+
+    # for i in range(60):
+    #     #trains['0'].printInformation()
+    #     printAllTrainInformation()
+    #     #printAllPassengersInStations()
+    #     print()
+    #     tickPersonGeneration(weight,tickLength)
+    #     tickTrain(tickLength)
+    #     print()
 
 
     return
