@@ -1,20 +1,34 @@
 import json
 from .Entity import Entity
+from .Person import Passenger
 
 class Station(Entity):
     image = "path"
+    name = 0
+    passengers = []
 
     def __init__(self, name, x, y, passengers):
         self.name = name
         self.x = x
         self.y = y
-        self.passengers = passengers
+        self.passengers = []
 
     def add_passengers(self, num):
-        self.passengers += num
+        pass #self.passengers += num
     
     def sub_passengers(self, num):
-        self.passengers -= num
+        pass #self.passengers -= num
+
+    def add_passenger(self,passenger):
+        self.passengers.append(passenger)
+
+    def sub_passenger(self,passenger):
+        self.passengers.remove(passenger)
+        #print(f"Removed: {passenger}")
+        #print(self.passengers)
+
+    def name(self):
+        return self.name
 
     @staticmethod
     def from_json(json_dct):
@@ -25,6 +39,7 @@ class Station(Entity):
 
 
 class Connection(Entity):
+    #stations_json = json.load(open('assets/stations.json', mode="r", encoding="utf-8"))
     image = ""
     def __init__(self, station_start, station_end, distance):
         self.station_start = Station(station_start,0,0,0)
