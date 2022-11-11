@@ -36,11 +36,15 @@
 
 
 import os, sys, json
-
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from matplotlib.animation import FuncAnimation
+import networkx as nx
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
-connectionFilePath = os.path.join(dirname, '../assets/stations.json')
+connectionFilePath = os.path.join(dirname, '../assets/connections.json')
 trainsFilePath = os.path.join(dirname, '../assets/trains.json')
 
 from train_simulation.Moving import Train
@@ -117,18 +121,87 @@ def printAllTrainInformation():
         trains[train].printInformation()
         print()
 
+fig, ax = plt.subplots()
+
+def get_map_position(station_a:Station, station_b:Station, moved_distance:float, total_dictance:float) -> (float, float):
+    l = moved_distance/total_dictance
+    return (l*station_b.x+(1-l)*station_a.x), (l*station_b.y+(1-l)*station_a.y)
+
+def update_train_positions(n, points, plotter):
+    for i in range(len(plotter)):
+        plotter[i].set_data(np.array([points[i][0][n],points[i][1][n]]))
+
+def animate(n, points):
+    ax.clear()
+    for p in points:
+        ax.plot([p[0][n]], [p[1][n]], '.', color='r')
+
+
 def main():
     #pygame.init()
-
     initSim()
+    animation = len(sys.argv)>1 and sys.argv[1] == 'animation'
 
-    for i in range(20):
-        trains['0'].printInformation()
-        print()
-        tickTrain(60)
-        print()
+    if (animation):
+        stations_file = os.path.join(dirname, '../assets/stations.json')
+        stations_file = open(stations_file, mode="r", encoding="utf-8")
+        stations_json = json.load(stations_file)
+        stations = {}
+        #getting all stations from json
+        for s in stations_json:
+            stations[s] = Station(s,stations_json[s]['X'],stations_json[s]['Y'],0)
+        G = nx.Graph()
+        #insert all stations in the graph
+        for s in stations:
+            G.add_node(stations[s].name, pos=(stations[s].x, stations[s].y))
+        pos=nx.get_node_attributes(G,'pos')
 
-
+        #calculate the animation as an array
+        x0 = []
+        y0 = []
+        x1 = []
+        y1 = []
+        for i in range(200):
+            if trains['0']._moving:
+                new_x, new_y = get_map_position(
+                        stations[trains['0']._movingFrom], 
+                        stations[trains['0']._movingTo], 
+                        trains['0']._distanceMovedTowardsStation, 
+                        trains['0']._distanceToStation)
+                x0.append(new_x)
+                y0.append(new_y)
+            else:
+                x0.append(stations[trains['0']._atStation].x)
+                y0.append(stations[trains['0']._atStation].y)
+            if trains['1']._moving:
+                new_x, new_y = get_map_position(
+                        stations[trains['1']._movingFrom], 
+                        stations[trains['1']._movingTo], 
+                        trains['1']._distanceMovedTowardsStation, 
+                        trains['1']._distanceToStation)
+                x1.append(new_x)
+                y1.append(new_y)
+            else:
+                x1.append(stations[trains['1']._atStation].x)
+                y1.append(stations[trains['1']._atStation].y)
+            tickTrain(10)
+            
+        #setup color, shape, and initial position
+        nx.draw(G, pos, node_size=3, node_shape='.',  node_color='black')
+        t1, = ax.plot([x0[0]], [y0[0]], 'x', color='r')
+        t2, = ax.plot([x1[0]], [y1[0]], 'x', color='r')
+        trains_dots = [[(x0,y0),(x1,y1)],[t1,t2]]
+        ani=FuncAnimation(fig, update_train_positions, len(x0), fargs=(trains_dots), interval=1, repeat=False)
+        #plot all the dots for stations
+        #plot background image
+        img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
+        imgplot = plt.imshow(img)
+        plt.show()
+    else:
+        for i in range(20):
+            trains['0'].printInformation()
+            tickTrain(60)
+            print()
     return
 
 

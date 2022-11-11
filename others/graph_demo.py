@@ -51,16 +51,15 @@ x1, y1 = get_trace_points(pos["Birkerød"], pos["Holte"], 0.01)
 x2, y2 = get_trace_points(pos["Holte"], pos["Virum"], 0.01)
 x3, y3 = get_trace_points(pos["Virum"], pos["Sorgenfri"], 0.01)
 x4, y4 = get_trace_points(pos["Sorgenfri"], pos["Lyngby"], 0.01)
-x5, y5 = get_trace_points(pos["Lyngby"], pos["Jærgenborg"], 0.01)
-x6, y6 = get_trace_points(pos["Jærgenborg"], pos["Gentofte"], 0.01)
-x7, y7 = get_trace_points(pos["Gentofte"], pos["Bernstoftevej"], 0.01)
+x5, y5 = get_trace_points(pos["Lyngby"], pos["Jærgersborg"], 0.01)
+x6, y6 = get_trace_points(pos["Jærgersborg"], pos["Gentofte"], 0.01)
+x7, y7 = get_trace_points(pos["Gentofte"], pos["Bernstorffsvej"], 0.01)
 
 x = np.concatenate((x,x0,x1,x2,x3,x4,x5,x6,x7))
 y = np.concatenate((y,y0,y1,y2,y3,y4,y5,y6,y7))
 
 train, = ax.plot([x[0]], [y[0]], 'x', color='r')
-
-ani=FuncAnimation(fig, update_point, 900, fargs=(x, y, train), interval=10)
+ani=FuncAnimation(fig, update_point, len(x), fargs=(x, y, train), interval=10)
 
 nx.draw(G, pos, node_size=3, node_color='w')
 img = mpimg.imread(os.path.join(dirname, '../assets/map_dots.png'))

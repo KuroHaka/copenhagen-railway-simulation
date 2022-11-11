@@ -121,17 +121,17 @@
   },
   {
     "station A": "Lyngby",
-    "station B": "Jærgenborg",
+    "station B": "Jærgersborg",
     "distance": 1.36
   },
   {
-    "station A": "Jærgenborg",
+    "station A": "Jærgersborg",
     "station B": "Gentofte",
     "distance": 1.47
   },
   {
     "station A": "Gentofte",
-    "station B": "Bernstoftevej",
+    "station B": "Bernstorffsvej",
     "distance": 1.49
   },
   {
@@ -256,11 +256,11 @@
   },
   {
     "station A": "Hareskov",
-    "station B": "Skovbrinet",
+    "station B": "Skovbrynet",
     "distance": 1.99
   },
   {
-    "station A": "Skovbrinet",
+    "station A": "Skovbrynet",
     "station B": "Bagsværd",
     "distance": 1.41
   },
@@ -300,12 +300,12 @@
     "distance": 2
   },
   {
-    "station A": "Høje Tasstrup",
-    "station B": "Tasstrup",
+    "station A": "Høje Taastrup",
+    "station B": "Taastrup",
     "distance": 2.08
   },
   {
-    "station A": "Tasstrup",
+    "station A": "Taastrup",
     "station B": "Albertslund",
     "distance": 5.49
   },
@@ -316,11 +316,11 @@
   },
   {
     "station A": "Glostrup",
-    "station B": "Brondbyøster",
+    "station B": "Brøndbyøster",
     "distance": 2.63
   },
   {
-    "station A": "Brondbyøster",
+    "station A": "Brøndbyøster",
     "station B": "Rødovre",
     "distance": 1.15
   },
@@ -330,7 +330,7 @@
     "distance": 1
   },
   {
-    "station A": "Charlottelund",
+    "station A": "Charlottenlund",
     "station B": "Ordrup",
     "distance": 1.5
   },
