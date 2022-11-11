@@ -10,7 +10,7 @@ from matplotlib.animation import FuncAnimation
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
-# connections_file = os.path.join(dirname, '../assets/connections.json')
+connections_file = os.path.join(dirname, '../assets/new_connections.json')
 stations_file = os.path.join(dirname, '../assets/stations.json')
 
 from train_simulation.Railway import Connection
@@ -60,12 +60,11 @@ pos=nx.get_node_attributes(G,'pos')
 # x = np.concatenate((x,x0,x1,x2,x3,x4,x5,x6,x7))
 # y = np.concatenate((y,y0,y1,y2,y3,y4,y5,y6,y7))
 
-# train, = ax.plot([x[0]], [y[0]], 'x', color='r')
-
-# ani=FuncAnimation(fig, update_point, 900, fargs=(x, y, train), interval=10)
+train, = ax.plot([x[0]], [y[0]], 'x', color='r')
+# ani=FuncAnimation(fig, update_point, len(x), fargs=(x, y, train), interval=10)
 
 nx.draw(G, pos, node_size=3, node_color='w')
-img = mpimg.imread(os.path.join(dirname, '../assets/map_dots.png'))
+img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
 imgplot = plt.imshow(img)
 
 plt.show()
