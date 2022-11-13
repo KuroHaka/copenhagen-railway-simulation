@@ -164,15 +164,16 @@ class Train(Moving):
 
     def boardPassengers(self, station):
         #print(f"Boarding passengers for train {self._uid}: amount of passengers that can board: {station.passengers}, available passenger space: {self.availablePassengerSpace()}")
-        if len(station.passengers) < self.availablePassengerSpace():
-            for passenger in station.passengers:
+        
+        if len(station.get_passengers()) < self.availablePassengerSpace():
+            for passenger in station.get_passengers():
                 #print(passenger,station.name)
                 self._passengers.append(passenger)
                 station.sub_passenger(passenger)
 
         else:
             passengerAmount = self.availablePassengerSpace()
-            for i,passenger in enumerate(station.passengers):
+            for i,passenger in enumerate(station.get_passengers()):
                 if i >= passengerAmount:
                     break
                 self._passengers.append(passenger)

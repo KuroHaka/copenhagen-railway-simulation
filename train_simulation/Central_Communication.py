@@ -50,37 +50,28 @@ connectionsFilePath = os.path.join(dirname, '../assets/connections.json')
 trainsFilePath = os.path.join(dirname, '../assets/trains.json')
 
 from train_simulation.Moving import Train
-from train_simulation.Railway import Station,Connection
+from train_simulation.Railway import Station, Connection, Stations, Connections
 from train_simulation.Person import Passenger
 
-connections = []
 trains = {}
-stations = {}
 allPassengersGenerated = []
 
 cumulativeTick = 0
 
 def initSim():
+    
+    stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
+    json.load(stations_file, object_hook=Station.from_json)
 
-    global connections
-    global trains
-    global stations
-
-
-    with open(stationsFilePath, mode="r", encoding="utf-8") as stationsFile:
-        stationsArray = json.load(stationsFile, object_hook=Station.from_json)
-        for station in stationsArray:
-            stations[station.name] = station
-
-    with open(connectionsFilePath, mode="r", encoding="utf-8") as connectionsFile:
-        connections = json.load(connectionsFile, object_hook=Connection.from_json)
+    new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
+    json.load(new_connections_file, object_hook=Connection.from_json)
 
     with open(trainsFilePath, mode="r", encoding="utf-8") as trainsFile:
         trainsArray = json.load(trainsFile, object_hook=Train.loadFromJSON)
         for train in trainsArray:
             trains[train.getUID()] = train
-            trains[train.getUID()]._atStation = stations[trains[train.getUID()]._atStation]
-            trains[train.getUID()]._movingTo = stations[trains[train.getUID()]._movingTo]
+            trains[train.getUID()]._atStation = Stations[train._atStation]
+            trains[train.getUID()]._movingTo = Stations[train._movingTo]
 
 
 #Tick the generation of people
@@ -90,7 +81,7 @@ def tickPersonGeneration(weight, tickLength):
     # for station in stations:
     #     stations[station].add_passengers(round(10*weight*(tickLength/60)))
     passenger = Passenger('Hillerød','Bernstorffsvej',cumulativeTick)
-    stations['Hillerød'].add_passenger(passenger)
+    Stations['Hillerød'].add_passenger(passenger)
     allPassengersGenerated.append(passenger)
 
 
@@ -114,27 +105,29 @@ def tickTrain(tickLength):
             #This case is needed when trains are just initialised
             if not cameFrom:
                 _, nextStation = trains[train].goingFromTo()
-                for connection in connections:
-                    if atStation.name == connection.station_start or atStation.name == connection.station_end:
-                        if nextStation.name == connection.station_start or nextStation.name == connection.station_end:
-                            nextStation = stations[nextStation.name]
+
+                for _,connection in Connections.items():
+
+                    if atStation == connection.station_start or atStation == connection.station_end:
+                        if nextStation == connection.station_start or nextStation == connection.station_end:
                             distance = connection.distance
                             break
             
             #Find the next connection and move to next station
             else:
-                for connection in connections:
-                    if atStation.name == connection.station_start or atStation.name == connection.station_end:
-                        if cameFrom.name == connection.station_start or cameFrom.name == connection.station_end:
+                for _,connection in Connections.items():
+                    if atStation == connection.station_start or atStation == connection.station_end:
+                        if cameFrom == connection.station_start or cameFrom == connection.station_end:
                             continue
-                        if atStation.name != connection.station_start:
-                            nextStation = stations[connection.station_start]
+                        if atStation != connection.station_start:
+                            nextStation = Stations[connection.station_start.name]
                             distance = connection.distance
                             break
-                        elif atStation.name != connection.station_end:
-                            nextStation = stations[connection.station_end]
+                        elif atStation != connection.station_end:
+                            nextStation = Stations[connection.station_end.name]
                             distance = connection.distance
                             break
+            
             #If we cannot find a connection, we must be at the end of the line, and we have to turn around
             if not nextStation:
                 print(f"Train: {train} turned around")
@@ -171,21 +164,28 @@ def main():
 
 
     initSim()
-    tickPersonGeneration(1,60)
-    print(stations['Hillerød'].passengers)
-    tickTrain(tickLength)
-    tickTrain(tickLength)
-    print(stations['Hillerød'].passengers)
-    printAllTrainInformation()
 
-    # for i in range(60):
-    #     #trains['0'].printInformation()
-    #     printAllTrainInformation()
-    #     #printAllPassengersInStations()
-    #     print()
-    #     tickPersonGeneration(weight,tickLength)
-    #     tickTrain(tickLength)
-    #     print()
+    #print(Stations)
+
+    #for (names,end),_ in Connections.items():
+    #    print(names)
+
+    # tickPersonGeneration(1,60)
+    # print(stations['Hillerød'].passengers)
+    # tickTrain(tickLength)
+    # print(stations['Hillerød'].passengers)
+    # printAllTrainInformation()
+
+    #print(trains)
+
+    for i in range(60):
+        #trains['0'].printInformation()
+        printAllTrainInformation()
+        #printAllPassengersInStations()
+        print()
+        tickPersonGeneration(weight,tickLength)
+        tickTrain(tickLength)
+        print()
 
 
     return
