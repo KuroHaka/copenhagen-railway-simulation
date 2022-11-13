@@ -37,39 +37,41 @@
       </div>
 
       <div id="Input Information" style="float:right;height:30%;width:40%;">
-
-        <form action="">
+        <form action="{{ url_for("Run_Simulation")}}" method="post">
           <div class="pure-form-aligned">
           <fieldset style="background-color: #e3e3e3; padding-top: 5%; padding-left: 5%;padding-right: 5%; padding-bottom: 5%;">
             <legend>Input Information:</legend>
             <div class="pure-control-group">
               <label for="Number of Persons">Number of Persons</label>
-              <input type="number" id="Number of Persons" placeholder="#Numbers" min = 0 />
-            </div>
-            <div class="pure-control-group">
-              <label for="Number of Stations">Number of Stations</label>
-              <input type="number" id="Number of Stations" placeholder="#Numbers" min = 0 />
+              <input type="number" id="Number of Persons" name="Number_of_Persons" placeholder="#Numbers" min = 0 />
             </div>
             <div class="pure-control-group">
               <label for="Weights of Stations">Weights of Stations</label>
-              <input type="number" id="Weights of Stations" placeholder="#Numbers" min = 0 />
+              <input type="text" id="Weights of Stations" list="typelist" placeholder="#Numbers" />
+              <datalist id="typelist">
+                <option>Diamond</option>
+                <option>vertical</option>
+              </datalist>
             </div>
             <div class="pure-control-group">
               <label for="Number of Trains">Number of Trains</label>
-              <input type="number" id="Number of Trains" placeholder="#Numbers" min = 0 />
+              <input type="number" id="Number of Trains" name="Number_of_Trains" placeholder="#Numbers" min = 0 />
             </div>
             <div class="pure-control-group">
-              <label for="Number of Stations">Starting_trains</label>
-              <input type="text" id="Number of Stations" placeholder="#String" />
+              <label for="Starting_Trains">Starting_Trains</label>
+              <input type="text" id="Starting_Trains" name="Starting_Trains" placeholder="#Text" />
             </div> 
-            <input type="radio" name="Switchers" value="Carriers">Carriers
+            <input checked="true" type="radio" name="Switchers" value="Carriers">Carriers
             <input type="radio" name="Switchers" value="Trains">Trains
+
             <div class="Run Simulation" style= "float:right;" >
-              <button class="Run Simulation">Run Simulation</button>
+              <button type="submit">Run Simulation</button>
             </div>
 
+            
+
             <div class="Reset" style= "float:right;" >
-              <button class="Reset">Reset</button>&emsp;&emsp;
+              <button type="Reset">Reset</button>&emsp;&emsp;
             </div>
 
            
