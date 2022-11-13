@@ -1,4 +1,4 @@
-from others.simulation_skeleton import Person
+#from others.simulation_skeleton import Person
 from datetime import datetime
 
 
