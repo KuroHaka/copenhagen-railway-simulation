@@ -44,19 +44,18 @@ connectionFilePath = os.path.join(dirname, '../assets/stations.json')
 trainsFilePath = os.path.join(dirname, '../assets/trains.json')
 
 from train_simulation.Moving import Train
-from train_simulation.Railway import *
-from train_simulation.Person import Person
+from train_simulation.Railway import Station, Connection, Stations, Connections
 
 connections = []
 trains = {}
 
 def initSim():
+    
+    stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
+    json.load(stations_file, object_hook=Station.from_json)
 
-    global connections
-    global trains
-
-    with open(connectionFilePath, mode="r", encoding="utf-8") as connectionsFile:
-        connections = json.load(connectionsFile, object_hook=Connection.from_json)
+    new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
+    json.load(new_connections_file, object_hook=Connection.from_json)
 
     with open(trainsFilePath, mode="r", encoding="utf-8") as trainsFile:
         trainsArray = json.load(trainsFile, object_hook=Train.loadFromJSON)
@@ -82,7 +81,7 @@ def tickTrain(tickLength):
             #This case is needed when trains are just initialised
             if not cameFrom:
                 _, nextStation = trains[train].goingFromTo()
-                for connection in connections:
+                for _,connection in Connections.items():
                     if atStation == connection.station_start.name or atStation == connection.station_end.name:
                         if nextStation == connection.station_start.name or nextStation == connection.station_end.name:
                             distance = connection.distance
@@ -90,7 +89,7 @@ def tickTrain(tickLength):
             
             #Find the next connection and move to next station
             else:
-                for connection in connections:
+                for _,connection in Connections.items():
                     if atStation == connection.station_start.name or atStation == connection.station_end.name:
                         if cameFrom == connection.station_start.name or cameFrom == connection.station_end.name:
                             continue
