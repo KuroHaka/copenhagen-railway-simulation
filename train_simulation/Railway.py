@@ -4,13 +4,13 @@ Stations = {}
 Connections = {}
 
 class Station():
-    __passengers = []
 
     def __init__(self, name:str, x, y, passengers:int, idle_time, lines:[str], is_last_station:bool):
         self.name = name
         self.x = x
         self.y = y
         self.__idle_time = idle_time
+        self.__passengers = []
         self.__lines = lines
         self.__is_last_station = is_last_station
         Stations[name] = self
@@ -26,7 +26,7 @@ class Station():
     #         "is_last_station": {self.is_last_station()},
     #         "lines": {self.get_lines()}"""
 
-    def get_passengers(self)->int:
+    def get_passengers(self)->list:
         return self.__passengers
 
     def get_lines(self)->list:
@@ -39,15 +39,14 @@ class Station():
         return self.__passengers
 
     def add_passengers(self, passengers):
-        for passenger in passengers:
-            self.__passengers.append(passenger)
+        self.__passengers += passengers
     
     def sub_passengers(self, passengers):
         for passenger in passengers:
             self.__passengers.remove(passenger)
 
     def add_passenger(self,passenger):
-        self.__passengers.append(passenger)
+        self.__passengers += [passenger]
 
     def sub_passenger(self,passenger):
         self.__passengers.remove(passenger)
@@ -75,11 +74,11 @@ class Connection():
         Connections[(station_start, station_end)] = self
     
     # for info printing
-    def __str__(self):
-        return f"""
-            "station_start": {self.station_start.name},
-            "station_end": {self.station_start.name},
-            "distance": {self.distance}"""
+    # def __str__(self):
+    #     return f"""
+    #         "station_start": {self.station_start.name},
+    #         "station_end": {self.station_start.name},
+    #         "distance": {self.distance}"""
 
     @classmethod
     def from_json(self, json_dct):

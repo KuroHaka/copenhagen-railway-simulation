@@ -6,10 +6,6 @@ import json
 
     Removed the abstract property from Moving and Entity
 
-    TRAIN:
-        #TODO: 
-            Passengers being passengers instead of numbers
-
     CARRIER:
 
 
@@ -35,66 +31,67 @@ class Carrier(Moving):
     pass
 
 class Train(Moving):
+
+    #Global static variables
     image = ""
-
-    #Trains identifier:
-    _uid = 0
-
-    #Which line the train is running
-    _line = 0
-
-    #Amount of passengers on train
-    _passengers = []
-    _maxPassengers = 700
-
-    #Speed of train
-    _speed = 0
     
+    #Max amount of passengers on train
+    _maxPassengers = 700
 
     #Max speed of train in m/s
     _maxSpeed = 33.33
     
-    #Max speed the train can go before it needs to decelerate again (if the distance to next station is small)
-    _accelerateTo = 0
-
     #Acceleration of train
     _acceleration = 1.3
     _deceleration = 1.2
 
-    #0 when not at a station otherwise Station
-    _atStation = 0
-    _cameFrom = 0
-
-    #Amount if seconds to wait at a station. Set to 180 seconds
-    _remainingWaitingTime = 0
-
-    #Is the train moving
-    _moving = False
-
-    #If a moving train should stop
-    _shouldStop = False
-    
-    #Is the train decelerating
-    _decelerating = False
-
-    #0 when at a station otherwise station
-    _movingTo = 0
-    _movingFrom = 0
-
-    #Different distances
-    _distanceToStation = 0
-    _distanceMovedTowardsStation = 0
-    _distanceFromStationToDecelerate = 0
-    
-
     #Initialisation of the train
-    def __init__(self, uid, atStation, moveTo):
+    def __init__(self, uid, atStation, moveTo, line):
+        #Trains identifier:
         self._uid = uid
+        
+        #On which line the train is running
+        self._line = line
+
+        #Passengers on the train
+        self._passengers = []
+
+        #Speed of train
+        self._speed = 0
+
+        #Max speed the train can go before it needs to decelerate again (if the distance to next station is small)
+        self._accelerateTo = 0
+
+        #0 when not at a station otherwise Station
         self._atStation = atStation
+        self._cameFrom = 0
+        
+        #Amount if seconds to wait at a station. Set to 180 seconds
+        self._remainingWaitingTime = 0
+
+        #Is the train moving
+        self._moving = False
+
+        #If a moving train should stop
+        self._shouldStop = False
+        
+        #Is the train decelerating
+        self._decelerating = False
+
+        #0 when at a station otherwise station
         self._movingTo = moveTo
+        self._movingFrom = 0
+
+        #Different distances
+        self._distanceToStation = 0
+        self._distanceMovedTowardsStation = 0
+        self._distanceFromStationToDecelerate = 0
+
+
+       
 
     def loadFromJSON(json):
-        return Train(json['uid'],json['atStation'],json['moveTo'])
+        return Train(json['uid'],json['atStation'],json['moveTo'],json['line'])
 
 
     #If the station is close, the train can only accelerate so much
@@ -124,7 +121,7 @@ class Train(Moving):
                 return 0
 
         if trainOnTracks:
-            print(f"Train {self._uid} is not moving to {station.name} because there is a train on the tracks")
+            print(f"Train {self._uid} of line {self._line} is not moving to {station.name} because there is a train on the tracks")
             return 0
         
         self.boardPassengers(self._atStation)
@@ -167,7 +164,6 @@ class Train(Moving):
         
         if len(station.get_passengers()) < self.availablePassengerSpace():
             for passenger in station.get_passengers():
-                #print(passenger,station.name)
                 self._passengers.append(passenger)
                 station.sub_passenger(passenger)
 
@@ -180,13 +176,13 @@ class Train(Moving):
                 station.sub_passenger(passenger)
                 
     
-
-    def disembarkPassengers(self, station):
+    #Should account for Station space?
+    def disembarkPassengers(self, station, totalTime):
         for passenger in self._passengers:
             if passenger._destination == station.name:
                 self._passengers.remove(passenger)
-                passenger.isArrived()
-        #Should account for Station space
+                passenger.arrived(totalTime)
+        
 
     #Return a tuple consisting of the station the train came from and the station the train is at
     def cameFromAtStation(self):
@@ -197,23 +193,26 @@ class Train(Moving):
     #
 
     #arrive at a station
-    def arriveAt(self, station, time):
+    def arriveAt(self, station, time, totalTime):
         self._atStation = station
         self._cameFrom = self._movingFrom
         self._movingTo = 0
         self._movingFrom = 0
         self._distanceMovedTowardsStation = 0
         self._distanceFromStationToDecelerate = 0
-        self._remainingWaitingTime = 180
+        self._remainingWaitingTime = 60
         self._moving = False
 
-        self.disembarkPassengers(station)
+        # if self._line == 'f-line' and self._uid == '7':
+        #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")
+
+        self.disembarkPassengers(station,totalTime)
 
         time = self.wait(time)
         return time
 
     #Keep moving alon the track towards the next station
-    def keepMoving(self, time):
+    def keepMoving(self, time, totalTime):
         if self._shouldStop:
             self.decelerate(time)
             return 0
@@ -224,7 +223,7 @@ class Train(Moving):
         if (self._decelerating):
             time = self.decelerate(time)
             if self._speed == 0:
-                time = self.arriveAt(self._movingTo, time)
+                time = self.arriveAt(self._movingTo, time, totalTime)
             return time
 
         if (self._distanceMovedTowardsStation + time * self._speed < self._distanceToStation - self._distanceFromStationToDecelerate):
@@ -240,7 +239,7 @@ class Train(Moving):
         self._decelerating = True
         time = self.decelerate(time)
         if self._speed == 0:
-            time = self.arriveAt(self._movingTo,time)
+            time = self.arriveAt(self._movingTo,time, totalTime)
         return time
 
     def decelerate(self,time):
@@ -310,7 +309,7 @@ class Train(Moving):
         print(f"distanceToStation: {self._distanceToStation}")
         print(f"distanceMovedTowardsStation: {self._distanceMovedTowardsStation}")
         print(f"distanceFromStationToDecelerate: {self._distanceFromStationToDecelerate}")
-        #print(f"passengers: {len(self._passengers)}")
+        print(f"passengers: {len(self._passengers)}")
         print(f"availablePassengerSpace: {self.availablePassengerSpace()}")
 
     def getUID(self):

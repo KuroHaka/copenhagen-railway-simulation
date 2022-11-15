@@ -1,14 +1,14 @@
-from datetime import datetime
 import uuid
 
 class Passenger:
     _destination = 'destination not set'
     _currentlocation = 'currentlocation not set'
-    _departureTime = datetime
+    _departureTime = 0
     _id = ''
+
     #is travel time needed?
-    _travelTimeEnd = datetime
-    _travelTime = datetime
+    _travelTimeEnd = 0
+    _travelTime = 0
     _isArrived = bool
 
     def __init__(self,currentlocation,destination,departuetime):
@@ -48,8 +48,13 @@ class Passenger:
         if self._isArrived:
             print(f"travel time: {self._travelTime}")
 
-    def isArrived(self):
-        # if(self._departureTime==self._departureTime):  
-        #     self._travelTimeEnd = datetime.now()
-        #     self._travelTime = self._travelTimeEnd - self._departureTime  
+    def arrived(self, arriveTime):
+        self._travelTimeEnd = arriveTime
+        self._travelTime = (self._travelTimeEnd - self._departureTime)/60
         self._isArrived = True
+
+    def isArrived(self):
+        return self._isArrived
+
+    def getTravelTime(self):
+        return self._travelTime
