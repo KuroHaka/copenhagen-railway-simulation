@@ -149,11 +149,8 @@ def cost_func(u, v, edge, prev_edge):
          prev_name = None
      cost = length
      if name != prev_name:
-         cost += 10
+         cost += 1
      return cost
-
-
-
 
 
 def creategraph():
@@ -166,21 +163,6 @@ def creategraph():
 def findpath(station_a, station_b):
     return(find_path(stationGraph, station_a,station_b , cost_func=cost_func))
 
-
-def trainCrashDetection(checktrain):
-    for _,train  in trains.items():
-        if(train.position_x() == checktrain.position_x() and train.position_y() == checktrain.position_y()):
-            print('1')
-        else:
-            print('0')
-
-
-
 creategraph()
 print(findpath('Flintholm','Allerød'))
 
-
-testtrain = Train('1','Holte','Birkerød')
-#testtrain.position_x = 0
-#testtrain.position_y = 0
-print(trainCrashDetection(testtrain))
