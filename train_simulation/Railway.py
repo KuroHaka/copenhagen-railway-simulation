@@ -71,6 +71,15 @@ class Connection():
             "station_end": {self.station_start.name},
             "distance": {self.distance}"""
 
+    def getStationStart(self):
+        return self.station_start.name
+
+    def getStationEnd(self):
+        return self.station_end.name
+
+    def getDistance(self):
+        return{self.distance}
+
     @classmethod
     def from_json(self, json_dct):
         Connection(json_dct['station A'],

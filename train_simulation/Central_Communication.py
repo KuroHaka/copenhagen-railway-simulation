@@ -36,6 +36,7 @@
 
 
 import os, sys, json
+from dijkstar import Graph, find_path
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
@@ -48,6 +49,7 @@ from train_simulation.Railway import Station, Connection, Stations, Connections
 
 connections = []
 trains = {}
+stationGraph = Graph()
 
 def initSim():
     
@@ -133,3 +135,52 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+    
+
+def cost_func(u, v, edge, prev_edge):
+     length, name = edge
+     if prev_edge:
+         prev_name = prev_edge[1]
+     else:
+         prev_name = None
+     cost = length
+     if name != prev_name:
+         cost += 10
+     return cost
+
+
+
+
+
+def creategraph():
+    for _,connection  in Connections.items():
+        #print(connection)
+        #todo add station weith to cost
+        stationGraph.add_edge(connection.station_start.name,connection.station_end.name , (connection.distance,connection.station_end.name))
+
+    
+def findpath(station_a, station_b):
+    return(find_path(stationGraph, station_a,station_b , cost_func=cost_func))
+
+
+def trainCrashDetection(checktrain):
+    for _,train  in trains.items():
+        if(train.position_x() == checktrain.position_x() and train.position_y() == checktrain.position_y()):
+            print('1')
+        else:
+            print('0')
+
+
+
+creategraph()
+print(findpath('Flintholm','Allerød'))
+
+
+testtrain = Train('1','Holte','Birkerød')
+#testtrain.position_x = 0
+#testtrain.position_y = 0
+print(trainCrashDetection(testtrain))
