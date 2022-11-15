@@ -147,7 +147,7 @@ class Simulation:
         #init pointers
         for key, train in self.trains.items():
             starting = self.stations[train._atStation]
-            p, = self.ax.plot(starting.x, starting.y, arrowprops=dict(arrowstyle="->"), color='r')
+            p, = self.ax.plot(starting.x, starting.y, 'x', color='r')
             self.pointers[key] = Point(p)
 
         for i in range(epoch):
