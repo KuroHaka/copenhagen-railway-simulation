@@ -146,9 +146,18 @@ class Simulation:
 
         #init pointers
         for key, train in self.trains.items():
-            starting = self.stations[train._atStation]
-            p, = self.ax.plot(starting.x, starting.y, 'x', color='r')
-            self.pointers[key] = Point(p)
+                if train._moving:
+                    newx, newy = self.get_map_position(
+                            self.stations[train._movingFrom], 
+                            self.stations[train._movingTo], 
+                            train._distanceMovedTowardsStation, 
+                            train._distanceToStation)
+                    p, = self.ax.plot(newx, newy, 'x', color='r')
+                    self.pointers[key] = Point(p)
+                else:
+                    starting = self.stations[train._atStation]
+                    p, = self.ax.plot(starting.x, starting.y, 'x', color='r')
+                    self.pointers[key] = Point(p)
 
         for i in range(epoch):
             for key, train in self.trains.items():
@@ -173,6 +182,7 @@ class Simulation:
         if output_fig:
             ani.save(os.path.join(dirname, '../assets/animation.gif'), writer='imagemagick', fps=30)
         else:
+            self.fig.tight_layout()
             plt.show()
                 
                 
