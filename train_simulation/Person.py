@@ -1,12 +1,23 @@
 # from others.simulation_skeleton import Person
+import calendar
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
+
+
 # from Railway import Station
 
 
+def random_date(start, end):
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = random.randrange(int_delta)
+    return start + timedelta(seconds=random_second)
+
+
 class Person:
-    def __init__(self, start_station, destination, time):  # I think that start station wil be good for us to generate report- can deleted if you are not agree
+    def __init__(self, start_station, destination,
+                 time):  # I think that start station wil be good for us to generate report- can deleted if you are not agree
         self.start_station = start_station
         self.destination = destination
         self.status = 'ready'
@@ -39,10 +50,17 @@ class Person:
         passengers_list = {'passengers': []}
 
         for passenger in range(critical_stations_passengers):  # generate passengers only to creitical stations
-            destination = random.choice(critical_stations)
-            passengers_list['passengers'].append(Person('start_station', destination, time))
-        for passenger in range(n_passengers - critical_stations_passengers):  # generate passengers for all stations
+            start_station = random.choice(critical_stations)
             destination = random.choice(stations)
-            passengers_list['passengers'].append(Person('start_station', destination, time))
+            travel_time = str(random_date(time['start'], time['end']))
+            passengers_list['passengers'].append(Person(start_station, destination, travel_time))
+        for passenger in range(n_passengers - critical_stations_passengers):  # generate passengers for all stations
+            start_station = random.choice(stations)
+            destination = random.choice(stations)
+            travel_time = str(random_date(time['start'], time['end']))
+            passengers_list['passengers'].append(Person(start_station, destination, travel_time))
 
+            json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']])
+            with open('../assets/passengers.json', "w", encoding="utf-8") as outfile:
+                outfile.write(json_string)
         return passengers_list
