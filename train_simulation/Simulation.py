@@ -76,7 +76,7 @@ class Simulation:
         self.G = nx.Graph()
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
-        self.generateTrains(50)
+        self.generateTrains(52)
 
     def tickPersonGeneration(self, weight, tickLength):
         self.cumulativeTick += tickLength
@@ -138,10 +138,12 @@ class Simulation:
         mapOTrains = {'a': aTrains, 'b': bTrains, 'c': cTrains, 'f': fTrains}
         rangeBetweenTrains = {}
 
-        rangeBetweenTrains['a'] = aDistance // (aTrains + 1)
-        rangeBetweenTrains['b'] = bDistance // (bTrains + 1)
-        rangeBetweenTrains['c'] = cDistance // (cTrains + 1)
-        rangeBetweenTrains['f'] = fDistance // (fTrains + 1)
+        rangeBetweenTrains['a'] = aDistance // (aTrains/2 + 1)
+        rangeBetweenTrains['b'] = bDistance // (bTrains/2 + 1)
+        rangeBetweenTrains['c'] = cDistance // (cTrains/2 + 1)
+        rangeBetweenTrains['f'] = fDistance // (fTrains/2 + 1)
+
+        print(rangeBetweenTrains)
 
 
         for line in self.lines.keys():
@@ -299,7 +301,7 @@ class Simulation:
         for _,station in self.stations.items():
             print(station.name, station.get_passengers())
 
-    def run_simulation_with_animation(self, epoch: int, tick_lenght: int, output_fig=True):
+    def run_simulation_with_animation(self, epoch: int, tick_lenght: int, output_fig=False):
         #init stations
         for _, station in self.stations.items():
             self.G.add_node(station.name, pos=(station.x, station.y))
