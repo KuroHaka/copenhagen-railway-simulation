@@ -2,6 +2,7 @@ import json
 
 Stations = {}
 Connections = {}
+Lines = {'a':[], 'b':[], 'c':[], 'f':[]}
 
 class Station():
 
@@ -11,15 +12,17 @@ class Station():
         self.y = y
         self.__passengers = passengers
         self.__idle_time = idle_time
-        self.__lines = lines
+        self.__lines = set(lines)
         self.__is_last_station = is_last_station
         Stations[name] = self
+        for l in lines:
+            Lines[l].append(name)
 
     # for info printing
     def __str__(self):
         return f"""
             "name": {self.name},
-            "x": {self.x},
+            "x": {self.x},                                                                                                                                                                                                                                                                                                  
             "y": {self.y},
             "idle_time": {self.get_idle_time()},
             "passengers": {self.get_passengers()},
@@ -70,6 +73,15 @@ class Connection():
             "station_start": {self.station_start.name},
             "station_end": {self.station_start.name},
             "distance": {self.distance}"""
+
+    def getStationStart(self):
+        return self.station_start.name
+
+    def getStationEnd(self):
+        return self.station_end.name
+
+    def getDistance(self):
+        return{self.distance}
 
     @classmethod
     def from_json(self, json_dct):
