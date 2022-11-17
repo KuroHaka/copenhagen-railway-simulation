@@ -68,13 +68,15 @@ class Simulation:
         new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
         json.load(new_connections_file, object_hook=Connection.from_json)
 
+        with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
+            self.lines = json.load(linesFile)
+
         self.stations = Stations
         self.connections = Connections
-        self.lines = Lines
         self.G = nx.Graph()
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
-        self.generateTrains(54)
+        self.generateTrains(50)
 
     def tickPersonGeneration(self, weight, tickLength):
         self.cumulativeTick += tickLength
@@ -134,9 +136,7 @@ class Simulation:
                 fTrains -= 1
 
         mapOTrains = {'a': aTrains, 'b': bTrains, 'c': cTrains, 'f': fTrains}
-        rangeBetweenTrains = {'a': 0, 'b': 0, 'c': 0, 'f': 0}
-
-        print(aTrains,bTrains,cTrains,fTrains)
+        rangeBetweenTrains = {}
 
         rangeBetweenTrains['a'] = aDistance // (aTrains + 1)
         rangeBetweenTrains['b'] = bDistance // (bTrains + 1)
@@ -162,7 +162,7 @@ class Simulation:
 
             distanceMoved = 0
             for i in range(len(self.lines[line])-1):
-                if (self.lines[line][i],self.lines[line][i+1]) in Connections:
+                if (self.lines[line][i],self.lines[line][i+1]) in self.connections:
                     if distanceMoved > rangeBetweenTrains[line]:
                         self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i+1]], line)
                         trainID += 1
@@ -244,37 +244,35 @@ class Simulation:
                             if cameFrom == connection.station_start or cameFrom == connection.station_end:
                                 continue
                             if atStation != connection.station_start:
-                                if connection.station_start.name not in lines[train._line]:
+                                if connection.station_start.name not in self.lines[train._line]:
                                     #print(f"Station {connection.station_start.name} not part of line {trains[train]._line}")
                                     continue
                                 nextStation = self.stations[connection.station_start.name]
                                 distance = connection.distance
                                 break
                             elif atStation != connection.station_end:
-                                if connection.station_end.name not in lines[train._line]:
+                                if connection.station_end.name not in self.lines[train._line]:
                                     #print(f"Station {connection.station_end.name} not part of line {trains[train]._line}")
                                     continue
                                 nextStation = self.stations[connection.station_end.name]
                                 distance = connection.distance
                                 break
             
-            #If we cannot find a connection, we must be at the end of the line, and we have to turn around
-            if not nextStation:
-                #print(f"Train: {train} turned around")
-                (nextStation,distance) = train.turnAround()
+                #If we cannot find a connection, we must be at the end of the line, and we have to turn around
+                if not nextStation:
+                    (nextStation,distance) = train.turnAround()
 
-            if not distance:
-                print(f"Distance of train {key} is fucked")
+                if not distance:
+                    print(f"Distance of train {key} is fucked")
 
-            for _,train2 in self.trains.items():
-                if train2.moving() and train != train2 and train2._movingTo == nextStation and train2._movingFrom == train._atStation:
-                    skip = True
-                    break
-            
-            print(distance)
-            train.moveTo(nextStation,distance,timeLeft, skip)
-            if skip:
-                skip = False
+                for _,train2 in self.trains.items():
+                    if train2.moving() and train != train2 and train2._movingTo == nextStation and train2._movingFrom == train._atStation:
+                        skip = True
+                        break
+                
+                train.moveTo(nextStation,distance,timeLeft, skip)
+                if skip:
+                    skip = False
 
     def get_map_position(self, station_a:Station, station_b:Station, moved_distance:float, total_dictance:float) -> (float, float):
         l = moved_distance/total_dictance

@@ -19,15 +19,15 @@ class Station():
             Lines[l].append(name)
 
     # for info printing
-    def __str__(self):
-        return f"""
-            "name": {self.name},
-            "x": {self.x},                                                                                                                                                                                                                                                                                                  
-            "y": {self.y},
-            "idle_time": {self.get_idle_time()},
-            "passengers": {self.get_passengers()},
-            "is_last_station": {self.is_last_station()},
-            "lines": {self.get_lines()}"""
+    # def __str__(self):
+    #     return f"""
+    #         "name": {self.name},
+    #         "x": {self.x},                                                                                                                                                                                                                                                                                                  
+    #         "y": {self.y},
+    #         "idle_time": {self.get_idle_time()},
+    #         "passengers": {self.get_passengers()},
+    #         "is_last_station": {self.is_last_station()},
+    #         "lines": {self.get_lines()}"""
 
     def get_passengers(self)->list:
         return self.__passengers

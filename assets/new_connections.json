@@ -6,13 +6,8 @@
     },
     {
         "station A": "Allerød",
-        "station B": "Høvelte",
-        "distance": 3
-    },
-    {
-        "station A": "Birkerød",
-        "station B": "Høvelte",
-        "distance": 2.5
+        "station B": "Birkerød",
+        "distance": 5.36
     },
     {
         "station A": "Birkerød",
