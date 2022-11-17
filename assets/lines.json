@@ -1,5 +1,5 @@
 {
-  "a-line":[
+  "a":[
 	  "Hillerød",
 	  "Allerød",
 		"Birkerød",
@@ -36,7 +36,7 @@
 		"Ølby",
 		"Køge"
   ],
-  "b-line":[
+  "b":[
 		"Farum",
 	  "Værløse",
 		"Hareskov",
@@ -67,7 +67,7 @@
 		"Taastrup",
 		"Høje Taastrup"
   ],
-  "c-line":[
+  "c":[
 	  "Klampenborg",
 		"Ordrup",
 		"Charlottenlund",
@@ -101,7 +101,7 @@
 		"Vinge",
 		"Frederikssund"
 	],
-  "f-line": [
+  "f": [
 		"Hellerup",
 		"Ryparken",
 		"Bispebjerg",

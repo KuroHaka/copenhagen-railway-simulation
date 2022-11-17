@@ -44,7 +44,8 @@ sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
 
 from train_simulation.Moving import Train
-from train_simulation.Railway import Station, Connection, Stations, Connections
+from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
+from Person import Passenger
 
 class Point:
     def __init__(self,pointer):
@@ -69,55 +70,211 @@ class Simulation:
 
         self.stations = Stations
         self.connections = Connections
+        self.lines = Lines
         self.G = nx.Graph()
+        self.cumulativeTick = 0
+        self.allPassengersGenerated = []
+        self.generateTrains(54)
 
+    def tickPersonGeneration(self, weight, tickLength):
+        self.cumulativeTick += tickLength
+        for _, station in self.stations.items():
+            passenger = Passenger(station,'København H',self.cumulativeTick)
+            station.add_passenger(passenger)
+            self.allPassengersGenerated.append(passenger)
+
+    def generateTrains(self, numberOfTrains):
+        trainID = 0
+
+        aDistance = 74310
+        bDistance = 48980
+        cDistance = 55210
+        fDistance = 11810
+
+        #A: 9/26
+        #B: 7/26  
+        #C: 8/26 
+        #F: 2/26
+
+        aTrains = round(numberOfTrains * (9/26))
+        bTrains = round(numberOfTrains * (7/26))
+        cTrains = round(numberOfTrains * (8/26))
+        fTrains = round(numberOfTrains * (2/26))
+
+        if aTrains + bTrains + cTrains + fTrains < numberOfTrains:
+            #Find largest ronuding
+            roundA = numberOfTrains * (9/26) - aTrains
+            roundB = numberOfTrains * (7/26) - bTrains
+            roundC = numberOfTrains * (8/26) - cTrains
+            roundF = numberOfTrains * (2/26) - fTrains
+
+            if roundA > max(roundB,roundC,roundF):
+                aTrains += 1
+            elif roundB > max(roundA,roundC,roundF):
+                bTrains += 1
+            elif roundC > max(roundA,roundB,roundF):
+                cTrains += 1
+            elif roundF > max(roundA,roundC,roundB):
+                fTrains += 1
+
+
+        elif aTrains + bTrains + cTrains + fTrains > numberOfTrains:
+            roundA = aTrains - numberOfTrains * (9/26)
+            roundB = bTrains - numberOfTrains * (7/26)
+            roundC = cTrains - numberOfTrains * (8/26)
+            roundF = fTrains - numberOfTrains * (2/26)
+
+            if roundA > max(roundB,roundC,roundF):
+                aTrains -= 1
+            elif roundB > max(roundA,roundC,roundF):
+                bTrains -= 1
+            elif roundC > max(roundA,roundB,roundF):
+                cTrains -= 1
+            elif roundF > max(roundA,roundC,roundB):
+                fTrains -= 1
+
+        mapOTrains = {'a': aTrains, 'b': bTrains, 'c': cTrains, 'f': fTrains}
+        rangeBetweenTrains = {'a': 0, 'b': 0, 'c': 0, 'f': 0}
+
+        print(aTrains,bTrains,cTrains,fTrains)
+
+        rangeBetweenTrains['a'] = aDistance // (aTrains + 1)
+        rangeBetweenTrains['b'] = bDistance // (bTrains + 1)
+        rangeBetweenTrains['c'] = cDistance // (cTrains + 1)
+        rangeBetweenTrains['f'] = fDistance // (fTrains + 1)
+
+
+        for line in self.lines.keys():
+            self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][0]], self.stations[self.lines[line][1]], line)
+            trainID += 1
+            
+            mapOTrains[line] -= 1
+            if mapOTrains[line] == 0:
+                continue
+
+            self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][-1]], self.stations[self.lines[line][-2]], line)
+            trainID += 1
+
+            mapOTrains[line] -= 1
+            if mapOTrains[line] == 0:
+                continue
+
+
+            distanceMoved = 0
+            for i in range(len(self.lines[line])-1):
+                if (self.lines[line][i],self.lines[line][i+1]) in Connections:
+                    if distanceMoved > rangeBetweenTrains[line]:
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i+1]], line)
+                        trainID += 1
+                        
+                        mapOTrains[line] -= 1
+                        if mapOTrains[line] == 0:
+                            break
+
+
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i-1]], line)
+                        trainID += 1
+
+                        mapOTrains[line] -= 1
+                        if mapOTrains[line] == 0:
+                            break
+
+                        distanceMoved = 0
+                    distanceMoved += self.connections[(self.lines[line][i],self.lines[line][i+1])].distance
+
+
+                elif (self.lines[line][i+1],self.lines[line][i]) in self.connections:
+                    if distanceMoved > rangeBetweenTrains[line]:
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i+1]], line)
+                        trainID += 1
+
+                        mapOTrains[line] -= 1
+                        if mapOTrains[line] == 0:
+                            break
+
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i-1]], line)
+                        trainID += 1
+
+                        mapOTrains[line] -= 1
+                        if mapOTrains[line] == 0:
+                            break
+
+                        distanceMoved = 0
+                    distanceMoved += self.connections[(self.lines[line][i+1],self.lines[line][i])].distance
+
+    def generateTrainsFromJson():
         with open(os.path.join(dirname, '../assets/trains.json'), mode="r", encoding="utf-8") as trainsFile:
-            trainsJson = json.load(trainsFile, object_hook=Train.loadFromJSON)
-            for train in trainsJson:
+            trainsArray = json.load(trainsFile, object_hook=Train.loadFromJSON)
+            for train in trainsArray:
                 self.trains[train.getUID()] = train
+                self.trains[train.getUID()]._atStation = self.stations[train._atStation]
+                self.trains[train.getUID()]._movingTo = self.stations[train._movingTo]
 
+    #tickLength is the amount of "seconds" every tick
     def tickTrain(self, tickLength):
-        for train in self.trains:
+        skip = False
+        for key, train in self.trains.items():
             timeLeft = tickLength
 
-            #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using all whole tickLength)
-            if self.trains[train].moving():
-                timeLeft = self.trains[train].keepMoving(timeLeft)
+            #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using the whole tickLength)
+            if train.moving():
+                timeLeft = train.keepMoving(timeLeft,self.cumulativeTick)
 
             #If train is at a station, we need to find where to go next
-            if not self.trains[train].moving():
+            if not train.moving():
                 nextStation = None
                 distance = None
-                cameFrom, atStation = self.trains[train].cameFromAtStation()
+                cameFrom, atStation = train.cameFromAtStation()
 
                 #This case is needed when trains are just initialised
                 if not cameFrom:
-                    _, nextStation = self.trains[train].goingFromTo()
-                    for _,connection in Connections.items():
-                        if atStation == connection.station_start.name or atStation == connection.station_end.name:
-                            if nextStation == connection.station_start.name or nextStation == connection.station_end.name:
+                    _, nextStation = train.goingFromTo()
+
+                    for _,connection in self.connections.items():
+
+                        if atStation == connection.station_start or atStation == connection.station_end:
+                            if nextStation == connection.station_start or nextStation == connection.station_end:
                                 distance = connection.distance
                                 break
                 
                 #Find the next connection and move to next station
                 else:
-                    for _,connection in Connections.items():
-                        if atStation == connection.station_start.name or atStation == connection.station_end.name:
-                            if cameFrom == connection.station_start.name or cameFrom == connection.station_end.name:
+                    for _,connection in self.connections.items():
+                        if atStation == connection.station_start or atStation == connection.station_end:
+                            if cameFrom == connection.station_start or cameFrom == connection.station_end:
                                 continue
-                            if atStation != connection.station_start.name:
-                                nextStation = connection.station_start.name
+                            if atStation != connection.station_start:
+                                if connection.station_start.name not in lines[train._line]:
+                                    #print(f"Station {connection.station_start.name} not part of line {trains[train]._line}")
+                                    continue
+                                nextStation = self.stations[connection.station_start.name]
                                 distance = connection.distance
                                 break
-                            elif atStation != connection.station_end.name:
-                                nextStation = connection.station_end.name
+                            elif atStation != connection.station_end:
+                                if connection.station_end.name not in lines[train._line]:
+                                    #print(f"Station {connection.station_end.name} not part of line {trains[train]._line}")
+                                    continue
+                                nextStation = self.stations[connection.station_end.name]
                                 distance = connection.distance
                                 break
+            
+            #If we cannot find a connection, we must be at the end of the line, and we have to turn around
+            if not nextStation:
+                #print(f"Train: {train} turned around")
+                (nextStation,distance) = train.turnAround()
 
-                if not nextStation or not distance:
-                    print(f"Something wrong with train {train}")
+            if not distance:
+                print(f"Distance of train {key} is fucked")
 
-                self.trains[train].moveTo(nextStation,distance,timeLeft)
+            for _,train2 in self.trains.items():
+                if train2.moving() and train != train2 and train2._movingTo == nextStation and train2._movingFrom == train._atStation:
+                    skip = True
+                    break
+            
+            print(distance)
+            train.moveTo(nextStation,distance,timeLeft, skip)
+            if skip:
+                skip = False
 
     def get_map_position(self, station_a:Station, station_b:Station, moved_distance:float, total_dictance:float) -> (float, float):
         l = moved_distance/total_dictance
@@ -134,6 +291,15 @@ class Simulation:
                 print()
             print('------------------------------------------')
             self.tickTrain(tick_lenght)
+
+    def printAllTrainInformation(self):
+        for _,train in self.trains.items():
+            train.printInformation()
+            print()
+
+    def printAllPassengersInStations(self):
+        for _,station in self.stations.items():
+            print(station.name, station.get_passengers())
 
     def run_simulation_with_animation(self, epoch: int, tick_lenght: int, output_fig=False):
         #init stations
