@@ -299,7 +299,7 @@ class Simulation:
         for _,station in self.stations.items():
             print(station.name, station.get_passengers())
 
-    def run_simulation_with_animation(self, epoch: int, tick_lenght: int, output_fig=False):
+    def run_simulation_with_animation(self, epoch: int, tick_lenght: int, output_fig=True):
         #init stations
         for _, station in self.stations.items():
             self.G.add_node(station.name, pos=(station.x, station.y))
@@ -312,14 +312,14 @@ class Simulation:
         for key, train in self.trains.items():
                 if train._moving:
                     newx, newy = self.get_map_position(
-                            self.stations[train._movingFrom], 
-                            self.stations[train._movingTo], 
+                            self.stations[train._movingFrom.name], 
+                            self.stations[train._movingTo.name], 
                             train._distanceMovedTowardsStation, 
                             train._distanceToStation)
                     p, = self.ax.plot(newx, newy, 'x', color='r')
                     self.pointers[key] = Point(p)
                 else:
-                    starting = self.stations[train._atStation]
+                    starting = self.stations[train._atStation.name]
                     p, = self.ax.plot(starting.x, starting.y, 'x', color='r')
                     self.pointers[key] = Point(p)
 
@@ -327,15 +327,15 @@ class Simulation:
             for key, train in self.trains.items():
                 if train._moving:
                     newx, newy = self.get_map_position(
-                            self.stations[train._movingFrom], 
-                            self.stations[train._movingTo], 
+                            self.stations[train._movingFrom.name], 
+                            self.stations[train._movingTo.name], 
                             train._distanceMovedTowardsStation, 
                             train._distanceToStation)
                     self.pointers[key].x.append(newx)
                     self.pointers[key].y.append(newy)
                 else:
-                    self.pointers[key].x.append(self.stations[train._atStation].x)
-                    self.pointers[key].y.append(self.stations[train._atStation].y)
+                    self.pointers[key].x.append(self.stations[train._atStation.name].x)
+                    self.pointers[key].y.append(self.stations[train._atStation.name].y)
             self.tickTrain(tick_lenght)
 
         ani=FuncAnimation(self.fig, self.update_train_positions, epoch, interval=1, repeat=False)
