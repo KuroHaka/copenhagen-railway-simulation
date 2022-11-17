@@ -36,7 +36,7 @@
 
 
 import os, sys, json
-
+from Algorithms import Algorithms
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
@@ -44,7 +44,7 @@ connectionFilePath = os.path.join(dirname, '../assets/stations.json')
 trainsFilePath = os.path.join(dirname, '../assets/trains.json')
 
 from train_simulation.Moving import Train
-from train_simulation.Railway import Station, Connection, Stations, Connections
+from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
 
 connections = []
 trains = {}
@@ -62,72 +62,17 @@ def initSim():
         for train in trainsArray:
             trains[train.getUID()] = train
 
-
-#tickLength is the amount of "seconds" every tick
-def tickTrain(tickLength):
-    for train in trains:
-        timeLeft = tickLength
-
-        #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using all whole tickLength)
-        if trains[train].moving():
-            timeLeft = trains[train].keepMoving(timeLeft)
-
-        #If train is at a station, we need to find where to go next
-        if not trains[train].moving():
-            nextStation = None
-            distance = None
-            cameFrom, atStation = trains[train].cameFromAtStation()
-
-            #This case is needed when trains are just initialised
-            if not cameFrom:
-                _, nextStation = trains[train].goingFromTo()
-                for _,connection in Connections.items():
-                    if atStation == connection.station_start.name or atStation == connection.station_end.name:
-                        if nextStation == connection.station_start.name or nextStation == connection.station_end.name:
-                            distance = connection.distance
-                            break
-            
-            #Find the next connection and move to next station
-            else:
-                for _,connection in Connections.items():
-                    if atStation == connection.station_start.name or atStation == connection.station_end.name:
-                        if cameFrom == connection.station_start.name or cameFrom == connection.station_end.name:
-                            continue
-                        if atStation != connection.station_start.name:
-                            nextStation = connection.station_start.name
-                            distance = connection.distance
-                            break
-                        elif atStation != connection.station_end.name:
-                            nextStation = connection.station_end.name
-                            distance = connection.distance
-                            break
-
-            if not nextStation or not distance:
-                print(f"Something wrong with train {train}")
-
-            trains[train].moveTo(nextStation,distance,timeLeft)
-            #print(nextStation,distance)
-
-
-#def tickCarrier(speed):
-
-def printAllTrainInformation():
-    for train in trains:
-        trains[train].printInformation()
-        print()
-
 def main():
     #pygame.init()
 
     initSim()
-
-    for i in range(20):
-        trains['0'].printInformation()
-        print()
-        tickTrain(60)
-        print()
-
-
+    algo = Algorithms(Connections, Stations, Lines)
+    path = algo.get_path_trains('Flintholm','Allerød')
+    for p in path:
+        print("--------------------")
+        print('take line '+p["line"])
+        print("--------------------")
+        [print(x) for x in p["path"]]
     return
 
 
