@@ -109,7 +109,7 @@ class Train(Moving):
         return self._maxSpeed
 
     #Functions for when atStation
-    def moveTo(self,station,distance,time,trainOnTracks):
+    def moveTo(self,station,distance,time,trainOnTracks, cumuTick):
 
         if self._shouldStop:
             return 0
@@ -123,6 +123,10 @@ class Train(Moving):
         if trainOnTracks:
             print(f"Train {self._uid} of line {self._line} is not moving to {station.name} because there is a train on the tracks")
             return 0
+
+        if self._atStation.name == 'Charlottenlund' and station.name == 'Hellerup':
+            #print(f"Train with id: {self._uid} moved from Hillerød at time: {(cumuTick-time)/60}")
+            print((cumuTick-time)/60)
         
         self.boardPassengers(self._atStation)
         
