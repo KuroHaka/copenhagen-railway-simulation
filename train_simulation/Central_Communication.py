@@ -1,33 +1,17 @@
 from Simulation import Simulation
 import sys
 
+from Person import Person
+from datetime import datetime, timedelta
+
 def main():
+    
+    Person.create_passengers(["Lyngby","København H"], {"start": datetime.now(), "end": datetime.now()+timedelta(hours=9)}, 100)
     animation = len(sys.argv)>1 and sys.argv[1] == 'animation'
     weight = 1
     tickLength = 60
 
     sim = Simulation()
-    # for line in sim.lines.keys():
-    #     for train in sim.trains.values():
-    #         if train._line == line:
-    #             print(train._line)
-
-    # for i in range(240):
-    #     sim.tickPersonGeneration(weight,tickLength)
-    #     print()
-    #     sim.tickTrain(tickLength)
-    #     print()
-    # totalPassengerArrived = 0
-    # totalTravelTime = 0
-    # travelTimePerLine = 0
-    # for person in allPassengersGenerated:
-    #     if person.isArrived():
-    #         totalPassengerArrived += 1
-    #         totalTravelTime += person.getTravelTime()
-
-    # print(f"A total of {totalPassengerArrived} passengers arrived at thier destination")
-    # print(f"It took them a total of {totalTravelTime} minutes, that is an average of {totalTravelTime/totalPassengerArrived} per passenger")
-    # print(f"Simulation ran for {cumulativeTick/60} minutes")
 
     if (animation):
         sim.run_simulation_with_animation(100, 40)
