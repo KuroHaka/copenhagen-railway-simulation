@@ -129,3 +129,4 @@ class Passenger:
 
     def getTravelTime(self):
         return self._travelTime
+

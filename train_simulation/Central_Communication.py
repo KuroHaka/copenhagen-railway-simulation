@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 def main():
     
     Person.create_passengers(["Lyngby","København H"], {"start": datetime.now(), "end": datetime.now()+timedelta(hours=9)}, 100)
-
     animation = len(sys.argv)>1 and sys.argv[1] == 'animation'
     weight = 1
     tickLength = 60
