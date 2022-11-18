@@ -1,6 +1,12 @@
 # from others.simulation_skeleton import Person
 import calendar
-import json
+import json, os, sys
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(PROJECT_ROOT)
+dirname = os.path.dirname(__file__)
+from train_simulation.Railway import Station
+
 from datetime import datetime, timedelta
 import random
 
@@ -43,10 +49,11 @@ class Person:
 
     @staticmethod
     def create_passengers(critical_stations, time, n_passengers):
-        stations_json = json.load(open('../assets/stations.json', mode="r", encoding="utf-8"))
-        stations = list(stations_json.keys())
-        critical_stations_weight = 2  # 50% of the passengers will be directed to critical stations (perhaps  set it at the constructor?)
-        critical_stations_passengers = n_passengers // critical_stations_weight
+        new_stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
+        stations_json = json.load(new_stations_file)
+        stations = [x["name"] for x in stations_json]
+        critical_stations_weight = 0.25  # 25% of the passengers will be directed to critical stations (perhaps  set it at the constructor?)
+        critical_stations_passengers = int(n_passengers * critical_stations_weight)
         passengers_list = {'passengers': []}
 
         for passenger in range(critical_stations_passengers):  # generate passengers only to creitical stations
@@ -60,7 +67,7 @@ class Person:
             travel_time = str(random_date(time['start'], time['end']))
             passengers_list['passengers'].append(Person(start_station, destination, travel_time))
 
-            json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']])
-            with open('../assets/passengers.json', "w", encoding="utf-8") as outfile:
+            json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']], indent=4,ensure_ascii=False)
+            with open(os.path.join(dirname, '../assets/passengers.json'), mode="w", encoding="utf-8") as outfile:
                 outfile.write(json_string)
         return passengers_list

@@ -1,0 +1,802 @@
+[
+    {
+        "start_station": "København H",
+        "destination": "Hillerød",
+        "status": "ready",
+        "time": "2022-11-18 18:07:59.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Karlslunde",
+        "status": "ready",
+        "time": "2022-11-18 20:16:03.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Birkerød",
+        "status": "ready",
+        "time": "2022-11-18 15:19:02.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Hillerød",
+        "status": "ready",
+        "time": "2022-11-18 14:33:44.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Nordhavn",
+        "status": "ready",
+        "time": "2022-11-18 13:10:29.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Emdrup",
+        "status": "ready",
+        "time": "2022-11-18 12:59:39.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Hareskov",
+        "status": "ready",
+        "time": "2022-11-18 20:27:58.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Ordrup",
+        "status": "ready",
+        "time": "2022-11-18 18:11:34.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Vanløse",
+        "status": "ready",
+        "time": "2022-11-18 16:53:45.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Bispebjerg",
+        "status": "ready",
+        "time": "2022-11-18 12:38:55.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Gentofte",
+        "status": "ready",
+        "time": "2022-11-18 19:10:54.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Emdrup",
+        "status": "ready",
+        "time": "2022-11-18 18:10:06.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Dybbølsbro",
+        "status": "ready",
+        "time": "2022-11-18 20:59:14.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Albertslund",
+        "status": "ready",
+        "time": "2022-11-18 18:48:19.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Peter Bangs Vej",
+        "status": "ready",
+        "time": "2022-11-18 13:34:55.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Veksø",
+        "status": "ready",
+        "time": "2022-11-18 15:58:16.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Ølstykke",
+        "status": "ready",
+        "time": "2022-11-18 16:31:09.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Hellerup",
+        "status": "ready",
+        "time": "2022-11-18 20:00:41.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Hillerød",
+        "status": "ready",
+        "time": "2022-11-18 14:14:20.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Greve",
+        "status": "ready",
+        "time": "2022-11-18 16:42:11.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Allerød",
+        "status": "ready",
+        "time": "2022-11-18 13:49:31.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Stenløse",
+        "status": "ready",
+        "time": "2022-11-18 20:35:50.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Malmparken",
+        "status": "ready",
+        "time": "2022-11-18 14:33:40.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Glostrup",
+        "status": "ready",
+        "time": "2022-11-18 17:08:52.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Vesterport",
+        "status": "ready",
+        "time": "2022-11-18 18:37:10.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Lyngby",
+        "destination": "Vesterport",
+        "status": "ready",
+        "time": "2022-11-18 19:10:52.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Vinge",
+        "destination": "Gentofte",
+        "status": "ready",
+        "time": "2022-11-18 16:11:37.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Rødovre",
+        "destination": "Ølstykke",
+        "status": "ready",
+        "time": "2022-11-18 12:58:57.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Køge Nord",
+        "destination": "Åmarken",
+        "status": "ready",
+        "time": "2022-11-18 17:10:54.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Vangede",
+        "destination": "Ballerup",
+        "status": "ready",
+        "time": "2022-11-18 15:59:26.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Veksø",
+        "destination": "Avedøre",
+        "status": "ready",
+        "time": "2022-11-18 20:33:48.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Flintholm",
+        "destination": "Sjælør",
+        "status": "ready",
+        "time": "2022-11-18 19:00:50.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Bispebjerg",
+        "destination": "Avedøre",
+        "status": "ready",
+        "time": "2022-11-18 13:24:54.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Rødovre",
+        "destination": "Klampenborg",
+        "status": "ready",
+        "time": "2022-11-18 13:23:45.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Vinge",
+        "destination": "Egedal",
+        "status": "ready",
+        "time": "2022-11-18 17:59:13.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Hellerup",
+        "destination": "Køge Nord",
+        "status": "ready",
+        "time": "2022-11-18 15:57:46.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Husum",
+        "destination": "Hareskov",
+        "status": "ready",
+        "time": "2022-11-18 16:16:20.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Stenløse",
+        "destination": "Stengården",
+        "status": "ready",
+        "time": "2022-11-18 14:19:02.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Glostrup",
+        "destination": "Langgade",
+        "status": "ready",
+        "time": "2022-11-18 20:27:20.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Friheden",
+        "destination": "Køge Nord",
+        "status": "ready",
+        "time": "2022-11-18 18:03:56.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Brøndbyøster",
+        "destination": "Hvidovre",
+        "status": "ready",
+        "time": "2022-11-18 19:35:53.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Gentofte",
+        "destination": "Vanløse",
+        "status": "ready",
+        "time": "2022-11-18 18:38:28.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Kildedal",
+        "destination": "Fuglebakken",
+        "status": "ready",
+        "time": "2022-11-18 16:08:19.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Nørreport",
+        "destination": "Ølby",
+        "status": "ready",
+        "time": "2022-11-18 13:55:44.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Flintholm",
+        "destination": "Høje Taastrup",
+        "status": "ready",
+        "time": "2022-11-18 15:55:26.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Birkerød",
+        "destination": "KB Hallen",
+        "status": "ready",
+        "time": "2022-11-18 15:46:03.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Ølstykke",
+        "destination": "Østerport",
+        "status": "ready",
+        "time": "2022-11-18 18:51:43.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Charlottenlund",
+        "destination": "Jærgersborg",
+        "status": "ready",
+        "time": "2022-11-18 15:40:35.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Ålholm",
+        "destination": "Solrød Strand",
+        "status": "ready",
+        "time": "2022-11-18 18:52:43.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Måløv",
+        "destination": "KB Hallen",
+        "status": "ready",
+        "time": "2022-11-18 14:11:54.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Veksø",
+        "destination": "Nordhavn",
+        "status": "ready",
+        "time": "2022-11-18 13:26:21.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "København H",
+        "destination": "Vigerslev Alle",
+        "status": "ready",
+        "time": "2022-11-18 13:17:21.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Ballerup",
+        "destination": "Høje Taastrup",
+        "status": "ready",
+        "time": "2022-11-18 18:18:01.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Brøndbyøster",
+        "destination": "Nørrebro",
+        "status": "ready",
+        "time": "2022-11-18 15:30:38.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Valby",
+        "destination": "Egedal",
+        "status": "ready",
+        "time": "2022-11-18 19:55:10.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Solrød Strand",
+        "destination": "Vanløse",
+        "status": "ready",
+        "time": "2022-11-18 16:27:26.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Svanemøllen",
+        "destination": "Bernstorffsvej",
+        "status": "ready",
+        "time": "2022-11-18 20:15:44.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Danshøj",
+        "destination": "Husum",
+        "status": "ready",
+        "time": "2022-11-18 21:00:34.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Hareskov",
+        "destination": "Sydhavn",
+        "status": "ready",
+        "time": "2022-11-18 15:23:03.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Farum",
+        "destination": "Ballerup",
+        "status": "ready",
+        "time": "2022-11-18 16:16:32.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Solrød Strand",
+        "destination": "Valby",
+        "status": "ready",
+        "time": "2022-11-18 20:56:07.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Grøndal",
+        "destination": "Veksø",
+        "status": "ready",
+        "time": "2022-11-18 12:32:27.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Charlottenlund",
+        "destination": "Sydhavn",
+        "status": "ready",
+        "time": "2022-11-18 20:39:40.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Solrød Strand",
+        "destination": "Vallensbæk",
+        "status": "ready",
+        "time": "2022-11-18 14:48:24.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Vinge",
+        "destination": "Buddinge",
+        "status": "ready",
+        "time": "2022-11-18 18:35:29.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Glostrup",
+        "destination": "Ryparken",
+        "status": "ready",
+        "time": "2022-11-18 16:22:42.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Danshøj",
+        "destination": "Vigerslev Alle",
+        "status": "ready",
+        "time": "2022-11-18 21:01:50.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Sorgenfri",
+        "destination": "Islev",
+        "status": "ready",
+        "time": "2022-11-18 15:34:40.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Allerød",
+        "destination": "Dybbølsbro",
+        "status": "ready",
+        "time": "2022-11-18 14:55:51.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Bernstorffsvej",
+        "destination": "Flintholm",
+        "status": "ready",
+        "time": "2022-11-18 18:07:04.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Stengården",
+        "destination": "Charlottenlund",
+        "status": "ready",
+        "time": "2022-11-18 14:46:54.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Dyssegård",
+        "destination": "Solrød Strand",
+        "status": "ready",
+        "time": "2022-11-18 19:42:40.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Vesterport",
+        "destination": "Kildebakke",
+        "status": "ready",
+        "time": "2022-11-18 15:35:06.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Ishøj",
+        "destination": "Glostrup",
+        "status": "ready",
+        "time": "2022-11-18 17:05:16.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Bagsværd",
+        "destination": "Ryparken",
+        "status": "ready",
+        "time": "2022-11-18 13:47:03.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Ishøj",
+        "destination": "Malmparken",
+        "status": "ready",
+        "time": "2022-11-18 13:27:28.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Skovlunde",
+        "destination": "Solrød Strand",
+        "status": "ready",
+        "time": "2022-11-18 17:49:07.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Peter Bangs Vej",
+        "destination": "Allerød",
+        "status": "ready",
+        "time": "2022-11-18 16:26:37.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Kildebakke",
+        "destination": "Taastrup",
+        "status": "ready",
+        "time": "2022-11-18 12:38:03.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Valby",
+        "destination": "Dyssegård",
+        "status": "ready",
+        "time": "2022-11-18 13:07:02.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Jyllingevej",
+        "destination": "Ølby",
+        "status": "ready",
+        "time": "2022-11-18 19:19:46.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Jersie",
+        "destination": "Vesterport",
+        "status": "ready",
+        "time": "2022-11-18 16:30:48.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Virum",
+        "destination": "Husum",
+        "status": "ready",
+        "time": "2022-11-18 12:10:42.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Solrød Strand",
+        "destination": "Åmarken",
+        "status": "ready",
+        "time": "2022-11-18 15:13:37.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Danshøj",
+        "destination": "Bernstorffsvej",
+        "status": "ready",
+        "time": "2022-11-18 19:45:07.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Brøndby Strand",
+        "destination": "Langgade",
+        "status": "ready",
+        "time": "2022-11-18 17:50:01.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Køge",
+        "destination": "Flintholm",
+        "status": "ready",
+        "time": "2022-11-18 13:49:33.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Dybbølsbro",
+        "destination": "Ny Ellebjerg",
+        "status": "ready",
+        "time": "2022-11-18 14:43:16.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "KB Hallen",
+        "destination": "Vangede",
+        "status": "ready",
+        "time": "2022-11-18 18:21:34.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Rødovre",
+        "destination": "Rødovre",
+        "status": "ready",
+        "time": "2022-11-18 14:07:46.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Åmarken",
+        "destination": "Klampenborg",
+        "status": "ready",
+        "time": "2022-11-18 19:54:34.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Friheden",
+        "destination": "Frederikssund",
+        "status": "ready",
+        "time": "2022-11-18 15:38:00.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Allerød",
+        "destination": "Åmarken",
+        "status": "ready",
+        "time": "2022-11-18 14:15:54.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Frederikssund",
+        "destination": "Husum",
+        "status": "ready",
+        "time": "2022-11-18 13:52:30.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Bispebjerg",
+        "destination": "Ordrup",
+        "status": "ready",
+        "time": "2022-11-18 19:28:06.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Klampenborg",
+        "destination": "Høvelte",
+        "status": "ready",
+        "time": "2022-11-18 15:37:55.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Høvelte",
+        "destination": "Jærgersborg",
+        "status": "ready",
+        "time": "2022-11-18 13:55:32.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Langgade",
+        "destination": "Vanløse",
+        "status": "ready",
+        "time": "2022-11-18 13:25:07.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Bernstorffsvej",
+        "destination": "Høje Taastrup",
+        "status": "ready",
+        "time": "2022-11-18 20:54:17.933574",
+        "end_time": null,
+        "travel_time": null
+    },
+    {
+        "start_station": "Charlottenlund",
+        "destination": "Hareskov",
+        "status": "ready",
+        "time": "2022-11-18 16:43:57.933574",
+        "end_time": null,
+        "travel_time": null
+    }
+]

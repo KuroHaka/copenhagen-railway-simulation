@@ -116,18 +116,12 @@ def printAllTrainInformation():
         trains[train].printInformation()
         print()
 
+from Person import Person
+from datetime import datetime, timedelta
+
 def main():
-    #pygame.init()
-
-    initSim()
-
-    for i in range(20):
-        trains['0'].printInformation()
-        print()
-        tickTrain(60)
-        print()
-
-
+    
+    print(Person.create_passengers(["Lyngby","København H"], {"start": datetime.now(), "end": datetime.now()+timedelta(hours=9)}, 100))
     return
 
 
