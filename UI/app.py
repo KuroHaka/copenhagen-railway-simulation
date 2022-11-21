@@ -2,6 +2,7 @@
 from flask import Flask, request, render_template
 
 import json, os, sys
+from train_simulation.Person import Person
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
@@ -22,9 +23,12 @@ def Run_Simulation():  # process functions
        Number_of_Persons=request.form.get("number_of_persons")
        Number_of_Trains=request.form.get("number_of_trains/carriers")
        Transport_Types=request.form.get("switchers")
-       #Slected_Stations=request.form.get("selected_stations")
+       Slected_Stations=request.form.getlist('mymultiselect')
        Start_Time=request.form.get("start_time")
        End_Time=request.form.get("end_time")
+
+       print(request.form.getlist('mymultiselect'))
+       Person.create_passengers( Slected_Stations,{'start':request.form.get("start_time"),'end': End_Time}, Number_of_Persons)
        return "The input information is, " + "Number_of_Trains: " + Number_of_Trains +"; Number_of_Persons: "+Number_of_Persons+";  Transport_Types : "+Transport_Types+";  Start_Time : "+Start_Time+"; End_Time: "+End_Time+"; Slected_Stations: "
        #+Slected_Stations
        #create json file
