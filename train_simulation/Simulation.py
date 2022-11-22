@@ -381,8 +381,8 @@ class CarrierSimulation:
             station.add_passenger(passenger)
             self.allPassengersGenerated.append(passenger)
 
-    def tickEmptyCarriers:
-        pass
+    # def tickEmptyCarriers:
+    #     pass
 
 
     """     TODO
