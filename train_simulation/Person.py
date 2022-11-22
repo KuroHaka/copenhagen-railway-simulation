@@ -8,6 +8,8 @@ from train_simulation.Railway import Station
 
 from datetime import datetime, timedelta
 import random
+import time
+
 
 
 # from Railway import Station
@@ -59,6 +61,7 @@ class Person:
             start_station = random.choice(critical_stations)
             destination = random.choice(stations)
             travel_time = str(random_date(time['start'], time['end']))
+            #travel_time = time['start']+datetime.timedelta(seconds=random.randint(0,int((end-start).total_seconds())))
             passengers_list['passengers'].append(Person(start_station, destination, travel_time))
         for passenger in range(n_passengers - critical_stations_passengers):  # generate passengers for all stations
             start_station = random.choice(stations)
@@ -130,3 +133,19 @@ class Passenger:
     def getTravelTime(self):
         return self._travelTime
 
+def test():
+
+    #test Person.create_passengers
+    format_data = '%Y-%m-%d %H:%M:%S.%f'
+    start_data = "2022-11-22 08:54:55.099000" 
+    end_data = "2022-11-22 09:54:55.099000"
+    start = datetime.strptime(start_data,format_data)
+    end = datetime.strptime(end_data, format_data)
+    critical_stations=['Allerød', 'Høvelte', 'Birkerød', 'Holte', 'Virum']
+    time=[start,end]
+    n_person=100
+
+    Person.create_passengers(critical_stations,time,n_person)
+
+if __name__=='__main__':
+    test()
