@@ -37,8 +37,7 @@ def Run_Simulation():  # process functions
             pass
        elif Transport_Types=='Carriers':
             pass
-
-       Person.create_passengers( Slected_Stations,{'start':datetime.strptime(str(Start_Time),'%H:%M'),'end': datetime.strptime(str(End_Time),'%H:%M')}, Number_of_Persons)
+       Person.create_passengers( Slected_Stations,{'start': datetime.strptime(str(Start_Time),'%H:%M'), 'end': datetime.strptime(str(End_Time),'%H:%M')}, int(Number_of_Persons))
        return "The input information is, " + "Number_of_Trains: " + Number_of_Trains +"; Number_of_Persons: "+Number_of_Persons+";  Transport_Types : "+Transport_Types+";  Start_Time : "+Start_Time+"; End_Time: "+End_Time+"; Slected_Stations: "
        +request.form.getlist('mymultiselect')
        #create json file
