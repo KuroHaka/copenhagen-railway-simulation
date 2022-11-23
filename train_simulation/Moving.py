@@ -161,11 +161,12 @@ class Train(Moving):
 
     def boardPassengers(self, station):
         #print(f"Boarding passengers for train {self._uid}: amount of passengers that can board: {station.passengers}, available passenger space: {self.availablePassengerSpace()}")
-        
+        passengers_to_remove = []
         if len(station.get_passengers()) < self.availablePassengerSpace():
             for passenger in station.get_passengers():
                 self._passengers.append(passenger)
-                station.sub_passenger(passenger)
+                passengers_to_remove.append(passenger)
+            station.sub_passengers(passengers_to_remove)
 
         else:
             passengerAmount = self.availablePassengerSpace()
@@ -173,7 +174,8 @@ class Train(Moving):
                 if i >= passengerAmount:
                     break
                 self._passengers.append(passenger)
-                station.sub_passenger(passenger)
+                passengers_to_remove.append(passenger)
+            station.sub_passengers(passengers_to_remove)
                 
     
     #Should account for Station space?
