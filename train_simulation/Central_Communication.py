@@ -1,4 +1,4 @@
-from Simulation import Simulation, CarrierSimulation
+from Simulation import Simulation
 import sys
 
 from Person import Person
@@ -13,7 +13,7 @@ def main():
     weight = 1
     tickLength = 60
 
-    sim = CarrierSimulation()
+    sim = Simulation()
 
     # algo = Algorithms(sim.connections,sim.stations,sim.lines)
     # print(algo.get_path('Lyngby','Malmparken').nodes)
