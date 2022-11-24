@@ -21,14 +21,14 @@ def random_date(start, end):
 
 
 class Person:
-    def __init__(self, start_station, destination,
-                 time):  # I think that start station wil be good for us to generate report- can deleted if you are not agree
+    def __init__(self, start_station, destination, time, id):  # I think that start station wil be good for us to generate report- can deleted if you are not agree
         self.start_station = start_station
         self.destination = destination
         self.status = 'ready'
         self.time = time
         self.end_time = None
         self.travel_time = None
+        self.id = id
 
     def start_ride(self):
         self.status = 'on board'
@@ -54,21 +54,22 @@ class Person:
         critical_stations_weight = 0.25  # 25% of the passengers will be directed to critical stations (perhaps  set it at the constructor?)
         critical_stations_passengers = int(n_passengers * critical_stations_weight)
         passengers_list = {'passengers': []}
-
+        i = 0
         for passenger in range(critical_stations_passengers):  # generate passengers only to creitical stations
             start_station = random.choice(critical_stations)
             destination = random.choice(stations)
             travel_time = str(random_date(time['start'], time['end']))
-            passengers_list['passengers'].append(Person(start_station, destination, travel_time))
+            passengers_list['passengers'].append(Person(start_station, destination, travel_time, i))
+            i = i + 1
         for passenger in range(n_passengers - critical_stations_passengers):  # generate passengers for all stations
             start_station = random.choice(stations)
             destination = random.choice(stations)
             travel_time = str(random_date(time['start'], time['end']))
-            passengers_list['passengers'].append(Person(start_station, destination, travel_time))
-
-            json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']], indent=4,ensure_ascii=False)
-            with open(os.path.join(dirname, '../assets/passengers.json'), mode="w", encoding="utf-8") as outfile:
-                outfile.write(json_string)
+            passengers_list['passengers'].append(Person(start_station, destination, travel_time, i))
+            i = i + 1
+        json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']], indent=4, ensure_ascii=False)
+        with open(os.path.join(dirname, '../assets/passengers.json'), mode="w", encoding="utf-8") as outfile:
+            outfile.write(json_string)
         return passengers_list
 
 class Passenger:
