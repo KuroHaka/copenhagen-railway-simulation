@@ -11,23 +11,7 @@ import json
 
 """
 
-
-class Moving(Entity):
-
-    @abstractproperty
-    def image(self):
-        pass
-
-    def position_x(self):
-        pass
-
-    def position_y(self):
-        pass
-
-    def display_element(self):
-        self.image
-
-class Train(Moving):
+class Train():
 
     #Global static variables
     image = ""
@@ -313,7 +297,7 @@ class Train(Moving):
         return self._uid
 
 
-class Carrier(Moving):
+class Carrier():
     #Global static variables
     image = ""
     

@@ -402,8 +402,8 @@ class CarrierSimulation:
 
     """     TODO
         #
-        #generate carriers
-        # 
+        # generate carriers
+        # load balancing
         #
     
         In train:

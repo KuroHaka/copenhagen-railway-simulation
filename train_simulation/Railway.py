@@ -88,10 +88,10 @@ class Connection():
     def from_json(self, json_dct):
         Connection(json_dct['station A'],
                    json_dct['station B'],
+                   json_dct['distance']),
+        Connection(json_dct['station B'],
+                   json_dct['station A'],
                    json_dct['distance'])
-        # Connection(json_dct['station B'],
-        #            json_dct['station A'],
-        #            json_dct['distance'])
 
         
         
