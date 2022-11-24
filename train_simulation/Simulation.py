@@ -43,9 +43,10 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
 
-from train_simulation.Moving import Train
+from train_simulation.Rail_Transport import Train, Carrier
 from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
-from Person import Passenger
+from train_simulation.Person import Passenger
+from train_simulation.Algorithms import Algorithms
 
 class Point:
     def __init__(self,pointer):
@@ -76,6 +77,7 @@ class Simulation:
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
         self.generateTrains(52)
+        self.algo = Algorithms(self.connections,self.stations,self.lines)
 
     def tickPersonGeneration(self, weight, tickLength):
         self.cumulativeTick += tickLength
@@ -141,8 +143,6 @@ class Simulation:
         rangeBetweenTrains['b'] = bDistance // (bTrains/2 + 1)
         rangeBetweenTrains['c'] = cDistance // (cTrains/2 + 1)
         rangeBetweenTrains['f'] = fDistance // (fTrains/2 + 1)
-
-        print(rangeBetweenTrains)
 
 
         for line in self.lines.keys():
@@ -356,7 +356,7 @@ class Simulation:
 
 
 class CarrierSimulation:
-    trains = {}
+    carriers = {}
     pointers = {}
     fig, ax = plt.subplots()
 
@@ -367,29 +367,45 @@ class CarrierSimulation:
         new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
         json.load(new_connections_file, object_hook=Connection.from_json)
 
+        with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
+            self.lines = json.load(linesFile)
+
         self.stations = Stations
         self.connections = Connections
         self.G = nx.Graph()
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
-        self.generateTrains(52)
+        self.generateCarriers(5000)
+        self.algo = Algorithms(self.connections,self.stations,self.lines)
 
-    def tickPersonGeneration(self, weight, tickLength):
-        self.cumulativeTick += tickLength
-        for _, station in self.stations.items():
-            passenger = Passenger(station,'København H',self.cumulativeTick)
-            station.add_passenger(passenger)
-            self.allPassengersGenerated.append(passenger)
+    def tickPersonGeneration(self, tickLength):
+        # self.cumulativeTick += tickLength
+        # for _, station in self.stations.items():
+        #     passenger = Passenger(station,'København H',self.cumulativeTick)
+        #     station.add_passenger(passenger)
+        #     self.allPassengersGenerated.append(passenger)
+        self.stations['Lyngby'].add_passenger(Passenger('Lyngby','Malmparken',self.cumulativeTick))
+        self.stations['Køge'].add_passenger(Passenger('Køge','Malmparken',self.cumulativeTick))
+        self.stations['Malmparken'].add_passenger(Passenger('Malmparken','København H',self.cumulativeTick))
+        self.stations['Malmparken'].add_passenger(Passenger('Malmparken','Albertslund',self.cumulativeTick))
+
+
+    def generateCarriers(self, numberOfCarriers):
+        # for i, key in enumerate(self.stations):
+        #     self.carriers[i] = Carrier(i,key)
+        self.carriers['0'] = Carrier('0','Lyngby')
+        self.carriers['1'] = Carrier('1','Køge')
 
     # def tickEmptyCarriers:
     #     pass
 
 
     """     TODO
-        #boardPassenger, (just give carrier the station)
-        #findPath, in Carrier class.
         #
-
+        #generate carriers
+        # 
+        #
+    
         In train:
         #Change person so they can get off at a specific station, to change line (make two person classes, one for trains, one for carrier?, probably not)
         #Change boardPassengers to only take passengers going in this direction
@@ -397,27 +413,24 @@ class CarrierSimulation:
     """
     #tickLength is the amount of "seconds" every tick
     def tickCarriers(self, tickLength):
-        for key, train in self.trains.items():
+        for key, carrier in self.carriers.items():
             timeLeft = tickLength
 
-            #If the train is moving, it needs to comtinue doing so (this can make the train arrive at a station, without using the whole tickLength)
-            if train.moving():
-                timeLeft = train.keepMoving(timeLeft,self.cumulativeTick, Connections)
+            #If the carrier is moving, it needs to comtinue doing so (this can make the carrier arrive at a station, without using the whole tickLength)
+            if carrier.moving():
+                timeLeft = carrier.keepMoving(timeLeft,self.cumulativeTick, self.connections)
 
-            #If train is at a station, we need to find where to go next
-            if not train.moving():
-                station = self.stations[train._atStation]
+            #If carrier is at a station, we need to find where to go next
+            if not carrier.moving():
+                #print(f"Carrier {carrier._uid} not moving")
+                destination = None
+
+                station = self.stations[carrier._atStation]
                 if station.get_passengers():
-                    destination = station.get_passengers()[0].getDestination()
-
-                    #Load passengers going to the same station
-                    for passenger in station.get_passengers():
-                        if station.get_passengers()[0].getDestination() == destination:
-                            train.boardPassenger(passenger)
-                            if not train.availablePassengers():
-                                break
-
-                train.moveTo(destination,timeLeft)
+                    destination = station.get_passengers()[0].getdestination()
+                    carrier.boardPassengers(station,destination)
+                    carrier.moveTo(destination,timeLeft,self.algo,self.connections)
+                    
 
 
 
@@ -425,21 +438,22 @@ class CarrierSimulation:
         l = moved_distance/total_dictance
         return l*station_b.x+(1-l)*station_a.x, l*station_b.y+(1-l)*station_a.y
 
-    def update_train_positions(self, n):
+    def update_carrier_positions(self, n):
         for _, plotter in self.pointers.items():
             plotter.update_position(n)
 
     def run_simulation(self, epoch: int, tick_lenght: int):
         for i in range(epoch):
-            for _, train in self.trains.items():
-                train.printInformation()
+            for _, carrier in self.carriers.items():
+                carrier.printInformation()
                 print()
             print('------------------------------------------')
-            self.tickTrain(tick_lenght)
+            self.tickPersonGeneration(tick_lenght)
+            self.tickCarriers(tick_lenght)
 
-    def printAllTrainInformation(self):
-        for _,train in self.trains.items():
-            train.printInformation()
+    def printAllCarrierInformation(self):
+        for _,carrier in self.carriers.items():
+            carrier.printInformation()
             print()
 
     def printAllPassengersInStations(self):
@@ -456,36 +470,37 @@ class CarrierSimulation:
             self.G.add_edge(connection.station_start.name, connection.station_end.name)
 
         #init pointers
-        for key, train in self.trains.items():
-                if train._moving:
+        for key, carrier in self.carriers.items():
+                if carrier._moving:
                     newx, newy = self.get_map_position(
-                            self.stations[train._movingFrom.name], 
-                            self.stations[train._movingTo.name], 
-                            train._distanceMovedTowardsStation, 
-                            train._distanceToStation)
+                            self.stations[carrier._movingFrom], 
+                            self.stations[carrier._movingTo], 
+                            carrier._distanceMovedTowardsStation, 
+                            carrier._distanceToStation)
                     p, = self.ax.plot(newx, newy, 'x', color='r')
                     self.pointers[key] = Point(p)
                 else:
-                    starting = self.stations[train._atStation.name]
+                    starting = self.stations[carrier._atStation]
                     p, = self.ax.plot(starting.x, starting.y, 'x', color='r')
                     self.pointers[key] = Point(p)
 
         for i in range(epoch):
-            for key, train in self.trains.items():
-                if train._moving:
+            for key, carrier in self.carriers.items():
+                if carrier._moving:
                     newx, newy = self.get_map_position(
-                            self.stations[train._movingFrom.name], 
-                            self.stations[train._movingTo.name], 
-                            train._distanceMovedTowardsStation, 
-                            train._distanceToStation)
+                            self.stations[carrier._movingFrom], 
+                            self.stations[carrier._movingTo], 
+                            carrier._distanceMovedTowardsStation, 
+                            carrier._distanceToStation)
                     self.pointers[key].x.append(newx)
                     self.pointers[key].y.append(newy)
                 else:
-                    self.pointers[key].x.append(self.stations[train._atStation.name].x)
-                    self.pointers[key].y.append(self.stations[train._atStation.name].y)
-            self.tickTrain(tick_lenght)
+                    self.pointers[key].x.append(self.stations[carrier._atStation].x)
+                    self.pointers[key].y.append(self.stations[carrier._atStation].y)
+            self.tickPersonGeneration(tick_lenght)
+            self.tickCarriers(tick_lenght)
 
-        ani=FuncAnimation(self.fig, self.update_train_positions, epoch, interval=1, repeat=False)
+        ani=FuncAnimation(self.fig, self.update_carrier_positions, epoch, interval=1, repeat=False)
         
         nx.draw(self.G, pos, node_size=4, node_shape='.',  edge_color='gray' ,node_color='black')
         img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
