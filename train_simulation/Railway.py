@@ -13,6 +13,7 @@ class Station():
         self.__idle_time = idle_time
         self.__lines = set(lines)
         self.__passengers = []
+        self.__numberCarriers = 0
         self.__is_last_station = is_last_station
         Stations[name] = self
         for l in lines:

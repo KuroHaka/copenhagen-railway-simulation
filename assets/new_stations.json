@@ -22,17 +22,6 @@
         ]
     },
     {
-        "name": "Høvelte",
-        "x": 1277,
-        "y": 645,
-        "idle_time": 30,
-        "passengers": 0,
-        "is_last_station": false,
-        "lines": [
-            "a"
-        ]
-    },
-    {
         "name": "Birkerød",
         "x": 1400,
         "y": 721,

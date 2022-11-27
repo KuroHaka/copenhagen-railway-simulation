@@ -10,6 +10,7 @@ class Algorithms:
         self.stationGraph = Graph()
         for _,connection  in connections.items():
             self.stationGraph.add_edge(connection.station_start.name,connection.station_end.name , (connection.distance,connection.station_end.name))
+            self.stationGraph.add_edge(connection.station_end.name,connection.station_start.name , (connection.distance,connection.station_start.name))
 
     def cost_func(self, u, v, edge, prev_edge):
         length, name = edge

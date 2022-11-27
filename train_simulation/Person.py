@@ -29,6 +29,7 @@ class Person:
         self.end_time = None
         self.travel_time = None
         self.id = id
+        self.path = []
 
     def start_ride(self):
         self.status = 'on board'
