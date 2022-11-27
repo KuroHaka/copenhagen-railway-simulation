@@ -43,9 +43,10 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
 
-from train_simulation.Moving import Train
+from train_simulation.Rail_Transport import Train, Carrier
 from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
 from train_simulation.Person import Passenger
+from train_simulation.Algorithms import Algorithms
 
 class Point:
     def __init__(self,pointer):
@@ -78,6 +79,7 @@ class Simulation:
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
         self.generateTrains(52)
+        self.algo = Algorithms(self.connections,self.stations,self.lines)
 
     def tickPersonGeneration(self, weight, tickLength):
         self.cumulativeTick += tickLength
@@ -143,8 +145,6 @@ class Simulation:
         rangeBetweenTrains['b'] = bDistance // (bTrains/2 + 1)
         rangeBetweenTrains['c'] = cDistance // (cTrains/2 + 1)
         rangeBetweenTrains['f'] = fDistance // (fTrains/2 + 1)
-
-        print(rangeBetweenTrains)
 
 
         for line in self.lines.keys():
@@ -273,7 +273,9 @@ class Simulation:
                         skip = True
                         break
                 
-                train.moveTo(nextStation,distance,timeLeft, skip)
+                timeLeft = train.moveTo(nextStation,distance,timeLeft, skip)
+                if timeLeft > 0:
+                    train.keepMoving(timeLeft,self.cumulativeTick)
                 if skip:
                     skip = False
 
@@ -351,5 +353,3 @@ class Simulation:
         else:
             self.fig.tight_layout()
             self.plt.show()
-                
-                

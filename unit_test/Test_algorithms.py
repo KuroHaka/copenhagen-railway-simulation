@@ -8,6 +8,7 @@ from train_simulation.Algorithms import Algorithms
 from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
 
 
+
 class Test_algorithms(unittest.TestCase):
     def test_get_path(self):
         stations_file = open(
@@ -147,4 +148,6 @@ class Test_algorithms(unittest.TestCase):
         )
 
 
-unittest.main()
+
+if __name__ == "__main__":
+    unittest.main()
