@@ -45,7 +45,7 @@ dirname = os.path.dirname(__file__)
 
 from train_simulation.Rail_Transport import Train, Carrier
 from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
-from train_simulation.train_simulation.Person import Passenger
+from train_simulation.Person import Passenger
 from train_simulation.Algorithms import Algorithms
 
 class Point:
