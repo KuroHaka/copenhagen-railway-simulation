@@ -3,7 +3,7 @@ import os, sys, json
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
-from train_simulation.Moving import Moving, Train, Carrier
+from train_simulation.Rail_Transport import Train, Carrier
 from train_simulation.Simulation import Simulation
 from train_simulation.Passenger import Passenger
 from datetime import datetime
