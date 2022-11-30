@@ -30,6 +30,13 @@
         
     #TODO
         Turn the train at the end of the line
+
+
+    #Information needed to be given to the Central_Communication file:
+        - Carriers or Trains (and amount)
+        - Load people from json or random
+        - Critical stations
+
 """
 
 import os, sys, json
@@ -57,10 +64,7 @@ class Point:
         self.pointer.set_data(np.array([self.x[n],self.y[n]]))
 
 class Simulation:
-    trains = {}
-    pointers = {}
-
-    def __init__(self):
+    def __init__(self, amountOfTrains, staticPersons, critical_stations):
         self.plt = plt
         self.fig, self.ax = self.plt.subplots()
         self.animator = mpanimation
@@ -73,20 +77,38 @@ class Simulation:
         with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
             self.lines = json.load(linesFile)
 
+        self.trains = {}
+        self.pointers = {}
+
+        self.loadPassengers = staticPersons
+        self.allPassengersGenerated = []
+
+        if self.loadPassengers:
+            with open(os.path.join(dirname, '../assets/person.json'), mode="r", encoding="utf-8") as personFile:
+                self.allPassengersGenerated = json.load(personFile)
+
+        self.critical_stations = critical_stations
         self.stations = Stations
         self.connections = Connections
         self.G = nx.Graph()
         self.cumulativeTick = 0
-        self.allPassengersGenerated = []
-        self.generateTrains(52)
+        self.generateTrains(amountOfTrains)
         self.algo = Algorithms(self.connections,self.stations,self.lines)
 
+
     def tickPersonGeneration(self, weight, tickLength):
-        self.cumulativeTick += tickLength
-        for _, station in self.stations.items():
-            passenger = Passenger(station,'København H',self.cumulativeTick)
-            station.add_passenger(passenger)
-            self.allPassengersGenerated.append(passenger)
+        if self.loadPassengers:
+            for passenger in self.allPassengersGenerated:
+                if passenger.time <= self.cumulativeTick:
+                    passenger.setPath(self.algo.get_path_trains(passenger.start_station,passenger.destination))
+                    self.stations[passenger.start_station].add_passenger(passenger)
+
+        else:
+            self.cumulativeTick += tickLength
+            for _, station in self.stations.items():
+                passenger = Passenger(station,'København H',self.cumulativeTick)
+                station.add_passenger(passenger)
+                self.allPassengersGenerated.append(passenger)
 
     def generateTrains(self, numberOfTrains):
         trainID = 0

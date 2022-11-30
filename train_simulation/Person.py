@@ -21,7 +21,7 @@ def random_date(start, end):
 
 
 class Person:
-    def __init__(self, start_station, destination, time, id):  # I think that start station wil be good for us to generate report- can deleted if you are not agree
+    def __init__(self, start_station, destination, time, id, path):  # I think that start station wil be good for us to generate report- can deleted if you are not agree
         self.start_station = start_station
         self.destination = destination
         self.status = 'ready'
@@ -30,6 +30,9 @@ class Person:
         self.travel_time = None
         self.id = id
         self.path = []
+
+    def setPath(self,path):
+        self.path = path
 
     def start_ride(self):
         self.status = 'on board'
@@ -73,24 +76,6 @@ class Person:
             outfile.write(json_string)
         return passengers_list
 
-class Passenger:
-    _destination = 'destination not set'
-    _currentlocation = 'currentlocation not set'
-    _departureTime = 0
-    _id = ''
-
-    #is travel time needed?
-    _travelTimeEnd = 0
-    _travelTime = 0
-    _isArrived = bool
-
-    def __init__(self,currentlocation,destination,departuetime):
-        self._currentlocation = currentlocation
-        self._destination = destination
-        self._departureTime = departuetime
-        self._id = uuid.uuid4()
-        self._isArrived = False
-
     def getdestination(self):
         return self._destination
 
@@ -102,7 +87,6 @@ class Passenger:
     
     def getid(self):
         return self._id
-
 
     def setdestination(self, newdestination):
          self._destination = newdestination
@@ -131,4 +115,3 @@ class Passenger:
 
     def getTravelTime(self):
         return self._travelTime
-

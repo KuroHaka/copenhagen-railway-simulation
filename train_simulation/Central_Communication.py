@@ -15,14 +15,14 @@ def main():
 
     sim = Simulation()
 
-    # algo = Algorithms(sim.connections,sim.stations,sim.lines)
-    # print(algo.get_path('Lyngby','Malmparken').nodes)
+    algo = Algorithms(sim.connections,sim.stations,sim.lines)
+    print(algo.get_path_trains('Lyngby','Malmparken'))
 
-    if (animation):
-        sim.run_simulation_with_animation(100, 40)
-    else:
-        sim.run_simulation(100, 30)
-    return
+    # if (animation):
+    #     sim.run_simulation_with_animation(100, 40)
+    # else:
+    #     sim.run_simulation(100, 30)
+    # return
 
 if __name__ == "__main__":
     main()
