@@ -390,6 +390,7 @@ class Carrier():
         self._moving = True
 
         self._accelerateTo = self.calculateAccelerateTo(self._distanceToStation)
+        station.subcarrier(self)
 
         return self.accelerate(time)
 
@@ -442,6 +443,7 @@ class Carrier():
         #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")
 
         self.disembarkPassengers(station,totalTime)
+        station.addcarrier(self)
 
         return time
 

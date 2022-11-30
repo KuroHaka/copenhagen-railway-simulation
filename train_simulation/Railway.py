@@ -15,6 +15,7 @@ class Station():
         self.__passengers = []
         self.__numberCarriers = 0
         self.__is_last_station = is_last_station
+        self.carriers = []
         Stations[name] = self
         for l in lines:
             Lines[l].append(name)
@@ -51,6 +52,14 @@ class Station():
 
     def add_passenger(self,passenger):
         self.__passengers += [passenger]
+
+    def add_carrier(self, carrier):
+        self.carriers.append(carrier)
+        self.__numberCarriers += 1
+
+    def sub_carrier(self, carrier):
+        self.carriers.remove(carrier)
+        self.__numberCarriers -= 1
 
     def sub_passenger(self,passenger):
         self.__passengers.remove(passenger)

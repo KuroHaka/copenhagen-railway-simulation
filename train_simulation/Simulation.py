@@ -378,6 +378,32 @@ class CarrierSimulation:
         self.generateCarriers(5000)
         self.algo = Algorithms(self.connections,self.stations,self.lines)
 
+    def loadbalance(self, stations, criticalStations, connections, time):
+        # Naive method obviuosly
+        min_carriers_on_crit = len(self.carriers.keys())//100 * 25 # 25% of carriers
+        min_carriers = len(self.carriers.keys())//len(stations)
+        if min_carriers < 1:
+            min_carriers = 1 # Need at least one carrier on each station
+
+        crit_carrier_sum: int
+        for station in criticalStations:
+            crit_carrier_sum += len(station.carriers)
+
+
+        for _, station in stations.items():
+            if len(station.carriers) < min_carriers or (len(station.carriers) < min_carriers_on_crit and station in criticalStations):
+                neighbours = list(filter(lambda x: station.name in x, connections))
+                for neighbour in neighbours:
+                    if len(stations[neighbour].carriers) > min_carriers and not (stations[neighbour] in criticalStations.values() and stations[neighbour].carriers < min_carriers_on_crit):
+                        for carrier in station.carriers:
+                            if len(station.carriers) < min_carriers:
+                                break
+                            if carrier._moving:
+                                continue
+                            else:
+                                carrier.moveTo(station.name, time, self.algo, connections)
+
+
     def tickPersonGeneration(self, tickLength):
         # self.cumulativeTick += tickLength
         # for _, station in self.stations.items():
@@ -393,8 +419,16 @@ class CarrierSimulation:
     def generateCarriers(self, numberOfCarriers):
         # for i, key in enumerate(self.stations):
         #     self.carriers[i] = Carrier(i,key)
-        self.carriers['0'] = Carrier('0','Lyngby')
-        self.carriers['1'] = Carrier('1','Køge')
+        self.carriers['0'] = Carrier('0','Greve')
+        # self.carriers['1'] = Carrier('1','Hundige')
+        self.carriers['2'] = Carrier('2','Karlslunde')
+        self.carriers['3'] = Carrier('3','Solrød Strand')
+        self.carriers['4'] = Carrier('4','Ishøj')
+        self.carriers['5'] = Carrier('5','Ishøj')
+        self.carriers['6'] = Carrier('6','Ishøj')
+        self.carriers['7'] = Carrier('7','Ishøj')
+        self.carriers['8'] = Carrier('8','Ishøj')
+
 
     # def tickEmptyCarriers:
     #     pass
