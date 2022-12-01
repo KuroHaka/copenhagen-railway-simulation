@@ -407,37 +407,36 @@ class CarrierSimulation:
 
         self.critical_stations = {station: self.stations[station] for station in critical_stations}
 
-def loadbalance(self, stations, criticalStations, connections, time):
-        # Naive method obviuosly
-        min_carriers_on_crit = len(self.carriers.keys())//100 * 25 # 25% of carriers
-        min_carriers = len(self.carriers.keys())//len(stations)
-        if min_carriers < 1:
-            min_carriers = 1 # Need at least one carrier on each station
+    def loadbalance(self, stations, criticalStations, connections, time):
+            # Naive method obviuosly
+            min_carriers_on_crit = len(self.carriers.keys())//100 * 25 # 25% of carriers
+            min_carriers = len(self.carriers.keys())//len(stations)
+            if min_carriers < 1:
+                min_carriers = 1 # Need at least one carrier on each station
 
-        crit_carrier_sum: int
-        for station in criticalStations:
-            crit_carrier_sum += len(station.carriers)
+            crit_carrier_sum: int
+            for station in criticalStations:
+                crit_carrier_sum += len(station.carriers)
 
 
-        for _, station in stations.items():
-            if len(station.carriers) < min_carriers or (len(station.carriers) < min_carriers_on_crit and station in criticalStations):
-                neighbours = list(filter(lambda x: station.name in x, connections))
-                for neighbour in neighbours:
-                    if len(stations[neighbour].carriers) > min_carriers and not (stations[neighbour] in criticalStations.values() and stations[neighbour].carriers < min_carriers_on_crit):
-                        for carrier in station.carriers:
-                            if len(station.carriers) < min_carriers:
-                                break
-                            if carrier._moving:
-                                continue
-                            else:
-                                carrier.moveTo(station.name, time, self.algo, connections)
+            for _, station in stations.items():
+                if len(station.carriers) < min_carriers or (len(station.carriers) < min_carriers_on_crit and station in criticalStations):
+                    neighbours = list(filter(lambda x: station.name in x, connections))
+                    for neighbour in neighbours:
+                        if len(stations[neighbour].carriers) > min_carriers and not (stations[neighbour] in criticalStations.values() and stations[neighbour].carriers < min_carriers_on_crit):
+                            for carrier in station.carriers:
+                                if len(station.carriers) < min_carriers:
+                                    break
+                                if carrier._moving:
+                                    continue
+                                else:
+                                    carrier.moveTo(station.name, time, self.algo, connections)
 
 
     def loadbalanceGenerator(self, start_time):
-
         for id in range(200):
-            carrier = Carrier(id,self.stations['København H'], start_time)
-            self.stations['København H'].add_carrier(carrier)
+            carrier = Carrier(id,self.stations['Køge'], start_time)
+            self.stations['Køge'].add_carrier(carrier)
             self.carriers[str(id)] = carrier
 
 
