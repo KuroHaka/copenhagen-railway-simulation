@@ -36,10 +36,17 @@
         - Carriers or Trains (and amount)
         - Load people from json or random
         - Critical stations
+        - Start datetime
+
+
+    Stuff to move to carriers
+        - peopleGeneration
+        - loadjson passengers
+        - 
 
 """
 
-import os, sys, json
+import os, sys, json, random, datetime
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -52,7 +59,7 @@ dirname = os.path.dirname(__file__)
 
 from train_simulation.Rail_Transport import Train, Carrier
 from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
-from train_simulation.Person import Passenger
+from train_simulation.Person import Person
 from train_simulation.Algorithms import Algorithms
 
 class Point:
@@ -64,53 +71,39 @@ class Point:
         self.pointer.set_data(np.array([self.x[n],self.y[n]]))
 
 class Simulation:
-    def __init__(self, amountOfTrains, staticPersons, critical_stations):
+    def __init__(self, amountOfTrains, critical_stations, start_datetime):
         self.plt = plt
         self.fig, self.ax = self.plt.subplots()
         self.animator = mpanimation
-        stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
-        json.load(stations_file, object_hook=Station.from_json)
 
-        new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
-        json.load(new_connections_file, object_hook=Connection.from_json)
+        with open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8") as stations_file:
+            json.load(stations_file, object_hook=Station.from_json)
+
+        with open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8") as new_connections_file:
+            json.load(new_connections_file, object_hook=Connection.from_json)
 
         with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
             self.lines = json.load(linesFile)
 
+        with open(os.path.join(dirname, '../assets/passengers.json'), mode="r", encoding="utf-8") as personFile:
+            self.passengersToGenerateJSON = json.load(personFile)
+
+        self.passengersToGenerate = []
+        for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)                           #2018-10-22 02:39:42
+            self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
+
         self.trains = {}
         self.pointers = {}
-
-        self.loadPassengers = staticPersons
-        self.allPassengersGenerated = []
-
-        if self.loadPassengers:
-            with open(os.path.join(dirname, '../assets/person.json'), mode="r", encoding="utf-8") as personFile:
-                self.allPassengersGenerated = json.load(personFile)
-
-        self.critical_stations = critical_stations
         self.stations = Stations
         self.connections = Connections
+        self.allPassengersGenerated = []
         self.G = nx.Graph()
         self.cumulativeTick = 0
-        self.generateTrains(amountOfTrains)
+        self.generateTrains(amountOfTrains,start_datetime)
         self.algo = Algorithms(self.connections,self.stations,self.lines)
+        self.start_time = start_datetime
 
-
-    def tickPersonGeneration(self, weight, tickLength):
-        if self.loadPassengers:
-            for passenger in self.allPassengersGenerated:
-                if passenger.time <= self.cumulativeTick:
-                    passenger.setPath(self.algo.get_path_trains(passenger.start_station,passenger.destination))
-                    self.stations[passenger.start_station].add_passenger(passenger)
-
-        else:
-            self.cumulativeTick += tickLength
-            for _, station in self.stations.items():
-                passenger = Passenger(station,'København H',self.cumulativeTick)
-                station.add_passenger(passenger)
-                self.allPassengersGenerated.append(passenger)
-
-    def generateTrains(self, numberOfTrains):
+    def generateTrains(self, numberOfTrains, start_time):
         trainID = 0
 
         aDistance = 74310
@@ -170,14 +163,14 @@ class Simulation:
 
 
         for line in self.lines.keys():
-            self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][0]], self.stations[self.lines[line][1]], line)
+            self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][0]], self.stations[self.lines[line][1]], line, start_time)
             trainID += 1
             
             mapOTrains[line] -= 1
             if mapOTrains[line] == 0:
                 continue
 
-            self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][-1]], self.stations[self.lines[line][-2]], line)
+            self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][-1]], self.stations[self.lines[line][-2]], line, start_time)
             trainID += 1
 
             mapOTrains[line] -= 1
@@ -189,7 +182,7 @@ class Simulation:
             for i in range(len(self.lines[line])-1):
                 if (self.lines[line][i],self.lines[line][i+1]) in self.connections:
                     if distanceMoved > rangeBetweenTrains[line]:
-                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i+1]], line)
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i+1]], line, start_time)
                         trainID += 1
                         
                         mapOTrains[line] -= 1
@@ -197,7 +190,7 @@ class Simulation:
                             break
 
 
-                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i-1]], line)
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i-1]], line, start_time)
                         trainID += 1
 
                         mapOTrains[line] -= 1
@@ -210,14 +203,14 @@ class Simulation:
 
                 elif (self.lines[line][i+1],self.lines[line][i]) in self.connections:
                     if distanceMoved > rangeBetweenTrains[line]:
-                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i+1]], line)
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i+1]], line, start_time)
                         trainID += 1
 
                         mapOTrains[line] -= 1
                         if mapOTrains[line] == 0:
                             break
 
-                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i-1]], line)
+                        self.trains[str(trainID)] = Train(str(trainID), self.stations[self.lines[line][i]], self.stations[self.lines[line][i-1]], line, start_time)
                         trainID += 1
 
                         mapOTrains[line] -= 1
@@ -234,6 +227,21 @@ class Simulation:
                 self.trains[train.getUID()] = train
                 self.trains[train.getUID()]._atStation = self.stations[train._atStation]
                 self.trains[train.getUID()]._movingTo = self.stations[train._movingTo]
+
+
+    def tickPersonGeneration(self, tickLength):
+        self.cumulativeTick += tickLength
+        start_time = self.start_time + datetime.timedelta(seconds=self.cumulativeTick)
+        passengersToRemove = []
+        for passenger in self.passengersToGenerate:
+            if passenger.start_time <= start_time:
+                path = self.algo.get_path_trains(passenger.start_station,passenger.destination)          
+                passenger.setPath(path)
+                self.stations[passenger.start_station].add_passenger(passenger)
+                self.allPassengersGenerated.append(passenger)
+                passengersToRemove.append(passenger)
+        for passenger in passengersToRemove:
+            self.passengersToGenerate.remove(passenger)
 
     #tickLength is the amount of "seconds" every tick
     def tickTrain(self, tickLength):
@@ -311,10 +319,11 @@ class Simulation:
 
     def run_simulation(self, epoch: int, tick_lenght: int):
         for i in range(epoch):
-            for _, train in self.trains.items():
-                train.printInformation()
-                print()
+            # for _, train in self.trains.items():
+            #     train.printInformation()
+            #     print()
             print('------------------------------------------')
+            self.tickPersonGeneration(tick_lenght)
             self.tickTrain(tick_lenght)
 
     def printAllTrainInformation(self):
