@@ -26,11 +26,13 @@ def main():
         sim.run_simulation(2000, 30)
     
 
-    # numCar = 0
-    # print(len(carriers))
-    # for station in sim.stations.values():
-    #     numCar += len(station.carriers)
-    # print()
+    numCar = 0
+    print(len(sim.carriers))
+    for station in sim.stations.values():
+        numCar += len(station.carriers)
+    print(numCar)
+
+    print(len(sim.stations['Køge'].carriers))
 
     # totalTravelTime = timedelta(0)
     # for i in sim.allPassengersGenerated:
