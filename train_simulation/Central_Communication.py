@@ -1,7 +1,7 @@
 from Simulation import Simulation, CarrierSimulation
 import sys
 
-from Person import Person
+from Person import Person, create_passengers
 from datetime import datetime, timedelta
 
 from Algorithms import Algorithms
@@ -13,7 +13,9 @@ def main():
     weight = 1
     tickLength = 60
 
-    sim = CarrierSimulation()
+
+    #create_passengers(['København H', 'Svanemøllen'], {"start": datetime(2018, 10, 22, 0, 0, 0), "end": datetime(2018, 10, 22, 8, 0, 0)}, 500)
+    sim = CarrierSimulation(300,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
 
     # algo = Algorithms(sim.connections,sim.stations,sim.lines)
     # print(algo.get_path('Lyngby','Malmparken').nodes)
@@ -21,8 +23,28 @@ def main():
     if (animation):
         sim.run_simulation_with_animation(100, 40)
     else:
-        sim.run_simulation(100, 30)
+        sim.run_simulation(2000, 30)
+    
+
+    # numCar = 0
+    # print(len(carriers))
+    # for station in sim.stations.values():
+    #     numCar += len(station.carriers)
+    # print()
+
+    # totalTravelTime = timedelta(0)
+    # for i in sim.allPassengersGenerated:
+    #     #print(i.start_station,i.destination,i.isArrived)
+    #     if not i.travel_time:
+    #         print("wtf")
+    #         continue
+    #     totalTravelTime += i.travel_time
+    #     print(i.travel_time)
+
+    # print(totalTravelTime.total_seconds()/len(sim.allPassengersGenerated)/60)
+
     return
+
 
 if __name__ == "__main__":
     main()

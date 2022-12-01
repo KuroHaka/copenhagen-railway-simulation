@@ -10,11 +10,11 @@ class Station():
         self.name = name
         self.x = x
         self.y = y
-        self.__idle_time = idle_time
-        self.__lines = set(lines)
-        self.__passengers = []
-        self.__numberCarriers = 0
-        self.__is_last_station = is_last_station
+        self._idle_time = idle_time
+        self._lines = set(lines)
+        self._passengers = []
+        self._numberCarriers = 0
+        self._is_last_station = is_last_station
         self.carriers = []
         Stations[name] = self
         for l in lines:
@@ -32,37 +32,37 @@ class Station():
     #         "lines": {self.get_lines()}"""
 
     def get_passengers(self)->list:
-        return self.__passengers
+        return self._passengers
 
     def get_lines(self)->list:
-        return self.__lines
+        return self._lines
 
     def is_last_station(self)->bool:
-        return self.__is_last_station
+        return self._is_last_station
 
     def get_idle_time(self)->int:
-        return self.__passengers
+        return self._passengers
 
     def add_passengers(self, passengers):
-        self.__passengers += passengers
+        self._passengers += passengers
     
     def sub_passengers(self, passengers):
         for passenger in passengers:
-            self.__passengers.remove(passenger)
+            self._passengers.remove(passenger)
 
     def add_passenger(self,passenger):
-        self.__passengers += [passenger]
+        self._passengers += [passenger]
 
     def add_carrier(self, carrier):
         self.carriers.append(carrier)
-        self.__numberCarriers += 1
+        self._numberCarriers += 1
 
     def sub_carrier(self, carrier):
         self.carriers.remove(carrier)
-        self.__numberCarriers -= 1
+        self._numberCarriers -= 1
 
     def sub_passenger(self,passenger):
-        self.__passengers.remove(passenger)
+        self._passengers.remove(passenger)
 
 
     def name(self):

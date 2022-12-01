@@ -10,7 +10,6 @@ class Algorithms:
         self.stationGraph = Graph()
         for _,connection  in connections.items():
             self.stationGraph.add_edge(connection.station_start.name,connection.station_end.name , (connection.distance,connection.station_end.name))
-            self.stationGraph.add_edge(connection.station_end.name,connection.station_start.name , (connection.distance,connection.station_start.name))
 
     def cost_func(self, u, v, edge, prev_edge):
         length, name = edge
@@ -37,15 +36,15 @@ class Algorithms:
             next_available_lines = next.get_lines() & available_lines
             if len(next_available_lines) == 0:
                 # means should change train
-                result.append({"line": available_lines.pop(), "path": this_train})
-                available_lines = next.get_lines()
+                result.append({"line": available_lines, "path": this_train})
+                available_lines = next.get_lines() & current.get_lines()
                 this_train = [this_train[-1], s]
                 current = next
             else:
                 this_train.append(s)
                 current = next
                 available_lines = next_available_lines
-        result.append({"line": available_lines.pop(), "path": this_train})
+        result.append({"line": available_lines, "path": this_train})
         return result
                 
 
