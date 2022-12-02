@@ -21,6 +21,15 @@ class Test_simulation(unittest.TestCase):
 
     def test_visualization_showing(self):
         self.sim.plt.show.assert_called()
+    
+    def test_loadbalancer(self):
+        sim = CarrierSimulation(0, [], datetime.datetime.now())
+        time = 0
+        sim.loadbalanceGenerator(time)
+        print((sim.stations["Køge"].carriers))
+        print((Stations["Køge"].carriers))
+        print((sim.carriers))
+        pass
 
 
 unittest.main()
