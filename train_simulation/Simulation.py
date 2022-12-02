@@ -38,7 +38,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-from matplotlib.animation import FuncAnimation
+import matplotlib.animation as mpanimation
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
@@ -58,10 +58,11 @@ class Point:
         self.pointer.set_data(np.array([self.x[n],self.y[n]]))
 
 class Simulation:
-    
-    fig, ax = plt.subplots()
-
     def __init__(self, amountOfTrains, start_datetime):
+        self.plt = plt
+        self.fig, self.ax = self.plt.subplots()
+        self.animator = mpanimation
+
         stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
         json.load(stations_file, object_hook=Station.from_json)
 
@@ -359,24 +360,24 @@ class Simulation:
                     self.pointers[key].y.append(self.stations[train._atStation.name].y)
             self.tickTrain(tick_lenght)
 
-        ani=FuncAnimation(self.fig, self.update_train_positions, epoch, interval=1, repeat=False)
+        ani=self.animator.FuncAnimation(self.fig, self.update_train_positions, epoch, interval=1, repeat=False)
         
         nx.draw(self.G, pos, node_size=4, node_shape='.',  edge_color='gray' ,node_color='black')
         img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
-        imgplot = plt.imshow(img)
+        imgplot = self.plt.imshow(img)
         if output_fig:
             ani.save(os.path.join(dirname, '../assets/animation.gif'), writer='imagemagick', fps=30)
         else:
             self.fig.tight_layout()
-            plt.show()
-                
-                
-
-
+            self.plt.show()
+              
 class CarrierSimulation:
-    fig, ax = plt.subplots()
 
     def __init__(self, numberOfCarriers, critical_stations, start_datetime):
+        self.plt = plt
+        self.fig, self.ax = self.plt.subplots()
+        self.animator = mpanimation
+        
         stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
         json.load(stations_file, object_hook=Station.from_json)
 
@@ -633,4 +634,4 @@ class CarrierSimulation:
             ani.save(os.path.join(dirname, '../assets/animation.gif'), writer='imagemagick', fps=30)
         else:
             self.fig.tight_layout()
-            plt.show()
+            self.plt.show()

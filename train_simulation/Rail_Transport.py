@@ -152,7 +152,7 @@ class Train():
                 if self._line in passenger.remainingPath[0]["line"]:
                     self._passengers.append(passenger)
                     passengers_to_remove.append(passenger)
-
+                    
         else:
             passengerAmount = self.availablePassengerSpace()
             for i,passenger in enumerate(station.get_passengers()):
@@ -163,8 +163,8 @@ class Train():
                     passengers_to_remove.append(passenger)
 
         station.sub_passengers(passengers_to_remove)
-                
-    
+
+               
     #Should account for Station space?
     def disembarkPassengers(self, station, totalTime):
         for passenger in self._passengers:

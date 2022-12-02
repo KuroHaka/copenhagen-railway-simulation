@@ -1,4 +1,4 @@
-from Simulation import Simulation, CarrierSimulation
+from Simulation import Simulation
 import sys
 
 from Person import Person, create_passengers
@@ -13,9 +13,9 @@ def main():
     weight = 1
     tickLength = 60
 
-
     #create_passengers(['København H', 'Svanemøllen'], {"start": datetime(2018, 10, 22, 0, 0, 0), "end": datetime(2018, 10, 22, 8, 0, 0)}, 500)
     sim = CarrierSimulation(300,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
+
 
     # algo = Algorithms(sim.connections,sim.stations,sim.lines)
     # print(algo.get_path('Lyngby','Malmparken').nodes)
