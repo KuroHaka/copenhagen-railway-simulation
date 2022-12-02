@@ -68,6 +68,7 @@ class Train():
         self._distanceMovedTowardsStation = 0
         self._distanceFromStationToDecelerate = 0
 
+        #When the simulation began
         self.start_time = start_time
 
 
@@ -104,7 +105,7 @@ class Train():
                 return 0
 
         if trainOnTracks:
-            print(f"Train {self._uid} of line {self._line} is not moving to {station.name} because there is a train on the tracks")
+            #print(f"Train {self._uid} of line {self._line} is not moving to {station.name} because there is a train on the tracks")
             return 0
         
         self.boardPassengers(self._atStation)
@@ -145,14 +146,12 @@ class Train():
 
     def boardPassengers(self, station):
         #print(f"Boarding passengers for train {self._uid}: amount of passengers that can board: {station.passengers}, available passenger space: {self.availablePassengerSpace()}")
-        
         passengers_to_remove = []
         if len(station.get_passengers()) < self.availablePassengerSpace():
             for passenger in station.get_passengers():
                 if self._line in passenger.remainingPath[0]["line"]:
                     self._passengers.append(passenger)
                     passengers_to_remove.append(passenger)
-                    
         else:
             passengerAmount = self.availablePassengerSpace()
             for i,passenger in enumerate(station.get_passengers()):
@@ -164,7 +163,6 @@ class Train():
 
         station.sub_passengers(passengers_to_remove)
 
-               
     #Should account for Station space?
     def disembarkPassengers(self, station, totalTime):
         for passenger in self._passengers:

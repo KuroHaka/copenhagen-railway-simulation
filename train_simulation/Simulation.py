@@ -30,10 +30,23 @@
         
     #TODO
         Turn the train at the end of the line
+        
+        #Information needed to be given to the Central_Communication file:
+        - Carriers or Trains (and amount)
+        - Load people from json or random
+        - Critical stations
+        - Start datetime
 
-"""
+
+    Stuff to move to carriers
+        - peopleGeneration
+        - loadjson passengers
+        - 
+        """
 
 import os, sys, json, datetime
+
+
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -63,11 +76,11 @@ class Simulation:
         self.fig, self.ax = self.plt.subplots()
         self.animator = mpanimation
 
-        stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
-        json.load(stations_file, object_hook=Station.from_json)
+        with open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8") as stations_file:
+            json.load(stations_file, object_hook=Station.from_json)
 
-        new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
-        json.load(new_connections_file, object_hook=Connection.from_json)
+        with open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8") as new_connections_file:
+            json.load(new_connections_file, object_hook=Connection.from_json)
 
         with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
             self.lines = json.load(linesFile)
@@ -83,6 +96,7 @@ class Simulation:
         self.pointers = {}
         self.stations = Stations
         self.connections = Connections
+        self.allPassengersGenerated = []
         self.G = nx.Graph()
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
@@ -215,7 +229,7 @@ class Simulation:
                 self.trains[train.getUID()]._atStation = self.stations[train._atStation]
                 self.trains[train.getUID()]._movingTo = self.stations[train._movingTo]
 
-    def tickPersonGeneration(self, weight, tickLength):
+    def tickPersonGeneration(self, tickLength):
         self.cumulativeTick += tickLength
         start_time = self.start_time + datetime.timedelta(seconds=self.cumulativeTick)
         passengersToRemove = []

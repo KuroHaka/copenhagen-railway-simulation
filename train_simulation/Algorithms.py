@@ -37,7 +37,7 @@ class Algorithms:
             if len(next_available_lines) == 0:
                 # means should change train
                 result.append({"line": available_lines, "path": this_train})
-                available_lines = next.get_lines() & current.get_lines()
+                available_lines = current.get_lines() & next.get_lines()
                 this_train = [this_train[-1], s]
                 current = next
             else:
@@ -47,6 +47,3 @@ class Algorithms:
         result.append({"line": available_lines, "path": this_train})
         return result
                 
-
-
-

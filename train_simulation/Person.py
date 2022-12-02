@@ -50,6 +50,7 @@ def create_passengers(critical_stations, time, n_passengers):
         json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']], indent=4,ensure_ascii=False)
         with open(os.path.join(dirname, '../assets/passengers.json'), mode="w", encoding="utf-8") as outfile:
             outfile.write(json_string)
+
     return passengers_list
 
 
@@ -67,7 +68,6 @@ class Person:
         self.intermediateDestination = ""
         self.atStation = ""
         
-
     def setPath(self,path):
         self.path = path
         self.remainingPath = path[:]
@@ -103,3 +103,20 @@ class Person:
 
     def getTravelTime(self):
         return self.travel_time
+
+    def setdestination(self, newdestination):
+         self._destination = newdestination
+    
+    def setlocation(self, newlocation):
+         self._destination = newlocation
+    
+    def setdepartureTime(self, newdepartueTime):
+         self._destination = newdepartueTime
+        
+    def printInformation(self):
+        print(f"id: {self._id}")
+        print(f"current location: {self._currentlocation}")
+        print(f"destination: {self._destination}")
+        print(f"departuretime: {self._departureTime}")
+        if self._isArrived:
+            print(f"travel time: {self._travelTime}")
