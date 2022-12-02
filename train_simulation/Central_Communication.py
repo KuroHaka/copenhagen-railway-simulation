@@ -45,9 +45,12 @@ def main():
     print("Trains simulation done")
     print()
     print()
+
+    
+    # Average travling time
     print("Calculating average travel time")
     print()
-
+    print("Carriers:")
     totalTravelTime = timedelta(0)
     totalPassengersArrived = 0
     totalPassengersNotArrived = 0
@@ -58,11 +61,11 @@ def main():
         else:
             totalPassengersNotArrived += 1
     
-    print("Carriers:")
     print(totalTravelTime.total_seconds()/totalPassengersArrived/60)
     print(f"Number of passengers not arrived {totalPassengersNotArrived}")
     print()
 
+    print("Trains:")
     totalTravelTime = timedelta(0)
     totalPassengersArrived = 0
     totalPassengersNotArrived = 0
@@ -73,11 +76,57 @@ def main():
         else:
             totalPassengersNotArrived += 1
     
-    print("Trains:")
     print(totalTravelTime.total_seconds()/totalPassengersArrived/60)
     print(f"Number of passengers not arrived {totalPassengersNotArrived}")
 
-    # print()
+
+
+    # average travling time based on distance traveled
+    print("Calculating average travel time per distance traveled NOT DONE")
+    print()
+    print("Carriers:")
+    totalTravelTime = timedelta(0)
+    totalPassengersArrived = 0
+    totalPassengersNotArrived = 0
+    for i in simCarrier.allPassengersGenerated:
+        if i.travel_time:
+            totalTravelTime += i.travel_time
+            totalPassengersArrived += 1
+        else:
+            totalPassengersNotArrived += 1
+    
+    print(totalTravelTime.total_seconds()/totalPassengersArrived/60)
+    print(f"Number of passengers not arrived {totalPassengersNotArrived}")
+    print()
+
+    print("Trains:")
+    totalTravelTime = timedelta(0)
+    totalPassengersArrived = 0
+    totalPassengersNotArrived = 0
+    for i in simTrain.allPassengersGenerated:
+        if i.travel_time:
+            totalTravelTime += i.travel_time
+            totalPassengersArrived += 1
+        else:
+            totalPassengersNotArrived += 1
+    
+    print(totalTravelTime.total_seconds()/totalPassengersArrived/60)
+    print(f"Number of passengers not arrived {totalPassengersNotArrived}")
+
+
+
+    # average travling time based on when travel started
+
+    # average time spent NOT traveling
+
+    # average travling time based on passengerspace on carriers
+
+    # speed of train/carrier based on distance to station
+
+    # speed of which carriers are better than trains
+
+
+    # total time spent accelerating for all trains/carriers (calculate how much energy it takes to reach "max_speed")
 
 
     return

@@ -361,6 +361,7 @@ class Carrier():
         self.start_time = start_time
         self.empty = False
         self. _remainingWaitingTime = 20
+        self._boarding = False
 
 
     #If the station is close, the train can only accelerate so much
@@ -391,11 +392,7 @@ class Carrier():
         if self._shouldStop:
             return 0
 
-        if empty:
-            self.empty = True
-        else:
-            ẗime = self.wait(time)
-
+        #print(self._atStation.name,destination.name)
         self._path = algo.get_path(self._atStation.name,destination.name).nodes
         self._destination = destination
         
@@ -409,7 +406,6 @@ class Carrier():
             print(f"Carrier {self._uid} is fucked, connection does not exist")
 
         self._atStation.sub_carrier(self)
-        self._atStation = 0
         self._cameFrom = 0
         self._moving = True
 
@@ -418,6 +414,19 @@ class Carrier():
         else:
             self._accelerateTo = self._maxSpeed
 
+
+        if empty:
+            self.empty = True
+        else:
+            self.boardPassengers(self._atStation, destination.name)
+            self._boarding = True
+            if self._remainingWaitingTime > 0:
+                time = self.wait(time)
+                if time == 0:
+                    return 0
+
+        self._atStation = 0
+        self._boarding = False
         return self.accelerate(time)
 
     def accelerate(self, time):
@@ -433,20 +442,21 @@ class Carrier():
         #print(f"Boarding passengers for train {self._uid}: amount of passengers that can board: {station.passengers}, available passenger space: {self.availablePassengerSpace()}")
         passengersToRemove = []
         for passenger in station.get_passengers():
+            if not self.availablePassengerSpace():
+                break
             if passenger.destination == destination:
                 self._passengers.append(passenger)
                 passengersToRemove.append(passenger)
-                if not self.availablePassengerSpace():
-                    break
         station.sub_passengers(passengersToRemove)
 
 
                 
     
     #Should account for Station space?
-    def disembarkPassengers(self, station, totalTime):
-        for passenger in self._passengers:
-            self._passengers.remove(passenger)
+    def disembarkPassengers(self, totalTime):
+        rng = len(self._passengers)
+        for i in range(rng):
+            passenger = self._passengers.pop(0)
             passenger.arrived((self.start_time + datetime.timedelta(seconds=totalTime)))
         
     
@@ -465,11 +475,12 @@ class Carrier():
         self._distanceFromStationToDecelerate = 0
         self._moving = False
         self._remainingWaitingTime = 20
+        self._boarding = False
 
         # if self._line == 'f-line' and self._uid == '7':
         #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")
 
-        self.disembarkPassengers(station,totalTime)
+        self.disembarkPassengers(totalTime)
         station.add_carrier(self)
         if self.empty:
             self.empty = False
@@ -499,6 +510,16 @@ class Carrier():
         if self._shouldStop:
             self.decelerate(time)
             return 0
+
+        if (self._boarding):
+            self.boardPassengers(self._atStation, self._destination.name)
+            if self._remainingWaitingTime > 0:
+                time = self.wait(time)
+                if time == 0:
+                    return 0
+            self._atStation = 0
+            self._boarding = False
+
 
         if (self._speed < self._maxSpeed and not self._decelerating):
             time = self.accelerate(time)

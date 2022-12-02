@@ -437,7 +437,7 @@ class CarrierSimulation:
 
     def loadbalance(self, time):
             # Naive method obviuosly            
-            min_carriers_on_crit = (len(self.carriers.keys())//100 * 25)//len(self.critical_stations) # 25% of carriers divided on all critical stations
+            min_carriers_on_crit = (len(self.carriers.keys())//100 * 25)//(len(self.critical_stations)*2)# 25% of carriers divided on all critical stations
             min_carriers = len(self.carriers.keys())//(len(self.stations)*2) or 1 #
 
             crit_carrier_sum = 0
@@ -456,12 +456,16 @@ class CarrierSimulation:
                     #     print(station2, len(self.stations[station2].carriers))
                     
                     tries = 0
-                    while not foundStation and tries < 90:
+                    tried = set([station.name])
+                    while not foundStation and tries < 10:
                         #print(f"Trying to loadbalance {station.name} nrCarriers {len(station.carriers)}")
                         neighbours = []
+
                         for neigh in findNeighboursOf:
                             neighbours += list(filter(lambda x: neigh in x, self.connections))
+                        tried = tried | findNeighboursOf
                         findNeighboursOf = set()
+                        tries += 1
                         for neighbourTuple in neighbours:
                             if foundStation:
                                 break
@@ -472,20 +476,23 @@ class CarrierSimulation:
                                 neighbour = neighbourTuple[1]
 
                             findNeighboursOf.add(neighbour)
-                            print(findNeighboursOf)
-                            tries += 1
+                            findNeighboursOf = findNeighboursOf - tried
+                            # print(tries, neighbour, findNeighboursOf, tried)
+                            # print(neighbours)
+                            # print()
+                            #print(station.name)
                             if len(self.stations[neighbour].carriers) > min_carriers and not (self.stations[neighbour] in self.critical_stations.values() and len(self.stations[neighbour].carriers) < min_carriers_on_crit):
-                                print("foundStation")
                                 foundStation = True
                                 if station in self.critical_stations:
                                     rang = min_carriers_on_crit - len(station.carriers) - station.incomingCarriers
                                 else:
                                     rang = min_carriers - len(station.carriers) - station.incomingCarriers
-                                for i in range(rang):
+                                #print(rang)
+                                for i in range(rang+1):
                                     timeLeft = time
-                                    if len(self.stations[neighbour].carriers) < min_carriers:
+                                    if len(self.stations[neighbour].carriers) < min_carriers - 1:
                                         break
-                                    carrier = self.stations[neighbour].carriers[i]
+                                    carrier = self.stations[neighbour].carriers[0]
                                     timeLeft = carrier.moveTo(station, timeLeft, self.algo, self.connections, True)
                                     station.incomingCarriers += 1
                                     if timeLeft:
@@ -566,11 +573,13 @@ class CarrierSimulation:
         passengersToRemove = []
         for passenger in self.passengersToGenerate:
             if passenger.start_time <= start_time:
-                path = self.algo.get_path_trains(passenger.start_station,passenger.destination)          
-                passenger.setPath(path)
+                path = self.algo.get_path(passenger.start_station,passenger.destination)          
+                passenger.path = path.nodes
                 self.stations[passenger.start_station].add_passenger(passenger)
                 self.allPassengersGenerated.append(passenger)
                 passengersToRemove.append(passenger)
+            else:
+                break
         for passenger in passengersToRemove:
             self.passengersToGenerate.remove(passenger)
 
@@ -592,7 +601,6 @@ class CarrierSimulation:
                 station = carrier._atStation
                 if station.get_passengers():
                     destination = station.get_passengers()[0].getdestination()
-                    carrier.boardPassengers(station,destination)
                     carrier.moveTo(self.stations[destination],timeLeft,self.algo,self.connections, False)
 
         
