@@ -400,8 +400,8 @@ class CarrierSimulation:
         self.G = nx.Graph()
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
-        #self.generateCarriers(numberOfCarriers, critical_stations, start_datetime)
-        self.loadbalanceGenerator(start_datetime)
+        self.generateCarriers(numberOfCarriers, critical_stations, start_datetime)
+        #self.loadbalanceGenerator(start_datetime)
         self.algo = Algorithms(self.connections,self.stations,self.lines)
         self.start_time = start_datetime
 
@@ -412,9 +412,12 @@ class CarrierSimulation:
 
     def loadbalance(self, time):
             # Naive method obviuosly
+
+            for station in self.stations.values():
+                print(station.name, len(station.carriers))
             
-            min_carriers_on_crit = len(self.carriers.keys())//100 * 25 # 25% of carriers
-            min_carriers = len(self.carriers.keys())//len(self.stations) or 1
+            min_carriers_on_crit = (len(self.carriers.keys())//100 * 25)//len(self.critical_stations) # 25% of carriers divided on all critical stations
+            min_carriers = len(self.carriers.keys())//(len(self.stations)*2) or 1 #
 
             crit_carrier_sum = 0
             for station in self.critical_stations.values():
@@ -425,6 +428,8 @@ class CarrierSimulation:
 
                 if len(station.carriers) + station.incomingCarriers < min_carriers or (len(station.carriers) + station.incomingCarriers < min_carriers_on_crit and station in self.critical_stations):
                     findNeighboursOf = set([station.name])
+                    print(f"Trying to loadbalance {station.name} nrCarriers {len(station.carriers)}")
+                    print(min_carriers_on_crit,min_carriers)
                     
                     while not foundStation:
                         neighbours = []
@@ -441,7 +446,7 @@ class CarrierSimulation:
                                 neighbour = neighbourTuple[1]
 
                             findNeighboursOf.add(neighbour)
-                            if len(self.stations[neighbour].carriers) > min_carriers and not (self.stations[neighbour] in self.critical_stations.values() and self.stations[neighbour].carriers < min_carriers_on_crit):
+                            if len(self.stations[neighbour].carriers) > min_carriers and not (self.stations[neighbour] in self.critical_stations.values() and len(self.stations[neighbour].carriers) < min_carriers_on_crit):
                                 foundStation = True
                                 if station in self.critical_stations:
                                     rang = min_carriers_on_crit - len(station.carriers) - station.incomingCarriers
@@ -566,6 +571,7 @@ class CarrierSimulation:
             #     carrier.printInformation()
             #     print()
             # print('------------------------------------------')
+            self.tickPersonGeneration(tick_lenght)
             self.tickCarriers(tick_lenght)
             self.loadbalance(tick_lenght)
 

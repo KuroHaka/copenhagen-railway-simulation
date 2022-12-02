@@ -26,25 +26,25 @@ def main():
         sim.run_simulation(2000, 30)
     
 
-    numCar = 0
-    print(len(sim.carriers))
-    for station in sim.stations.values():
-        print(station.name, len(station.carriers))
-        numCar += len(station.carriers)
-    print(numCar)
+    # numCar = 0
+    # print(len(sim.carriers))
+    # for station in sim.stations.values():
+    #     print(station.name, len(station.carriers))
+    #     numCar += len(station.carriers)
+    # print(numCar)
 
-    print(len(sim.stations['Køge'].carriers))
+    # print(len(sim.stations['Køge'].carriers))
 
-    # totalTravelTime = timedelta(0)
-    # for i in sim.allPassengersGenerated:
-    #     #print(i.start_station,i.destination,i.isArrived)
-    #     if not i.travel_time:
-    #         print("wtf")
-    #         continue
-    #     totalTravelTime += i.travel_time
-    #     print(i.travel_time)
+    totalTravelTime = timedelta(0)
+    for i in sim.allPassengersGenerated:
+        #print(i.start_station,i.destination,i.isArrived)
+        if not i.travel_time:
+            print("wtf")
+            continue
+        totalTravelTime += i.travel_time
+        print(i.travel_time)
 
-    # print(totalTravelTime.total_seconds()/len(sim.allPassengersGenerated)/60)
+    print(totalTravelTime.total_seconds()/len(sim.allPassengersGenerated)/60)
 
     return
 
