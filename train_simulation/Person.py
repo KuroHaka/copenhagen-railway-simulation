@@ -28,21 +28,29 @@ def create_passengers(critical_stations, time, n_passengers):
     critical_stations_passengers = int(n_passengers * critical_stations_weight)
     passengers_list = {'passengers': []}
     i = 0
+
     for passenger in range(critical_stations_passengers):  # generate passengers only to creitical stations
         start_station = random.choice(critical_stations)
         destination = random.choice(stations)
+        while destination == start_station:
+            destination = random.choice(stations)
         travel_time = str(random_date(time['start'], time['end']))
-        passengers_list['passengers'].append(Person(start_station, destination, travel_time, i))
-        i = i + 1
+        passengers_list['passengers'].append(Person(start_station, destination, travel_time,i))
+        i += 1
+    
     for passenger in range(n_passengers - critical_stations_passengers):  # generate passengers for all stations
         start_station = random.choice(stations)
         destination = random.choice(stations)
+        while destination == start_station:
+            destination = random.choice(stations)
         travel_time = str(random_date(time['start'], time['end']))
-        passengers_list['passengers'].append(Person(start_station, destination, travel_time, i))
-        i = i + 1
-    json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']], indent=4, ensure_ascii=False)
-    with open(os.path.join(dirname, '../assets/passengers.json'), mode="w", encoding="utf-8") as outfile:
-        outfile.write(json_string)
+        passengers_list['passengers'].append(Person(start_station, destination, travel_time,i))
+        i += 1
+
+        json_string = json.dumps([ob.__dict__ for ob in passengers_list['passengers']], indent=4,ensure_ascii=False)
+        with open(os.path.join(dirname, '../assets/passengers.json'), mode="w", encoding="utf-8") as outfile:
+            outfile.write(json_string)
+
     return passengers_list
 
 
@@ -50,7 +58,7 @@ class Person:
     def __init__(self, start_station, destination, start_time, id):  # I think that start station wil be good for us to generate report- can deleted if you are not agree
         self.start_station = start_station
         self.destination = destination
-        self._isArrived = False
+        self.isArrived = False
         self.start_time = start_time
         self.end_time = None
         self.travel_time = None
@@ -60,16 +68,13 @@ class Person:
         self.intermediateDestination = ""
         self.atStation = ""
         
-
     def setPath(self,path):
         self.path = path
         self.remainingPath = path[:]
         self.intermediateDestination = self.remainingPath[0]["path"][-1]
 
-
-    def updatePath(self,arriveTime, station):
+    def updatePath(self, arriveTime, station):
         if self.destination == self.intermediateDestination:
-            #print("Passenger arrived at their destination")
             self.arrived(arriveTime)
         else:
             self.remainingPath.pop(0)
@@ -77,17 +82,13 @@ class Person:
             station.add_passenger(self)
 
     def arrived(self, arriveTime):
-        self._isArrived = True
+        self.isArrived = True
         self.end_time = arriveTime
         self.travel_time = (self.end_time - self.start_time)
-        #print(self.start_time, self.end_time, self.travel_time)
 
     def isArrived(self):
-        return self._isArrived
-
-    def getTravelTime(self):
-        return self._travelTime
-
+        return self.isArrived
+    
     def delete_person(self):
         del self
 
@@ -95,16 +96,13 @@ class Person:
         return self.end_time - self.time
 
     def getdestination(self):
-        return self._destination
+        return self.destination
 
-    def getlocation(self):
-        return self._currentlocation
-    
-    def getdepartureTime(self):
-        return self._departureTime
-    
     def getid(self):
-        return self._id
+        return self.id
+
+    def getTravelTime(self):
+        return self.travel_time
 
     def setdestination(self, newdestination):
          self._destination = newdestination
@@ -122,4 +120,3 @@ class Person:
         print(f"departuretime: {self._departureTime}")
         if self._isArrived:
             print(f"travel time: {self._travelTime}")
-

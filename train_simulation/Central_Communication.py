@@ -15,7 +15,7 @@ def main():
     tickLength = 60
 
     #create_passengers(['København H', 'Svanemøllen'], {"start": datetime(2018, 10, 22, 0, 0, 0), "end": datetime(2018, 10, 22, 8, 0, 0)}, 500)
-
+    sim = CarrierSimulation(300,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
     sim = Simulation(52,['Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
 
     # print(len(sim.trains))
@@ -30,7 +30,25 @@ def main():
     if (animation):
         sim.run_simulation_with_animation(200, 40)
     else:
-        sim.run_simulation(2000, 30) #1200
+        sim.run_simulation(2000, 30)
+    
+
+    # numCar = 0
+    # print(len(sim.carriers))
+    # for station in sim.stations.values():
+    #     print(station.name, len(station.carriers))
+    #     numCar += len(station.carriers)
+    # print(numCar)
+
+    # print(len(sim.stations['Køge'].carriers))
+
+    totalTravelTime = timedelta(0)
+    for i in sim.allPassengersGenerated:
+        #print(i.start_station,i.destination,i.isArrived)
+        if not i.travel_time:
+            print("wtf")
+            continue
+
 
     totalTravelTime = timedelta(0)
     
@@ -41,6 +59,7 @@ def main():
     print(totalTravelTime.total_seconds()/len(sim.allPassengersGenerated)/60)
 
     return
+
 
 if __name__ == "__main__":
     main()

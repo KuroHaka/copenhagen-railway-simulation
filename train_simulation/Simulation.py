@@ -30,9 +30,8 @@
         
     #TODO
         Turn the train at the end of the line
-
-
-    #Information needed to be given to the Central_Communication file:
+        
+        #Information needed to be given to the Central_Communication file:
         - Carriers or Trains (and amount)
         - Load people from json or random
         - Critical stations
@@ -43,10 +42,11 @@
         - peopleGeneration
         - loadjson passengers
         - 
+        """
 
-"""
+import os, sys, json, datetime
 
-import os, sys, json, random, datetime
+
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -71,7 +71,7 @@ class Point:
         self.pointer.set_data(np.array([self.x[n],self.y[n]]))
 
 class Simulation:
-    def __init__(self, amountOfTrains, critical_stations, start_datetime):
+    def __init__(self, amountOfTrains, start_datetime):
         self.plt = plt
         self.fig, self.ax = self.plt.subplots()
         self.animator = mpanimation
@@ -89,7 +89,7 @@ class Simulation:
             self.passengersToGenerateJSON = json.load(personFile)
 
         self.passengersToGenerate = []
-        for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)                           #2018-10-22 02:39:42
+        for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
             self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
 
         self.trains = {}
@@ -99,6 +99,7 @@ class Simulation:
         self.allPassengersGenerated = []
         self.G = nx.Graph()
         self.cumulativeTick = 0
+        self.allPassengersGenerated = []
         self.generateTrains(amountOfTrains,start_datetime)
         self.algo = Algorithms(self.connections,self.stations,self.lines)
         self.start_time = start_datetime
@@ -227,7 +228,6 @@ class Simulation:
                 self.trains[train.getUID()] = train
                 self.trains[train.getUID()]._atStation = self.stations[train._atStation]
                 self.trains[train.getUID()]._movingTo = self.stations[train._movingTo]
-
 
     def tickPersonGeneration(self, tickLength):
         self.cumulativeTick += tickLength
@@ -379,6 +379,271 @@ class Simulation:
         nx.draw(self.G, pos, node_size=4, node_shape='.',  edge_color='gray' ,node_color='black')
         img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
         imgplot = self.plt.imshow(img)
+        if output_fig:
+            ani.save(os.path.join(dirname, '../assets/animation.gif'), writer='imagemagick', fps=30)
+        else:
+            self.fig.tight_layout()
+            self.plt.show()
+              
+class CarrierSimulation:
+
+    def __init__(self, numberOfCarriers, critical_stations, start_datetime):
+        self.plt = plt
+        self.fig, self.ax = self.plt.subplots()
+        self.animator = mpanimation
+        
+        stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
+        json.load(stations_file, object_hook=Station.from_json)
+
+        new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
+        json.load(new_connections_file, object_hook=Connection.from_json)
+
+        with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
+            self.lines = json.load(linesFile)
+
+        with open(os.path.join(dirname, '../assets/passengers.json'), mode="r", encoding="utf-8") as personFile:
+            self.passengersToGenerateJSON = json.load(personFile)
+
+        self.passengersToGenerate = []
+        for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
+            self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
+
+        self.carriers = {}
+        self.pointers = {}
+        self.stations = Stations
+        self.connections = Connections
+        self.G = nx.Graph()
+        self.cumulativeTick = 0
+        self.allPassengersGenerated = []
+        self.generateCarriers(numberOfCarriers, critical_stations, start_datetime)
+        #self.loadbalanceGenerator(start_datetime)
+        self.algo = Algorithms(self.connections,self.stations,self.lines)
+        self.start_time = start_datetime
+
+        self.critical_stations = {station: self.stations[station] for station in critical_stations}
+        # for station in critical_stations:
+        #     self.critical_stations[station] = self.stations[station]
+        print(self.critical_stations)
+
+    def loadbalance(self, time):
+            # Naive method obviuosly
+
+            for station in self.stations.values():
+                print(station.name, len(station.carriers))
+            
+            min_carriers_on_crit = (len(self.carriers.keys())//100 * 25)//len(self.critical_stations) # 25% of carriers divided on all critical stations
+            min_carriers = len(self.carriers.keys())//(len(self.stations)*2) or 1 #
+
+            crit_carrier_sum = 0
+            for station in self.critical_stations.values():
+                crit_carrier_sum += len(station.carriers)
+
+            for _, station in self.stations.items():
+                foundStation = False
+
+                if len(station.carriers) + station.incomingCarriers < min_carriers or (len(station.carriers) + station.incomingCarriers < min_carriers_on_crit and station in self.critical_stations):
+                    findNeighboursOf = set([station.name])
+                    print(f"Trying to loadbalance {station.name} nrCarriers {len(station.carriers)}")
+                    print(min_carriers_on_crit,min_carriers)
+                    
+                    while not foundStation:
+                        neighbours = []
+                        for neigh in findNeighboursOf:
+                            neighbours += list(filter(lambda x: neigh in x, self.connections))
+                        findNeighboursOf = set()
+                        for neighbourTuple in neighbours:
+                            if foundStation:
+                                break
+
+                            if neighbourTuple[0] != station.name:
+                                neighbour = neighbourTuple[0]
+                            else:
+                                neighbour = neighbourTuple[1]
+
+                            findNeighboursOf.add(neighbour)
+                            if len(self.stations[neighbour].carriers) > min_carriers and not (self.stations[neighbour] in self.critical_stations.values() and len(self.stations[neighbour].carriers) < min_carriers_on_crit):
+                                foundStation = True
+                                if station in self.critical_stations:
+                                    rang = min_carriers_on_crit - len(station.carriers) - station.incomingCarriers
+                                else:
+                                    rang = min_carriers - len(station.carriers) - station.incomingCarriers
+                                for i in range(rang):
+                                    timeLeft = time
+                                    if len(self.stations[neighbour].carriers) < min_carriers:
+                                        break
+                                    carrier = self.stations[neighbour].carriers[i]
+                                    timeLeft = carrier.moveTo(station, timeLeft, self.algo, self.connections, True)
+                                    print(f"Sending carrier from {self.stations[neighbour].name} to {station.name}")
+                                    print(carrier._movingTo, carrier._destination.name, carrier._path)
+                                    station.incomingCarriers += 1
+                                    if timeLeft:
+                                        carrier.keepMoving(timeLeft, self.cumulativeTick, self.connections)
+
+
+    def loadbalanceGenerator(self, start_time):
+        for id in range(200):
+            carrier = Carrier(id,self.stations['Køge'], start_time)
+            self.stations['Køge'].add_carrier(carrier)
+            self.carriers[str(id)] = carrier
+
+
+
+    def generateCarriers(self, numberOfCarriers, critical_stations, start_time):
+        nonCriticalStations = list(self.stations.keys())
+        for station in critical_stations:
+            nonCriticalStations.remove(station)
+
+
+        numCarriersCritical = round(numberOfCarriers * 0.25)
+        numCarriersCriticalPerStation = numCarriersCritical // len(critical_stations)
+        numCarriersRest = numberOfCarriers - numCarriersCritical
+        numCarriersRestPerStation = numCarriersRest // (len(self.stations) - len(critical_stations))
+
+        rest = numberOfCarriers - ((numCarriersRestPerStation * (len(self.stations) - len(critical_stations))) + (numCarriersCriticalPerStation * len(critical_stations)))
+
+        id = 0
+        for station in critical_stations:
+            for i in range(numCarriersCriticalPerStation):
+                carrier = Carrier(id,self.stations[station], start_time)
+                self.stations[station].add_carrier(carrier)
+                self.carriers[id] = carrier
+                id += 1
+
+        for station in nonCriticalStations:
+            for i in range(numCarriersRestPerStation):
+                carrier = Carrier(id,self.stations[station], start_time)
+                self.stations[station].add_carrier(carrier)
+                self.carriers[id] = carrier
+                id += 1
+
+
+
+    # def tickEmptyCarriers:
+    #     pass
+
+
+    """     TODO
+        #
+        # generate carriers
+        # load balancing
+        #
+    
+        In train:
+        #Change person so they can get off at a specific station, to change line (make two person classes, one for trains, one for carrier?, probably not)
+        #Change boardPassengers to only take passengers going in this direction
+        #Change disembarkPassengers to fit the change to person, so they can change line
+    """
+    
+    def tickPersonGeneration(self, tickLength):
+        self.cumulativeTick += tickLength
+        start_time = self.start_time + datetime.timedelta(seconds=self.cumulativeTick)
+        passengersToRemove = []
+        for passenger in self.passengersToGenerate:
+            if passenger.start_time <= start_time:
+                path = self.algo.get_path_trains(passenger.start_station,passenger.destination)          
+                passenger.setPath(path)
+                self.stations[passenger.start_station].add_passenger(passenger)
+                self.allPassengersGenerated.append(passenger)
+                passengersToRemove.append(passenger)
+        for passenger in passengersToRemove:
+            self.passengersToGenerate.remove(passenger)
+
+
+    #tickLength is the amount of "seconds" every tick
+    def tickCarriers(self, tickLength):
+        for key, carrier in self.carriers.items():
+            timeLeft = tickLength
+
+            #If the carrier is moving, it needs to comtinue doing so (this can make the carrier arrive at a station, without using the whole tickLength)
+            if carrier.moving():
+                timeLeft = carrier.keepMoving(timeLeft,self.cumulativeTick, self.connections)
+
+            #If carrier is at a station, we need to find where to go next
+            if not carrier.moving():
+                #print(f"Carrier {carrier._uid} not moving")
+                destination = None
+
+                station = carrier._atStation
+                if station.get_passengers():
+                    destination = station.get_passengers()[0].getdestination()
+                    carrier.boardPassengers(station,destination)
+                    carrier.moveTo(self.stations[destination],timeLeft,self.algo,self.connections, False)
+                    
+
+
+
+    def get_map_position(self, station_a:Station, station_b:Station, moved_distance:float, total_dictance:float) -> (float, float):
+        l = moved_distance/total_dictance
+        return l*station_b.x+(1-l)*station_a.x, l*station_b.y+(1-l)*station_a.y
+
+    def update_carrier_positions(self, n):
+        for _, plotter in self.pointers.items():
+            plotter.update_position(n)
+
+    def run_simulation(self, epoch: int, tick_lenght: int):
+        for i in range(epoch):
+            # for _, carrier in self.carriers.items():
+            #     carrier.printInformation()
+            #     print()
+            # print('------------------------------------------')
+            self.tickPersonGeneration(tick_lenght)
+            self.tickCarriers(tick_lenght)
+            self.loadbalance(tick_lenght)
+
+    def printAllCarrierInformation(self):
+        for _,carrier in self.carriers.items():
+            carrier.printInformation()
+            print()
+
+    def printAllPassengersInStations(self):
+        for _,station in self.stations.items():
+            print(station.name, station.get_passengers())
+
+    def run_simulation_with_animation(self, epoch: int, tick_lenght: int, output_fig=False):
+        #init stations
+        for _, station in self.stations.items():
+            self.G.add_node(station.name, pos=(station.x, station.y))
+        pos=nx.get_node_attributes(self.G,'pos')
+
+        for _, connection in self.connections.items():
+            self.G.add_edge(connection.station_start.name, connection.station_end.name)
+
+        #init pointers
+        for key, carrier in self.carriers.items():
+                if carrier._moving:
+                    newx, newy = self.get_map_position(
+                            self.stations[carrier._movingFrom], 
+                            self.stations[carrier._movingTo], 
+                            carrier._distanceMovedTowardsStation, 
+                            carrier._distanceToStation)
+                    p, = self.ax.plot(newx, newy, 'x', color='r')
+                    self.pointers[key] = Point(p)
+                else:
+                    starting = carrier._atStation
+                    p, = self.ax.plot(starting.x, starting.y, 'x', color='r')
+                    self.pointers[key] = Point(p)
+
+        for i in range(epoch):
+            for key, carrier in self.carriers.items():
+                if carrier._moving:
+                    newx, newy = self.get_map_position(
+                            self.stations[carrier._movingFrom], 
+                            self.stations[carrier._movingTo], 
+                            carrier._distanceMovedTowardsStation, 
+                            carrier._distanceToStation)
+                    self.pointers[key].x.append(newx)
+                    self.pointers[key].y.append(newy)
+                else:
+                    self.pointers[key].x.append(carrier._atStation.x)
+                    self.pointers[key].y.append(carrier._atStation.y)
+            self.tickPersonGeneration(tick_lenght)
+            self.tickCarriers(tick_lenght)
+
+        ani=FuncAnimation(self.fig, self.update_carrier_positions, epoch, interval=1, repeat=False)
+        
+        nx.draw(self.G, pos, node_size=4, node_shape='.',  edge_color='gray' ,node_color='black')
+        img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
+        imgplot = plt.imshow(img)
         if output_fig:
             ani.save(os.path.join(dirname, '../assets/animation.gif'), writer='imagemagick', fps=30)
         else:
