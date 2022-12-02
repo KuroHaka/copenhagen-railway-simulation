@@ -1,11 +1,11 @@
-import json
+import json, simpy
+from collections import defaultdict
 
 Stations = {}
-Connections = {}
+Connections = defaultdict(dict)
 Lines = {'a':[], 'b':[], 'c':[], 'f':[]}
 
 class Station():
-
     def __init__(self, name:str, x, y, passengers:int, idle_time, lines:[str], is_last_station:bool):
         self.name = name
         self.x = x
@@ -13,22 +13,56 @@ class Station():
         self.__idle_time = idle_time
         self.__lines = set(lines)
         self.__passengers = []
+        self.__numberPassengers = 0
         self.__numberCarriers = 0
         self.__is_last_station = is_last_station
         Stations[name] = self
         for l in lines:
             Lines[l].append(name)
 
+    def setEnvironment(self, env, capacity, simulation_start):
+        self.__env = env
+        self.loader = simpy.Resource(self.__env, capacity=capacity)
+        self.__simulation_start = simulation_start
+
+    def enqueue(self, carrier):
+        yield self.__env.process(carrier.stop_in(self))
+
+    def loadPassenger(self, passenger):
+        delta = (passenger.start_time - self.__simulation_start)
+        yield self.__env.timeout(delta.total_seconds())
+        self.__passengers.append(passenger)
+        self.__numberPassengers+=1
+
+    def getPassengers(self, carrier, max_passengers):
+        while not self.__passengers:
+            yield self.__env.timeout(1)
+        main_passenger = self.__passengers.pop(0)
+        carrier._passengers.append(main_passenger)
+        carrier._destination = main_passenger.get_destination()
+        filtered = []
+        for p in self.__passengers:
+            if len(carrier._passengers)>=max_passengers:
+                break
+            if p.get_destination() == carrier._destination:
+                carrier._passengers.append(p)
+
+
+    @staticmethod
+    def processPassengers(env, passengers):
+        for p in passengers:
+            env.process(Stations[p.start_station].loadPassenger(p))
+
     # for info printing
-    # def __str__(self):
-    #     return f"""
-    #         "name": {self.name},
-    #         "x": {self.x},                                                                                                                                                                                                                                                                                                  
-    #         "y": {self.y},
-    #         "idle_time": {self.get_idle_time()},
-    #         "passengers": {self.get_passengers()},
-    #         "is_last_station": {self.is_last_station()},
-    #         "lines": {self.get_lines()}"""
+    def __str__(self):
+        return f"""
+            "name": {self.name},
+            "x": {self.x},                                                                                                                                                                                                                                                                                                  
+            "y": {self.y},
+            "idle_time": {self.get_idle_time()},
+            "passengers": {self.get_passengers()},
+            "is_last_station": {self.is_last_station()},
+            "lines": {self.get_lines()}"""
 
     def get_passengers(self)->list:
         return self.__passengers
@@ -41,9 +75,6 @@ class Station():
 
     def get_idle_time(self)->int:
         return self.__passengers
-
-    def add_passengers(self, passengers):
-        self.__passengers += passengers
     
     def sub_passengers(self, passengers):
         for passenger in passengers:
@@ -54,7 +85,6 @@ class Station():
 
     def sub_passenger(self,passenger):
         self.__passengers.remove(passenger)
-
 
     def name(self):
         return self.name
@@ -75,7 +105,8 @@ class Connection():
         self.station_start = Stations[station_start]
         self.station_end = Stations[station_end]
         self.distance = distance*1000
-        Connections[(station_start, station_end)] = self
+        Connections[station_start][station_end] = self
+        Connections[station_end][station_start] = self
     
     # for info printing
     def __str__(self):

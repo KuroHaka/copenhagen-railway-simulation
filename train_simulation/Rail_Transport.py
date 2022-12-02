@@ -1,15 +1,5 @@
-from .Entity import Entity
 from abc import abstractproperty
 import json
-
-""" README:
-
-    Removed the abstract property from Moving and Entity
-
-    CARRIER:
-
-
-"""
 
 class Train():
 
