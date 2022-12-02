@@ -361,6 +361,7 @@ class Carrier():
         self._distanceFromStationToDecelerate = 0
 
         self.start_time = start_time
+        self.empty = False
 
 
     #If the station is close, the train can only accelerate so much
@@ -378,9 +379,12 @@ class Carrier():
         return self._maxSpeed
 
     #Functions for when atStation
-    def moveTo(self,destination,time,algo,connections):
+    def moveTo(self,destination,time,algo,connections, empty):
         if self._shouldStop:
             return 0
+
+        if empty:
+            self.empty = True
 
         self._path = algo.get_path(self._atStation.name,destination.name).nodes
         self._destination = destination
@@ -454,6 +458,9 @@ class Carrier():
 
         self.disembarkPassengers(station,totalTime)
         station.add_carrier(self)
+        if self.empty:
+            self.empty = False
+            station.incomingCarriers -= 1
 
         return time
 

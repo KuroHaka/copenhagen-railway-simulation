@@ -29,6 +29,7 @@ def main():
     numCar = 0
     print(len(sim.carriers))
     for station in sim.stations.values():
+        print(station.name, len(station.carriers))
         numCar += len(station.carriers)
     print(numCar)
 

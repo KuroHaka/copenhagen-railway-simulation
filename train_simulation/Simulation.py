@@ -412,33 +412,52 @@ class CarrierSimulation:
 
     def loadbalance(self, time):
             # Naive method obviuosly
+            
             min_carriers_on_crit = len(self.carriers.keys())//100 * 25 # 25% of carriers
-            min_carriers = len(self.carriers.keys())//len(self.stations)
-            if min_carriers < 1:
-                min_carriers = 1 # Need at least one carrier on each station
+            min_carriers = len(self.carriers.keys())//len(self.stations) or 1
 
             crit_carrier_sum = 0
             for station in self.critical_stations.values():
                 crit_carrier_sum += len(station.carriers)
 
-
             for _, station in self.stations.items():
-                if len(station.carriers) < min_carriers or (len(station.carriers) < min_carriers_on_crit and station in self.critical_stations):
-                    neighbours = list(filter(lambda x: station.name in x, self.connections))
-                    for neighbourTuple in neighbours:
-                        if neighbourTuple[0] != station.name:
-                            neighbour = neighbourTuple[0]
-                        else:
-                            neighbour = neighbourTuple[1]
+                foundStation = False
 
-                        if len(self.stations[neighbour].carriers) > min_carriers and not (self.stations[neighbour] in self.critical_stations.values() and self.stations[neighbour].carriers < min_carriers_on_crit):
-                            for carrier in station.carriers:
-                                if len(station.carriers) < min_carriers:
-                                    break
-                                if carrier._moving:
-                                    continue
+                if len(station.carriers) + station.incomingCarriers < min_carriers or (len(station.carriers) + station.incomingCarriers < min_carriers_on_crit and station in self.critical_stations):
+                    findNeighboursOf = set([station.name])
+                    
+                    while not foundStation:
+                        neighbours = []
+                        for neigh in findNeighboursOf:
+                            neighbours += list(filter(lambda x: neigh in x, self.connections))
+                        findNeighboursOf = set()
+                        for neighbourTuple in neighbours:
+                            if foundStation:
+                                break
+
+                            if neighbourTuple[0] != station.name:
+                                neighbour = neighbourTuple[0]
+                            else:
+                                neighbour = neighbourTuple[1]
+
+                            findNeighboursOf.add(neighbour)
+                            if len(self.stations[neighbour].carriers) > min_carriers and not (self.stations[neighbour] in self.critical_stations.values() and self.stations[neighbour].carriers < min_carriers_on_crit):
+                                foundStation = True
+                                if station in self.critical_stations:
+                                    rang = min_carriers_on_crit - len(station.carriers) - station.incomingCarriers
                                 else:
-                                    carrier.moveTo(station, time, self.algo, self.connections)
+                                    rang = min_carriers - len(station.carriers) - station.incomingCarriers
+                                for i in range(rang):
+                                    timeLeft = time
+                                    if len(self.stations[neighbour].carriers) < min_carriers:
+                                        break
+                                    carrier = self.stations[neighbour].carriers[i]
+                                    timeLeft = carrier.moveTo(station, timeLeft, self.algo, self.connections, True)
+                                    print(f"Sending carrier from {self.stations[neighbour].name} to {station.name}")
+                                    print(carrier._movingTo, carrier._destination.name, carrier._path)
+                                    station.incomingCarriers += 1
+                                    if timeLeft:
+                                        carrier.keepMoving(timeLeft, self.cumulativeTick, self.connections)
 
 
     def loadbalanceGenerator(self, start_time):
@@ -528,7 +547,7 @@ class CarrierSimulation:
                 if station.get_passengers():
                     destination = station.get_passengers()[0].getdestination()
                     carrier.boardPassengers(station,destination)
-                    carrier.moveTo(self.stations[destination],timeLeft,self.algo,self.connections)
+                    carrier.moveTo(self.stations[destination],timeLeft,self.algo,self.connections, False)
                     
 
 
@@ -546,8 +565,7 @@ class CarrierSimulation:
             # for _, carrier in self.carriers.items():
             #     carrier.printInformation()
             #     print()
-            print('------------------------------------------')
-            self.tickPersonGeneration(tick_lenght)
+            # print('------------------------------------------')
             self.tickCarriers(tick_lenght)
             self.loadbalance(tick_lenght)
 

@@ -16,6 +16,7 @@ class Station():
         self._numberCarriers = 0
         self._is_last_station = is_last_station
         self.carriers = []
+        self.incomingCarriers = 0
         Stations[name] = self
         for l in lines:
             Lines[l].append(name)
