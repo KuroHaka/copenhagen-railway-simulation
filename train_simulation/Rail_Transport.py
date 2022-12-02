@@ -188,7 +188,7 @@ class Train():
         self._movingFrom = 0
         self._distanceMovedTowardsStation = 0
         self._distanceFromStationToDecelerate = 0
-        self._remainingWaitingTime = 60
+        self._remainingWaitingTime = 20
         self._moving = False
 
         # if self._line == 'f-line' and self._uid == '7':
@@ -312,7 +312,7 @@ class Carrier():
     _maxPassengers = 5
 
     #Max speed of Carrier in m/s
-    _maxSpeed = 33.33
+    _maxSpeed = 22.22
     
     #Acceleration of carrier
     _acceleration = 1.5
@@ -360,6 +360,7 @@ class Carrier():
 
         self.start_time = start_time
         self.empty = False
+        self. _remainingWaitingTime = 20
 
 
     #If the station is close, the train can only accelerate so much
@@ -372,9 +373,18 @@ class Carrier():
             distDeacc += self._deceleration*i
             if distAcc + distDeacc >= distance:
                 self._distanceFromStationToDecelerate = distDeacc
-                return self._acceleration*i
+                return min(self._acceleration*i, self._maxSpeed)
         self._distanceFromStationToDecelerate = distDeacc
         return self._maxSpeed
+
+    def wait(self,time):
+        if time <= self._remainingWaitingTime:
+            self._remainingWaitingTime -= time
+            return 0
+        else:
+            time -= self._remainingWaitingTime
+            self._remainingWaitingTime = 0
+            return time
 
     #Functions for when atStation
     def moveTo(self,destination,time,algo,connections, empty):
@@ -383,6 +393,8 @@ class Carrier():
 
         if empty:
             self.empty = True
+        else:
+            ẗime = self.wait(time)
 
         self._path = algo.get_path(self._atStation.name,destination.name).nodes
         self._destination = destination
@@ -401,8 +413,10 @@ class Carrier():
         self._cameFrom = 0
         self._moving = True
 
-        self._accelerateTo = self.calculateAccelerateTo(self._distanceToStation)
-        
+        if not self._path:
+            self._accelerateTo = self.calculateAccelerateTo(self._distanceToStation)
+        else:
+            self._accelerateTo = self._maxSpeed
 
         return self.accelerate(time)
 
@@ -450,6 +464,7 @@ class Carrier():
         self._distanceMovedTowardsStation = 0
         self._distanceFromStationToDecelerate = 0
         self._moving = False
+        self._remainingWaitingTime = 20
 
         # if self._line == 'f-line' and self._uid == '7':
         #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")

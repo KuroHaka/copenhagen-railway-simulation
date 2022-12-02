@@ -44,7 +44,7 @@
         - 
         """
 
-import os, sys, json, datetime
+import os, sys, json, datetime, operator
 
 
 import numpy as np
@@ -91,12 +91,14 @@ class Simulation:
         self.passengersToGenerate = []
         for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
             self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
+        
+        self.passengersToGenerate.sort(key=operator.attrgetter('start_time'))
+        self.allPassengersGenerated = []
 
         self.trains = {}
         self.pointers = {}
-        self.stations = Stations
-        self.connections = Connections
-        self.allPassengersGenerated = []
+        self.stations = dict(Stations)
+        self.connections = dict(Connections)
         self.G = nx.Graph()
         self.cumulativeTick = 0
         self.allPassengersGenerated = []
@@ -240,6 +242,8 @@ class Simulation:
                 self.stations[passenger.start_station].add_passenger(passenger)
                 self.allPassengersGenerated.append(passenger)
                 passengersToRemove.append(passenger)
+            else:
+                break
         for passenger in passengersToRemove:
             self.passengersToGenerate.remove(passenger)
 
@@ -322,7 +326,7 @@ class Simulation:
             # for _, train in self.trains.items():
             #     train.printInformation()
             #     print()
-            print('------------------------------------------')
+            # print('------------------------------------------')
             self.tickPersonGeneration(tick_lenght)
             self.tickTrain(tick_lenght)
 
@@ -386,17 +390,16 @@ class Simulation:
             self.plt.show()
               
 class CarrierSimulation:
-
     def __init__(self, numberOfCarriers, critical_stations, start_datetime):
         self.plt = plt
         self.fig, self.ax = self.plt.subplots()
         self.animator = mpanimation
         
-        stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
-        json.load(stations_file, object_hook=Station.from_json)
+        with open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8") as stations_file:
+            json.load(stations_file, object_hook=Station.from_json)
 
-        new_connections_file = open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8")
-        json.load(new_connections_file, object_hook=Connection.from_json)
+        with open(os.path.join(dirname, '../assets/new_connections.json'), mode="r", encoding="utf-8") as new_connections_file:
+            json.load(new_connections_file, object_hook=Connection.from_json)
 
         with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
             self.lines = json.load(linesFile)
@@ -408,14 +411,15 @@ class CarrierSimulation:
         for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
             self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
 
+        self.passengersToGenerate.sort(key=operator.attrgetter('start_time'))
+        self.allPassengersGenerated = []
+
         self.carriers = {}
         self.pointers = {}
-        self.stations = Stations
-        self.connections = Connections
+        self.stations = dict(Stations)
+        self.connections = dict(Connections)
         self.G = nx.Graph()
         self.cumulativeTick = 0
-        self.allPassengersGenerated = []
-        self.generateCarriers(numberOfCarriers, critical_stations, start_datetime)
         #self.loadbalanceGenerator(start_datetime)
         self.algo = Algorithms(self.connections,self.stations,self.lines)
         self.start_time = start_datetime
@@ -423,14 +427,16 @@ class CarrierSimulation:
         self.critical_stations = {station: self.stations[station] for station in critical_stations}
         # for station in critical_stations:
         #     self.critical_stations[station] = self.stations[station]
-        print(self.critical_stations)
+        #print(self.critical_stations)
+
+        self.generateCarriers(numberOfCarriers, critical_stations, start_datetime)
+
+        # for station in self.stations.values():
+        #     print(station.name, len(station.carriers))
+
 
     def loadbalance(self, time):
-            # Naive method obviuosly
-
-            for station in self.stations.values():
-                print(station.name, len(station.carriers))
-            
+            # Naive method obviuosly            
             min_carriers_on_crit = (len(self.carriers.keys())//100 * 25)//len(self.critical_stations) # 25% of carriers divided on all critical stations
             min_carriers = len(self.carriers.keys())//(len(self.stations)*2) or 1 #
 
@@ -443,10 +449,15 @@ class CarrierSimulation:
 
                 if len(station.carriers) + station.incomingCarriers < min_carriers or (len(station.carriers) + station.incomingCarriers < min_carriers_on_crit and station in self.critical_stations):
                     findNeighboursOf = set([station.name])
-                    print(f"Trying to loadbalance {station.name} nrCarriers {len(station.carriers)}")
-                    print(min_carriers_on_crit,min_carriers)
+                    # print(f"Trying to loadbalance {station.name} nrCarriers {len(station.carriers)}")
+                    # print(min_carriers_on_crit,min_carriers)
+
+                    # for station2 in self.stations:
+                    #     print(station2, len(self.stations[station2].carriers))
                     
-                    while not foundStation:
+                    tries = 0
+                    while not foundStation and tries < 90:
+                        #print(f"Trying to loadbalance {station.name} nrCarriers {len(station.carriers)}")
                         neighbours = []
                         for neigh in findNeighboursOf:
                             neighbours += list(filter(lambda x: neigh in x, self.connections))
@@ -461,7 +472,10 @@ class CarrierSimulation:
                                 neighbour = neighbourTuple[1]
 
                             findNeighboursOf.add(neighbour)
+                            print(findNeighboursOf)
+                            tries += 1
                             if len(self.stations[neighbour].carriers) > min_carriers and not (self.stations[neighbour] in self.critical_stations.values() and len(self.stations[neighbour].carriers) < min_carriers_on_crit):
+                                print("foundStation")
                                 foundStation = True
                                 if station in self.critical_stations:
                                     rang = min_carriers_on_crit - len(station.carriers) - station.incomingCarriers
@@ -473,8 +487,6 @@ class CarrierSimulation:
                                         break
                                     carrier = self.stations[neighbour].carriers[i]
                                     timeLeft = carrier.moveTo(station, timeLeft, self.algo, self.connections, True)
-                                    print(f"Sending carrier from {self.stations[neighbour].name} to {station.name}")
-                                    print(carrier._movingTo, carrier._destination.name, carrier._path)
                                     station.incomingCarriers += 1
                                     if timeLeft:
                                         carrier.keepMoving(timeLeft, self.cumulativeTick, self.connections)
@@ -489,21 +501,27 @@ class CarrierSimulation:
 
 
     def generateCarriers(self, numberOfCarriers, critical_stations, start_time):
+        
         nonCriticalStations = list(self.stations.keys())
         for station in critical_stations:
             nonCriticalStations.remove(station)
 
 
         numCarriersCritical = round(numberOfCarriers * 0.25)
-        numCarriersCriticalPerStation = numCarriersCritical // len(critical_stations)
         numCarriersRest = numberOfCarriers - numCarriersCritical
+
+        numCarriersCriticalPerStation = numCarriersCritical // len(critical_stations)
+        
         numCarriersRestPerStation = numCarriersRest // (len(self.stations) - len(critical_stations))
 
         rest = numberOfCarriers - ((numCarriersRestPerStation * (len(self.stations) - len(critical_stations))) + (numCarriersCriticalPerStation * len(critical_stations)))
+        restPerCrit = rest // len(critical_stations)
 
+        rest = rest - (restPerCrit * len(critical_stations))
+        
         id = 0
         for station in critical_stations:
-            for i in range(numCarriersCriticalPerStation):
+            for i in range(numCarriersCriticalPerStation+restPerCrit):
                 carrier = Carrier(id,self.stations[station], start_time)
                 self.stations[station].add_carrier(carrier)
                 self.carriers[id] = carrier
@@ -515,6 +533,14 @@ class CarrierSimulation:
                 self.stations[station].add_carrier(carrier)
                 self.carriers[id] = carrier
                 id += 1
+
+        for i in range(rest):
+            carrier = Carrier(id,self.stations['København H'], start_time)
+            self.stations['København H'].add_carrier(carrier)
+            self.carriers[id] = carrier
+            id += 1
+
+
 
 
 
@@ -568,6 +594,8 @@ class CarrierSimulation:
                     destination = station.get_passengers()[0].getdestination()
                     carrier.boardPassengers(station,destination)
                     carrier.moveTo(self.stations[destination],timeLeft,self.algo,self.connections, False)
+
+        
                     
 
 

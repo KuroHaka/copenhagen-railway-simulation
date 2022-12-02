@@ -1,4 +1,4 @@
-from Simulation import Simulation
+from Simulation import Simulation, CarrierSimulation
 import sys
 
 from Person import Person, create_passengers
@@ -8,15 +8,20 @@ from Algorithms import Algorithms
 from Person import create_passengers
 
 def main():
-    
-    # Person.create_passengers(["Lyngby","København H"], {"start": datetime.now(), "end": datetime.now()+timedelta(hours=9)}, 100)
-    animation = len(sys.argv)>1 and sys.argv[1] == 'animation'
-    weight = 1
-    tickLength = 60
 
-    #create_passengers(['København H', 'Svanemøllen'], {"start": datetime(2018, 10, 22, 0, 0, 0), "end": datetime(2018, 10, 22, 8, 0, 0)}, 500)
-    sim = CarrierSimulation(300,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
-    sim = Simulation(52,['Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
+    # Carrier maxspeed = 80 km/h, 40 km/h
+
+    #animation = len(sys.argv)>1 and sys.argv[1] == 'animation'
+    tickLength = 30
+
+    # print("Creating passegners")
+    # create_passengers(['København H', 'Svanemøllen'], {"start": datetime(2018, 10, 22, 6, 0, 0), "end": datetime(2018, 10, 22, 12, 0, 0)}, 12500)
+
+    print("Creating carrier simulation")
+    simCarrier = CarrierSimulation(300,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
+
+    print("Creating train simulation")
+    simTrain = Simulation(52,datetime(2018, 10, 22, 0, 0, 0))
 
     # print(len(sim.trains))
     # print(sim.passerngersToGenerate[0])
@@ -27,36 +32,53 @@ def main():
     # x = algo.get_path_trains('Charlottenlund','Buddinge')
     # print(x)
 
-    if (animation):
-        sim.run_simulation_with_animation(200, 40)
-    else:
-        sim.run_simulation(2000, 30)
+    # if (animation):
+    #     sim.run_simulation_with_animation(200, 40)
+    # else:
+    #     sim.run_simulation(3000, 30)
     
-
-    # numCar = 0
-    # print(len(sim.carriers))
-    # for station in sim.stations.values():
-    #     print(station.name, len(station.carriers))
-    #     numCar += len(station.carriers)
-    # print(numCar)
-
-    # print(len(sim.stations['Køge'].carriers))
+    print("Created simulations")
+    print("Running simulations")
+    simCarrier.run_simulation(3000, tickLength)
+    print("Carrier simulation done")
+    simTrain.run_simulation(3000, tickLength)
+    print("Trains simulation done")
+    print()
+    print()
+    print("Calculating average travel time")
+    print()
 
     totalTravelTime = timedelta(0)
-    for i in sim.allPassengersGenerated:
-        #print(i.start_station,i.destination,i.isArrived)
-        if not i.travel_time:
-            print("wtf")
-            continue
-
+    totalPassengersArrived = 0
+    totalPassengersNotArrived = 0
+    for i in simCarrier.allPassengersGenerated:
+        if i.travel_time:
+            totalTravelTime += i.travel_time
+            totalPassengersArrived += 1
+        else:
+            totalPassengersNotArrived += 1
+    
+    print("Carriers:")
+    print(totalTravelTime.total_seconds()/totalPassengersArrived/60)
+    print(f"Number of passengers not arrived {totalPassengersNotArrived}")
+    print()
 
     totalTravelTime = timedelta(0)
+    totalPassengersArrived = 0
+    totalPassengersNotArrived = 0
+    for i in simTrain.allPassengersGenerated:
+        if i.travel_time:
+            totalTravelTime += i.travel_time
+            totalPassengersArrived += 1
+        else:
+            totalPassengersNotArrived += 1
     
-    for i in sim.allPassengersGenerated:
-        totalTravelTime += i.travel_time
-        print(i.travel_time)
+    print("Trains:")
+    print(totalTravelTime.total_seconds()/totalPassengersArrived/60)
+    print(f"Number of passengers not arrived {totalPassengersNotArrived}")
 
-    print(totalTravelTime.total_seconds()/len(sim.allPassengersGenerated)/60)
+    # print()
+
 
     return
 
