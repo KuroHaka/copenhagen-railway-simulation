@@ -42,7 +42,7 @@ class Carrier:
     # Max amount of passengers on Carrier
     _maxPassengers = 5
     # Max speed of Carrier in m/s
-    _maxSpeed = 33.33
+    _maxSpeed = 22.22
     # Acceleration of carrier
     _maxAcceleration = 1.3
     _maxDeaceleration = -1.2
@@ -89,8 +89,9 @@ class Carrier:
         self._distanceMovedStation = 0
         self._breakingDistance = 0
         self.state: CarriersStates = CarriersStates.UNUSED
+        self._mass = 1300*175
+        self.total_energy = 0
         self.total_distance = 0
-
     def deploy(self):
         # loop of the process, never stops
         while True:
@@ -157,6 +158,8 @@ class Carrier:
         self._distanceMovedStation += distance_moved
         self._distanceLeftDestination -= distance_moved
         self.total_distance += distance_moved
+        if self._acceleration > 0:
+            self.total_energy += self._acceleration*distance_moved*self._mass
 
     def updateNewPosition(self):
         yield self._env.timeout(self._tickTime)
@@ -184,11 +187,6 @@ class Carrier:
         # to stop the last process
         # soft braking system
         self.state = CarriersStates.STOPPING
-        self._acceleration = self._maxDeaceleration
-        while self._distanceLeftDestination > 0:
-            yield self._env.timeout(self._tickTime)
-            self.updateSpeed()
-            self.updateDistance()
         self._acceleration = 0
         self._distanceToDestination = 0
         self._distanceLeftDestination = 0
@@ -206,6 +204,15 @@ class Carrier:
             sys.stdout = f # Change the standard output to the file we created.
             while True:
                 print(f'{self.total_distance:.3f}')
+                yield self._env.timeout(tick)
+            sys.stdout = original_stdout # Reset the standard output to its original value
+    
+    def printKiniticEnergy(self,file,tick):
+        with open(os.path.join(dirname, "../others/plotters/data/"+file), 'w') as f:
+            original_stdout = sys.stdout
+            sys.stdout = f # Change the standard output to the file we created.
+            while True:
+                print(f'{self.total_energy:.3f}')
                 yield self._env.timeout(tick)
             sys.stdout = original_stdout # Reset the standard output to its original value
 
@@ -247,6 +254,6 @@ env.process(c.deploy())
 # # # env.process(c2.deploy())
 
 #env.process(c.printEvents())
-env.process(c.printDistance('distances_train.txt',2))
+env.process(c.printKiniticEnergy('energy_carrier.txt',2))
 #env.process(c.printSpeed(2))
 env.run(until=300)

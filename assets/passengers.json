@@ -3,18 +3,6 @@
     "id": "Ronnie Nelson",
     "start_time": "2000-09-24 09:52:10",
     "start_station": "Lyngby",
-    "destination": "Jærgersborg"
-  },
-  {
-    "id": "Ronnie Nelson",
-    "start_time": "2000-09-24 09:52:11",
-    "start_station": "Jærgersborg",
-    "destination": "Gentofte"
-  },
-  {
-    "id": "Ronnie Nelson",
-    "start_time": "2000-09-24 09:52:12",
-    "start_station": "Gentofte",
     "destination": "Bernstorffsvej"
   }
 ]

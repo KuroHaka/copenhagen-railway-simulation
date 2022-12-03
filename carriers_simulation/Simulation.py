@@ -1,18 +1,12 @@
-import os, sys, json
-import numpy as np
-import networkx as nx
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import matplotlib.animation as mpanimation
-
+import os, sys, json, simpy, enum
+from Algorithms import Algorithms
+from datetime import timedelta
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
 
-from train_simulation.Rail_Transport import Train, Carrier
-from train_simulation.Railway import Station, Connection, Stations, Connections, Lines
-from train_simulation.Person import Passenger
-from train_simulation.Algorithms import Algorithms
+from carriers_simulation.Railway import Connection, Station, Connections, Stations
+from carriers_simulation.Person import Person, Passengers, getFirstPersonTime
 
 class Point:
     def __init__(self,pointer):
