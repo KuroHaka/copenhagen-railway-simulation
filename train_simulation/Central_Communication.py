@@ -18,7 +18,7 @@ def main():
     # create_passengers(['København H', 'Svanemøllen'], {"start": datetime(2018, 10, 22, 6, 0, 0), "end": datetime(2018, 10, 22, 12, 0, 0)}, 12500)
 
     print("Creating carrier simulation")
-    simCarrier = CarrierSimulation(300,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
+    simCarrier = CarrierSimulation(100,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
 
     print("Creating train simulation")
     simTrain = Simulation(52,datetime(2018, 10, 22, 0, 0, 0))
@@ -39,10 +39,10 @@ def main():
     
     print("Created simulations")
     print("Running simulations")
-    simCarrier.run_simulation(3000, tickLength)
+    simCarrier.run_simulation_with_live_visualization(300, tickLength)
     print("Carrier simulation done")
-    simTrain.run_simulation(3000, tickLength)
-    print("Trains simulation done")
+    # simTrain.run_simulation(3000, tickLength)
+    # print("Trains simulation done")
     print()
     print()
     print("Calculating average travel time")
@@ -78,7 +78,6 @@ def main():
     print(f"Number of passengers not arrived {totalPassengersNotArrived}")
 
     # print()
-
 
     return
 
