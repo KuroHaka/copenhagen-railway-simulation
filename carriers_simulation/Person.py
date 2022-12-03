@@ -22,7 +22,7 @@ def random_date(start, end):
 
 
 def getFirstPersonTime():
-    return min(Passengers, key=lambda x: x.start_time).start_time
+    return min(Passengers, key=lambda x: x.get_start_time()).get_start_time()
 
 
 class Person:
@@ -156,7 +156,7 @@ class Person:
         return self.destination
 
     def get_start_time(self):
-        return datetime.strptime(self.start_time, "%d %H:%M:%S")
+        return datetime.strptime(self.start_time, "%Y-%m-%d %H:%M:%S")
 
     def getlocation(self):
         return self._currentlocation
@@ -173,8 +173,3 @@ class Person:
         print(f"departuretime: {self._departureTime}")
         if self.isArrived:
             print(f"travel time: {self._travelTime}")
-
-
-Person.create_passengers(
-    ["Lyngby", "Nørreport", "København H", "Vanløse", "Flintholm"], datetime(2000,9,24), datetime(2000,9,25), 12500
-)

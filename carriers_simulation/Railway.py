@@ -29,7 +29,7 @@ class Station():
         yield self.__env.process(carrier.stop_in(self))
 
     def loadPassenger(self, passenger):
-        delta = (passenger.start_time - self.__simulation_start)
+        delta = (passenger.get_start_time() - self.__simulation_start)
         yield self.__env.timeout(delta.total_seconds())
         self.__passengers.append(passenger)
         self.__numberPassengers+=1
@@ -40,7 +40,6 @@ class Station():
         main_passenger = self.__passengers.pop(0)
         carrier._passengers.append(main_passenger)
         carrier._destination = main_passenger.get_destination()
-        filtered = []
         for p in self.__passengers:
             if len(carrier._passengers)>=max_passengers:
                 break

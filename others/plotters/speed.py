@@ -1,80 +1,30 @@
 import matplotlib.pyplot as plt
+import csv
 
-distance_list = [
-        0.000,
-        2.250,
-        2.250,
-        6.000,
-        11.250,
-        18.000,
-        26.250,
-        36.000,
-        47.250,
-        60.000,
-        74.250,
-        90.000,
-        107.250,
-        126.000,
-        146.250,
-        168.000,
-        191.250,
-        216.000,
-        242.250,
-        270.000,
-        299.250,
-        330.000,
-        362.250,
-        396.000,
-        430.080,
-        463.410,
-        496.740,
-        530.070,
-        563.400,
-        596.730,
-        630.060,
-        663.390,
-        696.720,
-        730.050,
-        763.380,
-        796.710,
-        830.040,
-        863.370,
-        896.700,
-        930.030,
-        963.360,
-        996.690,
-        1027.920,
-        1057.750,
-        1086.180,
-        1113.210,
-        1138.840,
-        1163.070,
-        1185.900,
-        1207.330,
-        1227.360,
-        1245.990,
-        1263.220,
-        1279.050,
-        1293.480,
-        1306.510,
-        1318.140,
-        1328.370,
-        1337.200,
-        1344.630,
-        1350.660,
-        1355.290,
-        1358.520,
-        1360.350,
-        1361.095,
-        1360.918
-    ]
+train = []
+with open('others\plotters\data\distances_train.txt','r') as f:
+    for l in f:
+        train.append(float(l.rstrip('\n')))
+carrier = []
+with open('others\plotters\data\distances_carrier.txt','r') as f:
+    for l in f:
+        carrier.append(float(l.rstrip('\n')))
 
-x = list(range(len(distance_list)))
+x = list(range(0,len(train)*2,2))
+train_reach = train.index(max(train))*2
+train_max = max(train)
+carrier_reach = carrier.index(max(carrier))*2
+carrier_max = max(carrier)
 fig, ax = plt.subplots(dpi=100)
 ax.grid(color='black', linestyle='-', linewidth=0.1)
-ax.plot(x, distance_list, color ='#F5B14C', linewidth=0.8, label="carrier")
-ax.set_title("Distance comparison")
+ax.plot(x, train, color ='red', linewidth=1, label="train")
+ax.plot(x, carrier, color ='green', linewidth=1, label="carrier")
+ax.vlines(train_reach, 0, train_max, linestyles ="dashed", colors ="red")
+ax.vlines(carrier_reach, 0, carrier_max, linestyles ="dashed", colors ="green")
+ax.set_title("Commuting time over 3 staitions")
 ax.set_xlabel("time(s)")
 ax.set_ylabel("distance(m)")
-ax.legend()
+leg = ax.legend()
+for legobj in leg.legendHandles:
+    legobj.set_linewidth(3.0)
 plt.show()
