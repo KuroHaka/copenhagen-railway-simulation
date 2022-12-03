@@ -1,7 +1,6 @@
-from .Entity import Entity
 from abc import abstractproperty
 import json, datetime
-
+from matplotlib.markers import MarkerStyle
 """ README:
 
     Removed the abstract property from Moving and Entity
@@ -377,6 +376,32 @@ class Carrier():
         self. _remainingWaitingTime = 20
         self._boarding = False
         self._metersDriven = 0
+    
+    def get_map_position(self, station_a, station_b, moved_distance:float, total_dictance:float) -> (float, float):
+        l = moved_distance/total_dictance
+        return l*station_b.x+(1-l)*station_a.x, l*station_b.y+(1-l)*station_a.y
+
+    def initVisualization(self, ax):
+        self.dot, = ax.plot(0,0)
+
+    def updateVisualization(self, stations):
+        if self._moving:
+            newx, newy = self.get_map_position(
+                    stations[self._movingFrom], 
+                    stations[self._movingTo], 
+                    self._distanceMovedTowardsStation, 
+                    self._distanceToStation)
+            self.dot.set_xdata(newx)
+            self.dot.set_ydata(newy)
+            if self._passengers:
+                self.dot._marker = MarkerStyle('o', fillstyle='full')
+            else:
+                self.dot._marker = MarkerStyle('o',fillstyle='none')
+        else:
+            self.dot.set_xdata(self._atStation.x)
+            self.dot.set_ydata(self._atStation.y)
+            
+        
 
 
     #If the station is close, the train can only accelerate so much

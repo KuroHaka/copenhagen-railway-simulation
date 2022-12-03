@@ -635,6 +635,30 @@ class CarrierSimulation:
         for _,station in self.stations.items():
             print(station.name, station.get_passengers())
 
+    def run_simulation_with_live_visualization(self, epoch: int, tick_lenght: int):
+        plt.ion()
+        for _, station in self.stations.items():
+            self.G.add_node(station.name, pos=(station.x, station.y))
+        pos=nx.get_node_attributes(self.G,'pos')
+
+        for _, connection in self.connections.items():
+            self.G.add_edge(connection.station_start.name, connection.station_end.name)
+        figure, ax = plt.subplots(figsize=(10, 18))
+        # ax.axis(xmin=-15,xmax=80,ymax=40,ymin=-3)
+        img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
+        imgplot = plt.imshow(img)
+        nx.draw(self.G, pos, node_size=4, node_shape='.',  edge_color='gray' ,node_color='black')
+        for _, c in self.carriers.items():
+            c.initVisualization(ax)
+        for epoch in range(epoch):
+            self.tickPersonGeneration(tick_lenght)
+            self.tickCarriers(tick_lenght)
+            self.loadbalance(tick_lenght)
+            for _, c in self.carriers.items():
+                c.updateVisualization(self.stations)
+            figure.canvas.draw()
+            figure.canvas.flush_events()
+
     def run_simulation_with_animation(self, epoch: int, tick_lenght: int, output_fig=False):
         #init stations
         for _, station in self.stations.items():
