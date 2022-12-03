@@ -237,7 +237,7 @@ class Simulation:
         passengersToRemove = []
         for passenger in self.passengersToGenerate:
             if passenger.start_time <= start_time:
-                path = self.algo.get_path_trains(passenger.start_station,passenger.destination)          
+                path = self.algo.get_path_trains(passenger.start_station,passenger.destination)      
                 passenger.setPath(path)
                 self.stations[passenger.start_station].add_passenger(passenger)
                 self.allPassengersGenerated.append(passenger)
@@ -307,7 +307,7 @@ class Simulation:
                         skip = True
                         break
                 
-                timeLeft = train.moveTo(nextStation,distance,timeLeft, skip)
+                timeLeft = train.moveTo(nextStation,distance,timeLeft, (self.start_time + datetime.timedelta(seconds=self.cumulativeTick)), skip)
                 if timeLeft > 0:
                     train.keepMoving(timeLeft,self.cumulativeTick)
                 if skip:
@@ -493,7 +493,7 @@ class CarrierSimulation:
                                     if len(self.stations[neighbour].carriers) < min_carriers - 1:
                                         break
                                     carrier = self.stations[neighbour].carriers[0]
-                                    timeLeft = carrier.moveTo(station, timeLeft, self.algo, self.connections, True)
+                                    timeLeft = carrier.moveTo(station, timeLeft, self.algo, self.connections, True, 0)
                                     station.incomingCarriers += 1
                                     if timeLeft:
                                         carrier.keepMoving(timeLeft, self.cumulativeTick, self.connections)
@@ -591,7 +591,7 @@ class CarrierSimulation:
 
             #If the carrier is moving, it needs to comtinue doing so (this can make the carrier arrive at a station, without using the whole tickLength)
             if carrier.moving():
-                timeLeft = carrier.keepMoving(timeLeft,self.cumulativeTick, self.connections)
+                timeLeft = carrier.keepMoving(timeLeft,(self.start_time + datetime.timedelta(seconds=self.cumulativeTick)), self.connections)
 
             #If carrier is at a station, we need to find where to go next
             if not carrier.moving():
@@ -601,7 +601,7 @@ class CarrierSimulation:
                 station = carrier._atStation
                 if station.get_passengers():
                     destination = station.get_passengers()[0].getdestination()
-                    carrier.moveTo(self.stations[destination],timeLeft,self.algo,self.connections, False)
+                    carrier.moveTo(self.stations[destination],timeLeft,self.algo,self.connections, False, (self.start_time + datetime.timedelta(seconds=self.cumulativeTick)))
 
         
                     

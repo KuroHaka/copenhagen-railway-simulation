@@ -45,7 +45,7 @@ def create_passengers(critical_stations, time_start, time_end, n_passengers):
     )
 
     passengers_list = []
-    fake = Faker()
+    #fake = Faker()
 
     rush_hours = []
     out_rush_hours = []
@@ -66,7 +66,7 @@ def create_passengers(critical_stations, time_start, time_end, n_passengers):
             destination = random.choice(stations)
         travel_time = random.choice(possible_times)
         passengers_list.append(
-            Person(start_station, destination, str(travel_time), fake.name())
+            Person(start_station, destination, str(travel_time), "fake.name()")
         )
 
     for i in range(critical_rush_hours):  # critical + rush
@@ -116,6 +116,15 @@ class Person:
         self.remainingPath = []
         self.intermediateDestination = ""
         self.atStation = ""
+        self.timeSpentWaiting = timedelta(seconds=0)
+        self.timeSinceBegunWaiting = start_time
+
+    def updateTimeSpentWaiting(self,time):
+        self.timeSpentWaiting += time - self.timeSinceBegunWaiting
+
+    def updateTimeSinceBegunWaiting(self,time):
+        self.timeSinceBegunWaiting = time
+
         
     def setPath(self,path):
         self.path = path
@@ -126,6 +135,7 @@ class Person:
         if self.destination == self.intermediateDestination:
             self.arrived(arriveTime)
         else:
+            self.updateTimeSinceBegunWaiting(arriveTime)
             self.remainingPath.pop(0)
             self.intermediateDestination = self.remainingPath[0]["path"][-1]
             station.add_passenger(self)
