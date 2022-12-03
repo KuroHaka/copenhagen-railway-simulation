@@ -111,15 +111,19 @@ class Train():
             #print(f"Train {self._uid} of line {self._line} is not moving to {station.name} because there is a train on the tracks")
             return 0
         
-        self.boardPassengers(self._atStation,totalTime)
         
         self._movingFrom = self._atStation
         self._movingTo = station
+
+        self.boardPassengers(self._atStation,totalTime)
+        
         self._atStation = 0
         self._cameFrom = 0
         self._distanceToStation = distance
         self._metersDriven += distance
         self._moving = True
+
+        
 
         self._accelerateTo = self.calculateAccelerateTo(distance)
 
@@ -153,7 +157,7 @@ class Train():
         passengers_to_remove = []
         if len(station.get_passengers()) < self.availablePassengerSpace():
             for passenger in station.get_passengers():
-                if self._line in passenger.remainingPath[0]["line"]:
+                if self._line in passenger.remainingPath[0]["line"] and self._movingTo.name == passenger.remainingPath[0]["path"][1]:
                     self._passengers.append(passenger)
                     passengers_to_remove.append(passenger)
                     passenger.updateTimeSpentWaiting(totalTime)
@@ -162,7 +166,7 @@ class Train():
             for i,passenger in enumerate(station.get_passengers()):
                 if i > passengerAmount:
                     break
-                if self._line in passenger.remainingPath[0]["line"]:
+                if self._line in passenger.remainingPath[0]["line"] and self._movingTo.name == passenger.remainingPath[0]["path"][1]:
                     self._passengers.append(passenger)
                     passengers_to_remove.append(passenger)
                     passenger.updateTimeSpentWaiting(totalTime)
@@ -196,6 +200,8 @@ class Train():
         self._distanceFromStationToDecelerate = 0
         self._remainingWaitingTime = 20
         self._moving = False
+
+        station.trainArrivalTimes.append(totalTime/60)
 
         # if self._line == 'f-line' and self._uid == '7':
         #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")
