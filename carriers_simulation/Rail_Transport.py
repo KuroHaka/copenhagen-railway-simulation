@@ -1,34 +1,11 @@
-import os, sys, json, simpy, enum
+import os, sys, enum
 from Algorithms import Algorithms
 from datetime import timedelta
+from matplotlib.markers import MarkerStyle
+
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
-
-from carriers_simulation.Railway import Connection, Station, Connections, Stations
-from carriers_simulation.Person import Person, Passengers, getFirstPersonTime
-
-stations_file = open(
-    os.path.join(dirname, "../assets/new_stations.json"), mode="r", encoding="utf-8"
-)
-json.load(stations_file, object_hook=Station.from_json)
-new_connections_file = open(
-    os.path.join(dirname, "../assets/new_connections.json"), mode="r", encoding="utf-8"
-)
-json.load(new_connections_file, object_hook=Connection.from_json)
-new_passengers_file = open(
-    os.path.join(dirname, "../assets/passengers.json"), mode="r", encoding="utf-8"
-)
-json.load(new_passengers_file, object_hook=Person.from_json)
-
-env = simpy.Environment()
-simulation_start = getFirstPersonTime()
-for _, station in Stations.items():
-    station.setEnvironment(env,1,simulation_start)
-
-for p in Passengers:
-    env.process(Stations[p.start_station].loadPassenger(p))
-
 
 class CarriersStates(enum.Enum):
     IDLE = 1
@@ -49,6 +26,9 @@ class Carrier:
     # Time for Passengers to load in
     _loadingDuration = 30
 
+    # chain strategy
+    _safety_delay = 10
+
     # Initialisation of the carrier
     def __init__(self, uid, atStation, tickTime, stations, connections, env):
         # carriers identifier:
@@ -58,9 +38,9 @@ class Carrier:
         self._algorithms = Algorithms(connections, stations)
         # connections to update positions:
         self._connections = connections
-        self._currentConnection: Connection = None
+        self._currentConnection = None
         # carrier environment:
-        self._env: simpy.Environment = env
+        self._env = env
         # Passengers on the carrier
         self._passengers = []
         # Time when last trip started
@@ -92,6 +72,36 @@ class Carrier:
         self._mass = 1300*175
         self.total_energy = 0
         self.total_distance = 0
+        self.CHAIN_STARTEGY = True
+    
+    def setupPlot(self, ax):
+        self.dot, = ax.plot(0,0)
+
+    def get_map_position(self, station_a, station_b, moved_distance:float, total_dictance:float) -> (float, float):
+        l = moved_distance/total_dictance
+        return l*station_b.x+(1-l)*station_a.x, l*station_b.y+(1-l)*station_a.y
+        
+    def updatePlotPosition(self, tick_lenght):
+        while True:
+            if self._isMoving:
+                newx, newy = self.get_map_position(
+                            self._stations[self._movingFrom], 
+                            self._stations[self._movingTo], 
+                            self._distanceMovedStation, 
+                            self._distanceToStation)
+                self.dot.set_xdata(newx)
+                self.dot.set_ydata(newy)
+                if self._passengers:
+                    self.dot._marker = MarkerStyle('o', fillstyle='full')
+                else:
+                    self.dot._marker = MarkerStyle('o',fillstyle='none')
+            else:
+                self.dot.set_xdata(self._atStation.x)
+                self.dot.set_ydata(self._atStation.y)
+                self.dot._marker = MarkerStyle('.')
+            yield self._env.timeout(tick_lenght)
+        
+
     def deploy(self):
         # loop of the process, never stops
         while True:
@@ -108,7 +118,20 @@ class Carrier:
             yield self._env.timeout(self._loadingDuration)
 
         yield self._env.process(self.departure())
-        
+    
+    def chain_idle(self, loading):
+        self.state = CarriersStates.IDLE
+        with loading.request() as request:
+            yield request
+            if self._atStation.request_empty_carriers:
+                self._atStation.sendEmptyCarrier(self)
+                yield self._env.timeout(self._safety_delay)
+            else:
+                yield self._env.process(self._atStation.getPassengers(self, self._maxPassengers))
+                # load passengers
+                self.state = CarriersStates.LOADING
+                yield self._env.timeout(self._loadingDuration)
+        yield self._env.process(self.departure())
     
     def departure(self):
         # remove full path
@@ -196,7 +219,10 @@ class Carrier:
         self._distanceMoved = 0
         self._atStation = station
         self._passengers = []
-        yield self._env.process(self.idle(self._atStation.loader))
+        if self.CHAIN_STARTEGY:
+            yield self._env.process(self.chain_idle(self._atStation.loader))
+        else:
+            yield self._env.process(self.idle(self._atStation.loader))
 
     def printDistance(self,file,tick):
         with open(os.path.join(dirname, "../others/plotters/data/"+file), 'w') as f:
@@ -246,14 +272,3 @@ class Carrier:
 
     def getUID(self):
         return self._uid
-
-
-c = Carrier("1", Stations["Lyngby"], 1, Stations, Connections, env)
-# # c2 = Carrier("2", Stations["Lyngby"], 1, Stations, Connections, env)
-env.process(c.deploy())
-# # # env.process(c2.deploy())
-
-#env.process(c.printEvents())
-env.process(c.printKiniticEnergy('energy_carrier.txt',2))
-#env.process(c.printSpeed(2))
-env.run(until=300)

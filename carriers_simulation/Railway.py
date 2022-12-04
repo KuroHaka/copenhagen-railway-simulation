@@ -16,9 +16,13 @@ class Station():
         self.__numberPassengers = 0
         self.__numberCarriers = 0
         self.__is_last_station = is_last_station
+        self.CHAIN_STARTEGY = True
         Stations[name] = self
         for l in lines:
             Lines[l].append(name)
+
+        # chain strategy
+        self.request_empty_carriers = []
 
     def setEnvironment(self, env, capacity, simulation_start):
         self.__env = env
@@ -40,12 +44,17 @@ class Station():
         main_passenger = self.__passengers.pop(0)
         carrier._passengers.append(main_passenger)
         carrier._destination = main_passenger.get_destination()
+        if self.CHAIN_STARTEGY:
+            Stations[main_passenger.get_destination()].request_empty_carriers.append(self.name)
         for p in self.__passengers:
             if len(carrier._passengers)>=max_passengers:
                 break
             if p.get_destination() == carrier._destination:
                 carrier._passengers.append(p)
 
+    def sendEmptyCarrier(self, carrier):
+        carrier._passengers = []
+        carrier._destination = self.request_empty_carriers.pop(0)
 
     @staticmethod
     def processPassengers(env, passengers):

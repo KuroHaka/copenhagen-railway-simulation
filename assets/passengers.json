@@ -1,8 +1,602 @@
 [
-  {
-    "id": "Ronnie Nelson",
-    "start_time": "2000-09-24 09:52:10",
-    "start_station": "Lyngby",
-    "destination": "Bernstorffsvej"
-  }
+    {
+        "id": "Andrea Blackburn",
+        "start_time": "2022-12-04 07:13:51",
+        "start_station": "Nørreport",
+        "destination": "Bispebjerg"
+    },
+    {
+        "id": "Joshua Jones",
+        "start_time": "2022-12-04 13:44:34",
+        "start_station": "København H",
+        "destination": "Skovlunde"
+    },
+    {
+        "id": "Shannon Hoffman",
+        "start_time": "2022-12-04 13:49:36",
+        "start_station": "Værløse",
+        "destination": "Frederikssund"
+    },
+    {
+        "id": "Mckenzie Olson",
+        "start_time": "2022-12-04 16:08:43",
+        "start_station": "Lyngby",
+        "destination": "Vigerslev Alle"
+    },
+    {
+        "id": "Patrick Porter",
+        "start_time": "2022-12-04 14:46:25",
+        "start_station": "Nørreport",
+        "destination": "Langgade"
+    },
+    {
+        "id": "Lawrence Roberts",
+        "start_time": "2022-12-04 10:12:04",
+        "start_station": "København H",
+        "destination": "Birkerød"
+    },
+    {
+        "id": "Joseph Henry",
+        "start_time": "2022-12-04 15:06:08",
+        "start_station": "Nørreport",
+        "destination": "Sjælør"
+    },
+    {
+        "id": "Joel Jones",
+        "start_time": "2022-12-04 08:53:04",
+        "start_station": "Lyngby",
+        "destination": "Buddinge"
+    },
+    {
+        "id": "Crystal Jackson",
+        "start_time": "2022-12-04 07:35:44",
+        "start_station": "Nørreport",
+        "destination": "Islev"
+    },
+    {
+        "id": "Mikayla Sanders",
+        "start_time": "2022-12-04 14:48:10",
+        "start_station": "Nørreport",
+        "destination": "Østerport"
+    },
+    {
+        "id": "Gregory Wall",
+        "start_time": "2022-12-04 17:48:25",
+        "start_station": "København H",
+        "destination": "Avedøre"
+    },
+    {
+        "id": "Kendra Robles",
+        "start_time": "2022-12-04 14:15:45",
+        "start_station": "København H",
+        "destination": "Friheden"
+    },
+    {
+        "id": "Joseph Mccall",
+        "start_time": "2022-12-04 16:51:05",
+        "start_station": "Værløse",
+        "destination": "Albertslund"
+    },
+    {
+        "id": "Charles Hodges",
+        "start_time": "2022-12-04 16:35:50",
+        "start_station": "Lyngby",
+        "destination": "Solrød Strand"
+    },
+    {
+        "id": "Laura Smith",
+        "start_time": "2022-12-04 09:17:55",
+        "start_station": "København H",
+        "destination": "Ølby"
+    },
+    {
+        "id": "Joshua Cox",
+        "start_time": "2022-12-04 07:28:17",
+        "start_station": "København H",
+        "destination": "Dybbølsbro"
+    },
+    {
+        "id": "Haley Ross",
+        "start_time": "2022-12-04 07:51:46",
+        "start_station": "Værløse",
+        "destination": "Hellerup"
+    },
+    {
+        "id": "Kevin Velez",
+        "start_time": "2022-12-04 08:52:19",
+        "start_station": "Værløse",
+        "destination": "Rødovre"
+    },
+    {
+        "id": "Jennifer Gutierrez",
+        "start_time": "2022-12-04 17:43:03",
+        "start_station": "København H",
+        "destination": "Veksø"
+    },
+    {
+        "id": "Mr. Jonathan Johnson",
+        "start_time": "2022-12-04 07:20:17",
+        "start_station": "Nørreport",
+        "destination": "Danshøj"
+    },
+    {
+        "id": "Adam Anderson",
+        "start_time": "2022-12-04 09:42:35",
+        "start_station": "Værløse",
+        "destination": "Danshøj"
+    },
+    {
+        "id": "Andrew Lee",
+        "start_time": "2022-12-04 09:06:31",
+        "start_station": "Virum",
+        "destination": "Taastrup"
+    },
+    {
+        "id": "Jeremy Robinson",
+        "start_time": "2022-12-04 10:39:43",
+        "start_station": "Hillerød",
+        "destination": "Vinge"
+    },
+    {
+        "id": "Heidi Brooks",
+        "start_time": "2022-12-04 09:29:38",
+        "start_station": "Hillerød",
+        "destination": "Vangede"
+    },
+    {
+        "id": "Bryan Beck",
+        "start_time": "2022-12-04 14:10:57",
+        "start_station": "Fuglebakken",
+        "destination": "Buddinge"
+    },
+    {
+        "id": "Charles Burgess",
+        "start_time": "2022-12-04 08:25:59",
+        "start_station": "Frederikssund",
+        "destination": "Hundige"
+    },
+    {
+        "id": "Gabrielle Vargas",
+        "start_time": "2022-12-04 16:23:59",
+        "start_station": "Dybbølsbro",
+        "destination": "Allerød"
+    },
+    {
+        "id": "Stephanie Hicks",
+        "start_time": "2022-12-04 07:36:28",
+        "start_station": "Skovlunde",
+        "destination": "Ny Ellebjerg"
+    },
+    {
+        "id": "Kevin Anderson",
+        "start_time": "2022-12-04 16:03:09",
+        "start_station": "Sjælør",
+        "destination": "Hillerød"
+    },
+    {
+        "id": "Melissa Beck",
+        "start_time": "2022-12-04 16:30:16",
+        "start_station": "Farum",
+        "destination": "Skovlunde"
+    },
+    {
+        "id": "Ashley Alexander",
+        "start_time": "2022-12-04 10:45:07",
+        "start_station": "Dybbølsbro",
+        "destination": "Åmarken"
+    },
+    {
+        "id": "Kathy Taylor",
+        "start_time": "2022-12-04 16:08:28",
+        "start_station": "Dyssegård",
+        "destination": "Allerød"
+    },
+    {
+        "id": "Kevin Dickerson",
+        "start_time": "2022-12-04 14:30:13",
+        "start_station": "Hareskov",
+        "destination": "Virum"
+    },
+    {
+        "id": "Paul Smith",
+        "start_time": "2022-12-04 17:28:33",
+        "start_station": "Nørreport",
+        "destination": "Taastrup"
+    },
+    {
+        "id": "Joan Phillips",
+        "start_time": "2022-12-04 09:56:24",
+        "start_station": "Ishøj",
+        "destination": "København H"
+    },
+    {
+        "id": "Melissa Smith",
+        "start_time": "2022-12-04 07:35:55",
+        "start_station": "Peter Bangs Vej",
+        "destination": "Værløse"
+    },
+    {
+        "id": "Jessica Simpson",
+        "start_time": "2022-12-04 08:57:51",
+        "start_station": "Vigerslev Alle",
+        "destination": "Vinge"
+    },
+    {
+        "id": "Francis Gibson",
+        "start_time": "2022-12-04 09:42:47",
+        "start_station": "Rødovre",
+        "destination": "Skovlunde"
+    },
+    {
+        "id": "George Jackson",
+        "start_time": "2022-12-04 17:51:10",
+        "start_station": "Charlottenlund",
+        "destination": "Måløv"
+    },
+    {
+        "id": "Eddie Newman",
+        "start_time": "2022-12-04 09:31:33",
+        "start_station": "Frederikssund",
+        "destination": "Skovlunde"
+    },
+    {
+        "id": "Melanie Patel",
+        "start_time": "2022-12-04 10:33:58",
+        "start_station": "Brøndbyøster",
+        "destination": "Nordhavn"
+    },
+    {
+        "id": "Mr. Joseph Mclean",
+        "start_time": "2022-12-04 17:01:08",
+        "start_station": "Østerport",
+        "destination": "Hvidovre"
+    },
+    {
+        "id": "Shelley Russell",
+        "start_time": "2022-12-04 07:34:46",
+        "start_station": "Hvidovre",
+        "destination": "Jersie"
+    },
+    {
+        "id": "Debra Powell",
+        "start_time": "2022-12-04 13:41:43",
+        "start_station": "Valby",
+        "destination": "Vangede"
+    },
+    {
+        "id": "Debbie Johnson",
+        "start_time": "2022-12-04 16:25:05",
+        "start_station": "Avedøre",
+        "destination": "Vinge"
+    },
+    {
+        "id": "Maria Allen",
+        "start_time": "2022-12-04 14:37:37",
+        "start_station": "Islev",
+        "destination": "Stengården"
+    },
+    {
+        "id": "Diane Mcpherson",
+        "start_time": "2022-12-04 13:05:58",
+        "start_station": "Ølstykke",
+        "destination": "Vinge"
+    },
+    {
+        "id": "Tyler Stevens",
+        "start_time": "2022-12-04 13:27:43",
+        "start_station": "Brøndbyøster",
+        "destination": "Danshøj"
+    },
+    {
+        "id": "Michelle Hodges",
+        "start_time": "2022-12-04 17:44:00",
+        "start_station": "Høje Taastrup",
+        "destination": "Glostrup"
+    },
+    {
+        "id": "George Baxter",
+        "start_time": "2022-12-04 14:39:22",
+        "start_station": "Klampenborg",
+        "destination": "Kildedal"
+    },
+    {
+        "id": "Amanda Wright",
+        "start_time": "2022-12-04 17:15:37",
+        "start_station": "Farum",
+        "destination": "Høje Taastrup"
+    },
+    {
+        "id": "Joy Chavez",
+        "start_time": "2022-12-04 10:49:20",
+        "start_station": "Jærgersborg",
+        "destination": "Birkerød"
+    },
+    {
+        "id": "Laura Anderson",
+        "start_time": "2022-12-04 16:18:18",
+        "start_station": "Klampenborg",
+        "destination": "Frederikssund"
+    },
+    {
+        "id": "Lauren Miller",
+        "start_time": "2022-12-04 09:18:04",
+        "start_station": "Kildedal",
+        "destination": "Fuglebakken"
+    },
+    {
+        "id": "Chris Hays",
+        "start_time": "2022-12-04 15:54:43",
+        "start_station": "Egedal",
+        "destination": "Skovlunde"
+    },
+    {
+        "id": "Stephanie Burch",
+        "start_time": "2022-12-04 10:38:48",
+        "start_station": "Brøndbyøster",
+        "destination": "Albertslund"
+    },
+    {
+        "id": "Kelly Gonzalez",
+        "start_time": "2022-12-04 15:18:58",
+        "start_station": "Ishøj",
+        "destination": "Stengården"
+    },
+    {
+        "id": "Julie Harvey",
+        "start_time": "2022-12-04 07:00:01",
+        "start_station": "Høje Taastrup",
+        "destination": "Østerport"
+    },
+    {
+        "id": "Kenneth Jimenez",
+        "start_time": "2022-12-04 15:03:19",
+        "start_station": "Greve",
+        "destination": "Dyssegård"
+    },
+    {
+        "id": "Megan Miles",
+        "start_time": "2022-12-04 13:00:45",
+        "start_station": "Virum",
+        "destination": "Brøndby Strand"
+    },
+    {
+        "id": "Lauren Johnson",
+        "start_time": "2022-12-04 13:02:55",
+        "start_station": "Taastrup",
+        "destination": "Malmparken"
+    },
+    {
+        "id": "Christopher Wallace",
+        "start_time": "2022-12-04 15:59:23",
+        "start_station": "Dybbølsbro",
+        "destination": "Ålholm"
+    },
+    {
+        "id": "Melanie Williams",
+        "start_time": "2022-12-04 07:29:13",
+        "start_station": "Jersie",
+        "destination": "Veksø"
+    },
+    {
+        "id": "Angela Lane",
+        "start_time": "2022-12-04 13:55:44",
+        "start_station": "Gentofte",
+        "destination": "Vanløse"
+    },
+    {
+        "id": "Michelle Winters",
+        "start_time": "2022-12-04 17:58:40",
+        "start_station": "Rødovre",
+        "destination": "Nørrebro"
+    },
+    {
+        "id": "Chelsea Carroll",
+        "start_time": "2022-12-04 07:41:48",
+        "start_station": "Ryparken",
+        "destination": "Glostrup"
+    },
+    {
+        "id": "Daniel Shepherd",
+        "start_time": "2022-12-04 14:22:12",
+        "start_station": "Vanløse",
+        "destination": "Vesterport"
+    },
+    {
+        "id": "Elaine Turner",
+        "start_time": "2022-12-04 16:32:48",
+        "start_station": "Fuglebakken",
+        "destination": "Dybbølsbro"
+    },
+    {
+        "id": "Terry Franklin",
+        "start_time": "2022-12-04 09:09:53",
+        "start_station": "Skovbrynet",
+        "destination": "Køge"
+    },
+    {
+        "id": "Luis Morrison",
+        "start_time": "2022-12-04 08:05:43",
+        "start_station": "Solrød Strand",
+        "destination": "Veksø"
+    },
+    {
+        "id": "Brittany Larson",
+        "start_time": "2022-12-04 16:05:33",
+        "start_station": "Vallensbæk",
+        "destination": "Værløse"
+    },
+    {
+        "id": "Mitchell Stewart",
+        "start_time": "2022-12-04 08:03:39",
+        "start_station": "Skovbrynet",
+        "destination": "Rødovre"
+    },
+    {
+        "id": "James Moore",
+        "start_time": "2022-12-04 07:10:38",
+        "start_station": "Sjælør",
+        "destination": "Valby"
+    },
+    {
+        "id": "Gregory Willis",
+        "start_time": "2022-12-04 09:41:02",
+        "start_station": "Holte",
+        "destination": "Gentofte"
+    },
+    {
+        "id": "Joshua Wells",
+        "start_time": "2022-12-04 14:25:57",
+        "start_station": "Ballerup",
+        "destination": "Charlottenlund"
+    },
+    {
+        "id": "Brittney Bennett",
+        "start_time": "2022-12-04 13:38:35",
+        "start_station": "Ballerup",
+        "destination": "Skovlunde"
+    },
+    {
+        "id": "Kelly Dunn",
+        "start_time": "2022-12-04 10:26:29",
+        "start_station": "Valby",
+        "destination": "Bagsværd"
+    },
+    {
+        "id": "Jocelyn Moore",
+        "start_time": "2022-12-04 09:21:57",
+        "start_station": "Ølby",
+        "destination": "Friheden"
+    },
+    {
+        "id": "Daniel Allen",
+        "start_time": "2022-12-04 10:04:23",
+        "start_station": "Køge Nord",
+        "destination": "Gentofte"
+    },
+    {
+        "id": "Raymond Barrett",
+        "start_time": "2022-12-04 09:35:36",
+        "start_station": "Egedal",
+        "destination": "Hellerup"
+    },
+    {
+        "id": "Jamie Singh",
+        "start_time": "2022-12-04 14:25:22",
+        "start_station": "Bernstorffsvej",
+        "destination": "Ny Ellebjerg"
+    },
+    {
+        "id": "Justin Hunt",
+        "start_time": "2022-12-04 14:21:02",
+        "start_station": "Jærgersborg",
+        "destination": "Hundige"
+    },
+    {
+        "id": "Jon Maxwell",
+        "start_time": "2022-12-04 07:33:54",
+        "start_station": "Emdrup",
+        "destination": "Svanemøllen"
+    },
+    {
+        "id": "Megan Goodman",
+        "start_time": "2022-12-04 11:13:12",
+        "start_station": "København H",
+        "destination": "Malmparken"
+    },
+    {
+        "id": "Joyce Patterson",
+        "start_time": "2022-12-04 19:48:54",
+        "start_station": "København H",
+        "destination": "Vallensbæk"
+    },
+    {
+        "id": "Jasmine Jenkins",
+        "start_time": "2022-12-04 05:02:20",
+        "start_station": "Lyngby",
+        "destination": "Emdrup"
+    },
+    {
+        "id": "Omar Gonzalez",
+        "start_time": "2022-12-04 19:23:39",
+        "start_station": "København H",
+        "destination": "Fuglebakken"
+    },
+    {
+        "id": "Michael Ewing",
+        "start_time": "2022-12-04 12:11:45",
+        "start_station": "Herlev",
+        "destination": "Ryparken"
+    },
+    {
+        "id": "Leslie Martin",
+        "start_time": "2022-12-04 18:35:50",
+        "start_station": "Emdrup",
+        "destination": "Ordrup"
+    },
+    {
+        "id": "Lori Rose",
+        "start_time": "2022-12-04 05:08:44",
+        "start_station": "Danshøj",
+        "destination": "Skovlunde"
+    },
+    {
+        "id": "Allen Small",
+        "start_time": "2022-12-04 02:56:23",
+        "start_station": "Værløse",
+        "destination": "Kildebakke"
+    },
+    {
+        "id": "Caroline Evans",
+        "start_time": "2022-12-05 00:52:39",
+        "start_station": "Nordhavn",
+        "destination": "Køge Nord"
+    },
+    {
+        "id": "Jason Jackson",
+        "start_time": "2022-12-05 02:34:11",
+        "start_station": "Sydhavn",
+        "destination": "Hellerup"
+    },
+    {
+        "id": "Micheal Arellano",
+        "start_time": "2022-12-04 21:53:30",
+        "start_station": "Friheden",
+        "destination": "Islev"
+    },
+    {
+        "id": "Kimberly Jackson",
+        "start_time": "2022-12-04 20:13:22",
+        "start_station": "København H",
+        "destination": "Emdrup"
+    },
+    {
+        "id": "Sharon Allison",
+        "start_time": "2022-12-04 23:25:32",
+        "start_station": "Køge Nord",
+        "destination": "Jyllingevej"
+    },
+    {
+        "id": "Charles Ball",
+        "start_time": "2022-12-04 05:11:50",
+        "start_station": "Hareskov",
+        "destination": "Kildebakke"
+    },
+    {
+        "id": "Laura Oliver",
+        "start_time": "2022-12-05 01:45:59",
+        "start_station": "Jersie",
+        "destination": "Vinge"
+    },
+    {
+        "id": "Bradley Barker",
+        "start_time": "2022-12-04 18:19:56",
+        "start_station": "Karlslunde",
+        "destination": "Ordrup"
+    },
+    {
+        "id": "Marc Wilson",
+        "start_time": "2022-12-04 04:59:40",
+        "start_station": "Charlottenlund",
+        "destination": "Sydhavn"
+    }
 ]

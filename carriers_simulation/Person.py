@@ -173,3 +173,5 @@ class Person:
         print(f"departuretime: {self._departureTime}")
         if self.isArrived:
             print(f"travel time: {self._travelTime}")
+
+Person.create_passengers(["Lyngby", "Nørreport",  "Værløse", "København H"], datetime.now(), datetime.now() + timedelta(hours=24), 100)
