@@ -397,6 +397,11 @@ class Carrier():
         self. _remainingWaitingTime = 20
         self._boarding = False
         self._metersDriven = 0
+        self._metersDrivenEmpty = 0
+
+        self._totalPassengers = 0
+        self._tripWithPassengers = 0
+        self._tripWithoutPassengers = 0
     
     def get_map_position(self, station_a, station_b, moved_distance:float, total_dictance:float) -> (float, float):
         l = moved_distance/total_dictance
@@ -479,6 +484,8 @@ class Carrier():
         if (self._movingFrom,self._movingTo) in connections:
             self._distanceToStation = connections[(self._movingFrom,self._movingTo)].distance
             self._metersDriven += self._distanceToStation
+            if empty:
+                self._metersDrivenEmpty += self._distanceToStation
         else:
             print(f"Carrier {self._uid} is fucked, connection does not exist")
 
@@ -494,9 +501,11 @@ class Carrier():
 
         if empty:
             self.empty = True
+            self._tripWithoutPassengers += 1
         else:
             self.boardPassengers(self._atStation, destination.name, totalTime)
             self._boarding = True
+            self._tripWithPassengers += 1
             if self._remainingWaitingTime > 0:
                 time = self.wait(time)
                 if time == 0:
@@ -544,6 +553,7 @@ class Carrier():
 
     #arrive at a station
     def arriveAt(self, station, time, totalTime):
+        self._totalPassengers += len(self._passengers)
         self._atStation = station
         self._cameFrom = self._movingFrom
         self._movingTo = 0
