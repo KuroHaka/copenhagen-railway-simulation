@@ -4,7 +4,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir
 sys.path.append(PROJECT_ROOT)
 dirname = os.path.dirname(__file__)
 from train_simulation.Rail_Transport import Train, Carrier
-from train_simulation.Simulation import Simulation
+from train_simulation.Central_Communication import Simulation, CarrierSimulation
 from train_simulation.Person import Person
 from train_simulation.Algorithms import Algorithms
 from datetime import datetime
@@ -33,7 +33,6 @@ class Test_moving(unittest.TestCase):
         totalTime = 0
         train.moveTo(sim.stations['Allerød'],sim.connections[('Hillerød','Allerød')].distance, time, datetime.now(),False)
 
-        print(len(train._passengers),len(sim.stations['Hillerød'].get_passengers()))
         self.assertTrue(len(train._passengers) == 700 and len(sim.stations['Hillerød'].get_passengers()) == 50)
 
         for i in range(10):
@@ -72,13 +71,12 @@ class Test_moving(unittest.TestCase):
             if train._moving:
                 train.keepMoving(time, totalTime)
         
-        print(train._moving == False,train._atStation.name,len(train._passengers))
         self.assertTrue(train._moving == False and train._atStation == sim.stations['Allerød'] and len(train._passengers) == 0)
 
 
 
     def test_carrier_move_to_over_capacity(self):
-        sim = CarrierSimulation(100,['København H'],datetime(2018, 10, 22, 0, 0, 0), True)
+        sim = CarrierSimulation(500,['København H'],datetime(2018, 10, 22, 0, 0, 0), True)
         algo = Algorithms(sim.connections, sim.stations, sim.lines)
 
         carrier = sim.stations['Hillerød'].carriers[0]
@@ -95,20 +93,19 @@ class Test_moving(unittest.TestCase):
         time = 30
         totalTime = 0
 
-        carrier.moveTo(sim.stations['Allerød'],sim.connections[('Hillerød','Allerød')].distance, time, datetime.now(), False)
+        carrier.moveTo(sim.stations['Allerød'],time, algo, sim.connections, False, datetime.now())
 
-        self.assertTrue(len(carrier._passengers) == 5 and len(Stations['Hillerød'].get_passengers()) == 5)
+        self.assertTrue(len(carrier._passengers) == 5 and len(sim.stations['Hillerød'].get_passengers()) == 5)
 
-        for i in range(10):
+        for i in range(20):
             if carrier._moving:
-                carrier.keepMoving(time, totalTime)
+                carrier.keepMoving(time, datetime.now(), sim.connections)
 
-        self.assertTrue(
-            carrier._moving == False and carrier._atStation == sim.stations['Allerød'] and len(carrier._passengers) == 0)
+        self.assertTrue(carrier._moving == False and carrier._atStation == sim.stations['Allerød'] and len(carrier._passengers) == 0)
 
     def test_carrier_move_to(self):
 
-        sim = CarrierSimulation(100,['København H'],datetime(2018, 10, 22, 0, 0, 0), True)
+        sim = CarrierSimulation(500,['København H'],datetime(2018, 10, 22, 0, 0, 0), True)
         algo = Algorithms(sim.connections, sim.stations, sim.lines)
 
         carrier = sim.stations['Hillerød'].carriers[0]
@@ -125,17 +122,15 @@ class Test_moving(unittest.TestCase):
         time = 30
         totalTime = 0
 
-        carrier.moveTo(sim.stations['Allerød'],sim.connections[('Hillerød','Allerød')].distance, time, datetime.now(), False)
+        carrier.moveTo(sim.stations['Allerød'],time, algo, sim.connections, False, datetime.now())
 
-        self.assertTrue(len(carrier._passengers) == 4 and len(Stations['Hillerød'].get_passengers()) == 0)
+        self.assertTrue(len(carrier._passengers) == 4 and len(sim.stations['Hillerød'].get_passengers()) == 0)
 
-        for i in range(10):
+        for i in range(20):
             if carrier._moving:
-                carrier.keepMoving(time, totalTime)
+                carrier.keepMoving(time, datetime.now(), sim.connections)
 
-        self.assertTrue(
-            carrier._moving == False and carrier._atStation == sim.stations['Allerød'] and len(carrier._passengers) == 0
-            )
+        self.assertTrue(carrier._moving == False and carrier._atStation == sim.stations['Allerød'] and len(carrier._passengers) == 0)
 
     def test_accelerate(self):
         sim = Simulation(52,datetime(2018, 10, 22, 0, 0, 0), True)
