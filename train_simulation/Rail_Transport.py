@@ -1,7 +1,6 @@
-from .Entity import Entity
 from abc import abstractproperty
 import json, datetime
-
+from matplotlib.markers import MarkerStyle
 """ README:
 
     Removed the abstract property from Moving and Entity
@@ -25,6 +24,8 @@ class Train():
     #Acceleration of train
     _acceleration = 1.3
     _deceleration = 1.2
+
+    _weight = 123800
 
     #Initialisation of the train
     def __init__(self, uid, atStation, moveTo, line, start_time):
@@ -70,6 +71,7 @@ class Train():
 
         #When the simulation began
         self.start_time = start_time
+        self._metersDriven = 0
 
 
        
@@ -80,20 +82,37 @@ class Train():
 
     #If the station is close, the train can only accelerate so much
     def calculateAccelerateTo(self, distance):
-        distAcc = 0
-        distDeacc = 0
 
-        for i in range(28):
-            distAcc += 1.3*i
-            distDeacc += 1.2*i
+        maxAccelerationTime = 26
+        while True:
+            distAcc = 0
+            distDeacc = 0
+            speed = 0
+            for i in range(maxAccelerationTime):
+                speed += self._acceleration
+                distAcc += speed
+                if distAcc >= distance:
+                    break
+            if distAcc >= distance:
+                maxAccelerationTime -= 1
+                continue
+
+            i = 0
+            while speed > 0:
+                distDeacc += speed - self._deceleration
+                speed -= self._deceleration
+                if distAcc+distDeacc >= distance:
+                    break
+                i += 1
             if distAcc + distDeacc >= distance:
-                self._distanceFromStationToDecelerate = distDeacc
-                return 1.3*i
-        self._distanceFromStationToDecelerate = distDeacc
-        return self._maxSpeed
+                maxAccelerationTime -= 1
+                continue
+            self._distanceFromStationToDecelerate = distDeacc
+            return min(self._acceleration*maxAccelerationTime,self._maxSpeed)
+
 
     #Functions for when atStation
-    def moveTo(self,station,distance,time,trainOnTracks):
+    def moveTo(self,station,distance,time, totalTime,trainOnTracks):
 
         if self._shouldStop:
             return 0
@@ -108,14 +127,19 @@ class Train():
             #print(f"Train {self._uid} of line {self._line} is not moving to {station.name} because there is a train on the tracks")
             return 0
         
-        self.boardPassengers(self._atStation)
         
         self._movingFrom = self._atStation
         self._movingTo = station
+
+        self.boardPassengers(self._atStation,totalTime)
+        
         self._atStation = 0
         self._cameFrom = 0
         self._distanceToStation = distance
+        self._metersDriven += distance
         self._moving = True
+
+        
 
         self._accelerateTo = self.calculateAccelerateTo(distance)
 
@@ -144,32 +168,38 @@ class Train():
             self._remainingWaitingTime = 0
             return time
 
-    def boardPassengers(self, station):
+    def boardPassengers(self, station,totalTime):
         #print(f"Boarding passengers for train {self._uid}: amount of passengers that can board: {station.passengers}, available passenger space: {self.availablePassengerSpace()}")
         passengers_to_remove = []
         if len(station.get_passengers()) < self.availablePassengerSpace():
             for passenger in station.get_passengers():
-                if self._line in passenger.remainingPath[0]["line"]:
+                if self._line in passenger.remainingPath[0]["line"] and self._movingTo.name == passenger.remainingPath[0]["path"][1]:
                     self._passengers.append(passenger)
                     passengers_to_remove.append(passenger)
+                    passenger.updateTimeSpentWaiting(totalTime)
         else:
             passengerAmount = self.availablePassengerSpace()
             for i,passenger in enumerate(station.get_passengers()):
-                if i > passengerAmount:
+                if i >= passengerAmount:
                     break
-                if self._line in passenger.remainingPath[0]["line"]:
+                if self._line in passenger.remainingPath[0]["line"] and self._movingTo.name == passenger.remainingPath[0]["path"][1]:
                     self._passengers.append(passenger)
                     passengers_to_remove.append(passenger)
+                    passenger.updateTimeSpentWaiting(totalTime)
 
         station.sub_passengers(passengers_to_remove)
 
     #Should account for Station space?
     def disembarkPassengers(self, station, totalTime):
+        passengersToRemove = []
         for passenger in self._passengers:
             if passenger.intermediateDestination == station.name:
-                self._passengers.remove(passenger)
+                passengersToRemove.append(passenger)
                 passenger.atStation = station.name
                 passenger.updatePath((self.start_time + datetime.timedelta(seconds=totalTime)), station)
+        
+        for passenger in passengersToRemove:
+            self._passengers.remove(passenger)
         
 
     #Return a tuple consisting of the station the train came from and the station the train is at
@@ -188,8 +218,10 @@ class Train():
         self._movingFrom = 0
         self._distanceMovedTowardsStation = 0
         self._distanceFromStationToDecelerate = 0
-        self._remainingWaitingTime = 60
+        self._remainingWaitingTime = 20
         self._moving = False
+
+        #station.trainArrivalTimes.append(totalTime/60)
 
         # if self._line == 'f-line' and self._uid == '7':
         #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")
@@ -312,11 +344,13 @@ class Carrier():
     _maxPassengers = 5
 
     #Max speed of Carrier in m/s
-    _maxSpeed = 33.33
+    _maxSpeed = 22.22
     
     #Acceleration of carrier
     _acceleration = 1.5
     _deceleration = 1.4
+
+    _weight = 1300
 
     #Initialisation of the carrier
     def __init__(self, uid, atStation, start_time):
@@ -360,30 +394,86 @@ class Carrier():
 
         self.start_time = start_time
         self.empty = False
+        self. _remainingWaitingTime = 20
+        self._boarding = False
+        self._metersDriven = 0
+        self._metersDrivenEmpty = 0
+
+        self._totalPassengers = 0
+        self._tripWithPassengers = 0
+        self._tripWithoutPassengers = 0
+    
+    def get_map_position(self, station_a, station_b, moved_distance:float, total_dictance:float) -> (float, float):
+        l = moved_distance/total_dictance
+        return l*station_b.x+(1-l)*station_a.x, l*station_b.y+(1-l)*station_a.y
+
+    def initVisualization(self, ax):
+        self.dot, = ax.plot(0,0)
+
+    def updateVisualization(self, stations):
+        if self._moving:
+            newx, newy = self.get_map_position(
+                    stations[self._movingFrom], 
+                    stations[self._movingTo], 
+                    self._distanceMovedTowardsStation, 
+                    self._distanceToStation)
+            self.dot.set_xdata(newx)
+            self.dot.set_ydata(newy)
+            if self._passengers:
+                self.dot._marker = MarkerStyle('o', fillstyle='full')
+            else:
+                self.dot._marker = MarkerStyle('o',fillstyle='none')
+        else:
+            self.dot.set_xdata(self._atStation.x)
+            self.dot.set_ydata(self._atStation.y)
+            
+        
 
 
     #If the station is close, the train can only accelerate so much
     def calculateAccelerateTo(self, distance):
-        distAcc = 0
-        distDeacc = 0
+        maxAccelerationTime = 26
+        while True:
+            distAcc = 0
+            distDeacc = 0
+            speed = 0
+            for i in range(maxAccelerationTime):
+                speed += self._acceleration
+                distAcc += speed
+                if distAcc >= distance:
+                    break
+            if distAcc >= distance:
+                maxAccelerationTime -= 1
+                continue
 
-        for i in range(28):
-            distAcc += self._acceleration*i
-            distDeacc += self._deceleration*i
+            i = 0
+            while speed > 0:
+                distDeacc += speed - self._deceleration
+                speed -= self._deceleration
+                if distAcc+distDeacc >= distance:
+                    break
+                i += 1
             if distAcc + distDeacc >= distance:
-                self._distanceFromStationToDecelerate = distDeacc
-                return self._acceleration*i
-        self._distanceFromStationToDecelerate = distDeacc
-        return self._maxSpeed
+                maxAccelerationTime -= 1
+                continue
+            self._distanceFromStationToDecelerate = distDeacc
+            return min(self._acceleration*maxAccelerationTime,self._maxSpeed)
+
+    def wait(self,time):
+        if time <= self._remainingWaitingTime:
+            self._remainingWaitingTime -= time
+            return 0
+        else:
+            time -= self._remainingWaitingTime
+            self._remainingWaitingTime = 0
+            return time
 
     #Functions for when atStation
-    def moveTo(self,destination,time,algo,connections, empty):
+    def moveTo(self,destination,time,algo,connections, empty, totalTime):
         if self._shouldStop:
             return 0
 
-        if empty:
-            self.empty = True
-
+        #print(self._atStation.name,destination.name)
         self._path = algo.get_path(self._atStation.name,destination.name).nodes
         self._destination = destination
         
@@ -393,17 +483,36 @@ class Carrier():
 
         if (self._movingFrom,self._movingTo) in connections:
             self._distanceToStation = connections[(self._movingFrom,self._movingTo)].distance
+            self._metersDriven += self._distanceToStation
+            if empty:
+                self._metersDrivenEmpty += self._distanceToStation
         else:
             print(f"Carrier {self._uid} is fucked, connection does not exist")
 
         self._atStation.sub_carrier(self)
-        self._atStation = 0
         self._cameFrom = 0
         self._moving = True
 
-        self._accelerateTo = self.calculateAccelerateTo(self._distanceToStation)
-        
+        if not self._path:
+            self._accelerateTo = self.calculateAccelerateTo(self._distanceToStation)
+        else:
+            self._accelerateTo = self._maxSpeed
 
+
+        if empty:
+            self.empty = True
+            self._tripWithoutPassengers += 1
+        else:
+            self.boardPassengers(self._atStation, destination.name, totalTime)
+            self._boarding = True
+            self._tripWithPassengers += 1
+            if self._remainingWaitingTime > 0:
+                time = self.wait(time)
+                if time == 0:
+                    return 0
+
+        self._atStation = 0
+        self._boarding = False
         return self.accelerate(time)
 
     def accelerate(self, time):
@@ -415,25 +524,27 @@ class Carrier():
             time -= 1
         return time
 
-    def boardPassengers(self, station, destination):
+    def boardPassengers(self, station, destination,totalTime):
         #print(f"Boarding passengers for train {self._uid}: amount of passengers that can board: {station.passengers}, available passenger space: {self.availablePassengerSpace()}")
         passengersToRemove = []
         for passenger in station.get_passengers():
+            if not self.availablePassengerSpace():
+                break
             if passenger.destination == destination:
                 self._passengers.append(passenger)
                 passengersToRemove.append(passenger)
-                if not self.availablePassengerSpace():
-                    break
+                passenger.updateTimeSpentWaiting(totalTime)
         station.sub_passengers(passengersToRemove)
 
 
                 
     
     #Should account for Station space?
-    def disembarkPassengers(self, station, totalTime):
-        for passenger in self._passengers:
-            self._passengers.remove(passenger)
-            passenger.arrived((self.start_time + datetime.timedelta(seconds=totalTime)))
+    def disembarkPassengers(self, totalTime):
+        rng = len(self._passengers)
+        for i in range(rng):
+            passenger = self._passengers.pop(0)
+            passenger.arrived(totalTime)
         
     
     #
@@ -442,6 +553,7 @@ class Carrier():
 
     #arrive at a station
     def arriveAt(self, station, time, totalTime):
+        self._totalPassengers += len(self._passengers)
         self._atStation = station
         self._cameFrom = self._movingFrom
         self._movingTo = 0
@@ -450,11 +562,13 @@ class Carrier():
         self._distanceMovedTowardsStation = 0
         self._distanceFromStationToDecelerate = 0
         self._moving = False
+        self._remainingWaitingTime = 20
+        self._boarding = False
 
         # if self._line == 'f-line' and self._uid == '7':
         #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")
 
-        self.disembarkPassengers(station,totalTime)
+        self.disembarkPassengers(totalTime)
         station.add_carrier(self)
         if self.empty:
             self.empty = False
@@ -484,6 +598,16 @@ class Carrier():
         if self._shouldStop:
             self.decelerate(time)
             return 0
+
+        if (self._boarding):
+            self.boardPassengers(self._atStation, self._destination.name, totalTime)
+            if self._remainingWaitingTime > 0:
+                time = self.wait(time)
+                if time == 0:
+                    return 0
+            self._atStation = 0
+            self._boarding = False
+
 
         if (self._speed < self._maxSpeed and not self._decelerating):
             time = self.accelerate(time)
