@@ -71,7 +71,7 @@ class Point:
         self.pointer.set_data(np.array([self.x[n],self.y[n]]))
 
 class Simulation:
-    def __init__(self, amountOfTrains, start_datetime):
+    def __init__(self, amountOfTrains, start_datetime, test):
         self.plt = plt
         self.fig, self.ax = self.plt.subplots()
         self.animator = mpanimation
@@ -85,15 +85,16 @@ class Simulation:
         with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
             self.lines = json.load(linesFile)
 
-        with open(os.path.join(dirname, '../assets/passengers.json'), mode="r", encoding="utf-8") as personFile:
-            self.passengersToGenerateJSON = json.load(personFile)
+        if not test:
+            with open(os.path.join(dirname, '../assets/passengers.json'), mode="r", encoding="utf-8") as personFile:
+                self.passengersToGenerateJSON = json.load(personFile)
 
-        self.passengersToGenerate = []
-        for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
-            self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
-        
-        self.passengersToGenerate.sort(key=operator.attrgetter('start_time'))
-        self.allPassengersGenerated = []
+            self.passengersToGenerate = []
+            for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
+                self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
+            
+            self.passengersToGenerate.sort(key=operator.attrgetter('start_time'))
+            self.allPassengersGenerated = []
 
         self.trains = {}
         self.pointers = {}
@@ -390,7 +391,7 @@ class Simulation:
             self.plt.show()
               
 class CarrierSimulation:
-    def __init__(self, numberOfCarriers, critical_stations, start_datetime):
+    def __init__(self, numberOfCarriers, critical_stations, start_datetime, test):
         self.plt = plt
         self.fig, self.ax = self.plt.subplots()
         self.animator = mpanimation
@@ -404,15 +405,16 @@ class CarrierSimulation:
         with open(os.path.join(dirname, '../assets/lines.json'), mode="r", encoding="utf-8") as linesFile:
             self.lines = json.load(linesFile)
 
-        with open(os.path.join(dirname, '../assets/passengers.json'), mode="r", encoding="utf-8") as personFile:
-            self.passengersToGenerateJSON = json.load(personFile)
+        if not test:
+            with open(os.path.join(dirname, '../assets/passengers.json'), mode="r", encoding="utf-8") as personFile:
+                self.passengersToGenerateJSON = json.load(personFile)
 
-        self.passengersToGenerate = []
-        for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
-            self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
-
-        self.passengersToGenerate.sort(key=operator.attrgetter('start_time'))
-        self.allPassengersGenerated = []
+            self.passengersToGenerate = []
+            for jsonPassenger in self.passengersToGenerateJSON: # start_station, destination, start_time, id)
+                self.passengersToGenerate += [Person(jsonPassenger["start_station"], jsonPassenger["destination"], datetime.datetime.strptime(jsonPassenger["start_time"], '%Y-%m-%d %H:%M:%S'), jsonPassenger["id"])]
+            
+            self.passengersToGenerate.sort(key=operator.attrgetter('start_time'))
+            self.allPassengersGenerated = []
 
         self.carriers = {}
         self.pointers = {}

@@ -82,17 +82,34 @@ class Train():
 
     #If the station is close, the train can only accelerate so much
     def calculateAccelerateTo(self, distance):
-        distAcc = 0
-        distDeacc = 0
 
-        for i in range(28):
-            distAcc += self._acceleration*i
-            distDeacc += self._deceleration*i
+        maxAccelerationTime = 26
+        while True:
+            distAcc = 0
+            distDeacc = 0
+            speed = 0
+            for i in range(maxAccelerationTime):
+                speed += self._acceleration
+                distAcc += speed
+                if distAcc >= distance:
+                    break
+            if distAcc >= distance:
+                maxAccelerationTime -= 1
+                continue
+
+            i = 0
+            while speed > 0:
+                distDeacc += speed - self._deceleration
+                speed -= self._deceleration
+                if distAcc+distDeacc >= distance:
+                    break
+                i += 1
             if distAcc + distDeacc >= distance:
-                self._distanceFromStationToDecelerate = distDeacc
-                return self._acceleration*i
-        self._distanceFromStationToDecelerate = distDeacc
-        return self._maxSpeed
+                maxAccelerationTime -= 1
+                continue
+            self._distanceFromStationToDecelerate = distDeacc
+            return min(self._acceleration*maxAccelerationTime,self._maxSpeed)
+
 
     #Functions for when atStation
     def moveTo(self,station,distance,time, totalTime,trainOnTracks):
@@ -163,7 +180,7 @@ class Train():
         else:
             passengerAmount = self.availablePassengerSpace()
             for i,passenger in enumerate(station.get_passengers()):
-                if i > passengerAmount:
+                if i >= passengerAmount:
                     break
                 if self._line in passenger.remainingPath[0]["line"] and self._movingTo.name == passenger.remainingPath[0]["path"][1]:
                     self._passengers.append(passenger)
@@ -174,11 +191,15 @@ class Train():
 
     #Should account for Station space?
     def disembarkPassengers(self, station, totalTime):
+        passengersToRemove = []
         for passenger in self._passengers:
             if passenger.intermediateDestination == station.name:
-                self._passengers.remove(passenger)
+                passengersToRemove.append(passenger)
                 passenger.atStation = station.name
                 passenger.updatePath((self.start_time + datetime.timedelta(seconds=totalTime)), station)
+        
+        for passenger in passengersToRemove:
+            self._passengers.remove(passenger)
         
 
     #Return a tuple consisting of the station the train came from and the station the train is at
@@ -200,7 +221,7 @@ class Train():
         self._remainingWaitingTime = 20
         self._moving = False
 
-        station.trainArrivalTimes.append(totalTime/60)
+        #station.trainArrivalTimes.append(totalTime/60)
 
         # if self._line == 'f-line' and self._uid == '7':
         #     print(f"Train: {self._uid} arrived at station: {self._atStation.name} after running for {(totalTime-time)/60} minutes")
@@ -406,17 +427,32 @@ class Carrier():
 
     #If the station is close, the train can only accelerate so much
     def calculateAccelerateTo(self, distance):
-        distAcc = 0
-        distDeacc = 0
+        maxAccelerationTime = 26
+        while True:
+            distAcc = 0
+            distDeacc = 0
+            speed = 0
+            for i in range(maxAccelerationTime):
+                speed += self._acceleration
+                distAcc += speed
+                if distAcc >= distance:
+                    break
+            if distAcc >= distance:
+                maxAccelerationTime -= 1
+                continue
 
-        for i in range(28):
-            distAcc += self._acceleration*i
-            distDeacc += self._deceleration*i
+            i = 0
+            while speed > 0:
+                distDeacc += speed - self._deceleration
+                speed -= self._deceleration
+                if distAcc+distDeacc >= distance:
+                    break
+                i += 1
             if distAcc + distDeacc >= distance:
-                self._distanceFromStationToDecelerate = distDeacc
-                return min(self._acceleration*i, self._maxSpeed)
-        self._distanceFromStationToDecelerate = distDeacc
-        return self._maxSpeed
+                maxAccelerationTime -= 1
+                continue
+            self._distanceFromStationToDecelerate = distDeacc
+            return min(self._acceleration*maxAccelerationTime,self._maxSpeed)
 
     def wait(self,time):
         if time <= self._remainingWaitingTime:

@@ -14,7 +14,7 @@ def main():
     #animation = len(sys.argv)>1 and sys.argv[1] == 'animation'
     simulationLength = 5000
     tickLength = 30
-    numberCarriers = 5000
+    numberCarriers = 6000
     numberPassengers = 125000
 
 
@@ -29,14 +29,14 @@ def main():
     print()
     print()
 
-    print("Creating passegners")
-    create_passengers(['København H', 'Svanemøllen'],datetime(2018, 10, 22, 6, 0, 0), datetime(2018, 10, 22, 23, 59, 59), numberPassengers)
+    # print("Creating passegners")
+    # create_passengers(['København H', 'Svanemøllen'],datetime(2018, 10, 22, 6, 0, 0), datetime(2018, 10, 22, 23, 59, 59), numberPassengers)
 
     print("Creating carrier simulation")
-    simCarrier = CarrierSimulation(numberCarriers,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0))
+    simCarrier = CarrierSimulation(numberCarriers,['København H','Lyngby'],datetime(2018, 10, 22, 0, 0, 0), False)
 
     print("Creating train simulation")
-    simTrain = Simulation(52,datetime(2018, 10, 22, 0, 0, 0))
+    simTrain = Simulation(52,datetime(2018, 10, 22, 0, 0, 0), False)
     print()
 
     
@@ -187,6 +187,8 @@ def main():
     trainMaxkm = []
 
     print("Trains:")
+    test = []
+    test2 = []
     totalTravelTime = timedelta(0)
     totalPassengersArrived = 0
     totalPassengersNotArrived = 0
@@ -204,6 +206,7 @@ def main():
                     passengerDistanceTraveled += simTrain.connections[(actualPath[i],actualPath[i+1])].distance
             if passengerDistanceTraveled < 1000:
                 train1km.append(passenger.travel_time.total_seconds()/60)
+                test.append((train1km[-1], passenger.start_station,passenger.destination, actualPath))
 
             if 1000 <= passengerDistanceTraveled < 2000:
                 train2km.append(passenger.travel_time.total_seconds()/60)
@@ -220,6 +223,9 @@ def main():
             if 20000 <= passengerDistanceTraveled:
                 trainMaxkm.append(passenger.travel_time.total_seconds()/60)
 
+            
+            
+
         else:
             totalPassengersNotArrived += 1
 
@@ -233,7 +239,7 @@ def main():
     print()
 
 
-
+    train1kmprint = train1km[:]
 
 
 
@@ -473,6 +479,8 @@ def main():
     print()
     print()
     print()
+
+    print(test)
 
 
     # total time spent accelerating for all trains/carriers (calculate how much energy it takes to reach "max_speed")
