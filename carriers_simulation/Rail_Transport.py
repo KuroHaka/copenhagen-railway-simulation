@@ -21,13 +21,13 @@ class Carrier:
     # Max speed of Carrier in m/s
     _maxSpeed = 22.22
     # Acceleration of carrier
-    _maxAcceleration = 1.3
-    _maxDeaceleration = -1.2
+    _maxAcceleration = 1.5
+    _maxDeaceleration = -1.4
     # Time for Passengers to load in
-    _loadingDuration = 30
+    _loadingDuration = 1
 
     # chain strategy
-    _safety_delay = 10
+    _safety_delay = 1
 
     # Initialisation of the carrier
     def __init__(self, uid, atStation, tickTime, stations, connections, env):
@@ -123,11 +123,13 @@ class Carrier:
         self.state = CarriersStates.IDLE
         with loading.request() as request:
             yield request
+            while not self._atStation.request_empty_carriers and not self._atStation.get_passengers():
+                yield self._env.timeout(1)
             if self._atStation.request_empty_carriers:
                 self._atStation.sendEmptyCarrier(self)
                 yield self._env.timeout(self._safety_delay)
             else:
-                yield self._env.process(self._atStation.getPassengers(self, self._maxPassengers))
+                self._atStation.getPassengers(self, self._maxPassengers)
                 # load passengers
                 self.state = CarriersStates.LOADING
                 yield self._env.timeout(self._loadingDuration)
@@ -218,6 +220,8 @@ class Carrier:
         self._movingFrom = ""
         self._distanceMoved = 0
         self._atStation = station
+        for p in self._passengers:
+            p.arrived(self._env.simulation_start + timedelta(seconds=self._env.now))
         self._passengers = []
         if self.CHAIN_STARTEGY:
             yield self._env.process(self.chain_idle(self._atStation.loader))
@@ -244,7 +248,7 @@ class Carrier:
 
     def printSpeed(self,tick):
         while True:
-            print(f'{self._distanceLeftDestination:.3f}')
+            print(f'{self._speed:.3f}')
             yield self._env.timeout(tick)
 
     def printEvents(self):
@@ -254,7 +258,8 @@ class Carrier:
                 preState = self.state
                 print(f'{self._env.now}: carrier [{self._uid}] {self.state.name},')
                 if self.state == CarriersStates.MOVING:
-                    print(f'\t moving from {self._movingFrom} to {self._movingTo},')
+                    print(f'\t moving from {self._movingFrom} to {self._destination},')
+                    print(f'\t with {[ str(x) for x in self._passengers]}')
                 elif self.state == CarriersStates.IDLE:
                     print(f'\t in {self._atStation.name}')
                 elif self.state == CarriersStates.LOADING:
@@ -268,7 +273,6 @@ class Carrier:
         while True:
             print(f't:{self._env.now}')
             yield self._env.timeout(tick)
-
 
     def getUID(self):
         return self._uid

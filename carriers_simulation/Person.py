@@ -12,18 +12,10 @@ from faker import Faker
 
 # from Railway import Station
 Passengers = []
-
-
-def random_date(start, end):
-    delta = end - start
-    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
-    random_second = random.randrange(int_delta)
-    return start + timedelta(seconds=random_second)
-
+Reached = {new_list: [] for new_list in range(1440)}
 
 def getFirstPersonTime():
     return min(Passengers, key=lambda x: x.get_start_time()).get_start_time()
-
 
 class Person:
     def __init__(
@@ -48,7 +40,10 @@ class Person:
     @staticmethod
     def from_json(json_dct):
         Person(
-            json_dct["start_station"], json_dct["destination"], json_dct["start_time"], json_dct["id"]
+            json_dct["start_station"],
+            json_dct["destination"],
+            datetime.strptime(json_dct["start_time"], "%Y-%m-%d %H:%M:%S"),
+            json_dct["id"],
         )
 
     @staticmethod
@@ -98,7 +93,7 @@ class Person:
                 destination = random.choice(stations)
             travel_time = random.choice(possible_times)
             passengers_list.append(
-                Person(start_station, destination, str(travel_time), fake.name())
+                Person(start_station, destination, travel_time, fake.name())
             )
 
         for i in range(critical_rush_hours):  # critical + rush
@@ -117,7 +112,7 @@ class Person:
             [
                 {
                     "id": p.id,
-                    "start_time": p.start_time,
+                    "start_time": str(p.start_time),
                     "start_station": p.start_station,
                     "destination": p.destination,
                 }
@@ -133,12 +128,66 @@ class Person:
         ) as outfile:
             outfile.write(json_string)
         return passengers_list
+        
+    @staticmethod
+    def create_passengers_no_rush(critical_stations, time_start, time_end, n_passengers):
+        time_start = time_start.replace(microsecond=0)
+        time_end = time_end.replace(microsecond=0)
+        new_stations_file = open(os.path.join(dirname, '../assets/new_stations.json'), mode="r", encoding="utf-8")
+        stations_json = json.load(new_stations_file)
+        stations = [x["name"] for x in stations_json]
+        critical_stations_weight = 0.20  # 20% of the passengers will be directed to critical stations (perhaps  set it at the constructor?)
+        critical_stations_passengers = int(n_passengers * critical_stations_weight)
+        passengers_list = []
+        fake = Faker()
+        times = []
+        time_stamp = time_start
+        while time_stamp < time_end:
+            times.append(time_stamp)
+            time_stamp += timedelta(seconds=1)
+
+        def add_passenger_to(station):
+            start_station = random.choice(station)
+            destination = random.choice(stations)
+            while start_station == destination:
+                destination = random.choice(stations)
+            travel_time = random.choice(times)
+
+            passengers_list.append(
+                Person(start_station, destination, travel_time, fake.name())
+            )
+        for passenger in range(critical_stations_passengers):  # generate passengers only to creitical stations
+            add_passenger_to(critical_stations)
+        for passenger in range(n_passengers - critical_stations_passengers):  # generate passengers for all stations
+            add_passenger_to(stations)
+        json_string = json.dumps(
+                [
+                    {
+                        "id": p.id,
+                        "start_time": str(p.start_time),
+                        "start_station": p.start_station,
+                        "destination": p.destination,
+                    }
+                    for p in passengers_list
+                ],
+                indent=4,
+                ensure_ascii=False,
+            )
+        with open(
+            os.path.join(dirname, "../assets/passengers.json"),
+            mode="w",
+            encoding="utf-8",
+        ) as outfile:
+            outfile.write(json_string)
+        return passengers_list
+
 
     def arrived(self, arriveTime):
         self.isArrived = True
         self.end_time = arriveTime
-        self.travel_time = self.end_time - self.start_time
+        self.travel_time = (self.end_time - self.start_time).total_seconds()
         # print(self.start_time, self.end_time, self.travel_time)
+        Reached[self.start_time.hour*60+self.start_time.minute].append(self.travel_time)
 
     def isArrived(self):
         return self.isArrived
@@ -149,14 +198,11 @@ class Person:
     def delete_person(self):
         del self
 
-    def ride_duration(self):
-        return self.end_time - self.start_time
-
     def get_destination(self):
         return self.destination
 
     def get_start_time(self):
-        return datetime.strptime(self.start_time, "%Y-%m-%d %H:%M:%S")
+        return self.start_time
 
     def getlocation(self):
         return self._currentlocation
@@ -174,4 +220,10 @@ class Person:
         if self.isArrived:
             print(f"travel time: {self._travelTime}")
 
-Person.create_passengers(["Lyngby", "Nørreport",  "Værløse", "København H"], datetime.now(), datetime.now() + timedelta(hours=24), 100)
+
+Person.create_passengers_no_rush(
+    ["Lyngby", "Nørreport", "Værløse", "København H", "Østerport"],
+    datetime(2022,9,24),
+    datetime(2022,9,24) + timedelta(hours=1),
+    3,
+)

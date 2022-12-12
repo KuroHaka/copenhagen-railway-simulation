@@ -39,8 +39,6 @@ class Station():
         self.__numberPassengers+=1
 
     def getPassengers(self, carrier, max_passengers):
-        while not self.__passengers:
-            yield self.__env.timeout(1)
         main_passenger = self.__passengers.pop(0)
         carrier._passengers.append(main_passenger)
         carrier._destination = main_passenger.get_destination()
@@ -50,7 +48,7 @@ class Station():
             if len(carrier._passengers)>=max_passengers:
                 break
             if p.get_destination() == carrier._destination:
-                carrier._passengers.append(p)
+                carrier._passengers.append(p)    
 
     def sendEmptyCarrier(self, carrier):
         carrier._passengers = []

@@ -19,7 +19,7 @@ def main():
     # print(algo.get_path('Lyngby','Malmparken').nodes)
 
     if (animation):
-        sim.run_simulation_with_animation(100, 40)
+        sim.run_simulation_with_animation(120, 10, output_fig=True)
     else:
         sim.run_simulation(100, 30)
     return
