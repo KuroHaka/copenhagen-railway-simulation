@@ -128,7 +128,90 @@ class Person:
         ) as outfile:
             outfile.write(json_string)
         return passengers_list
-        
+    
+    @staticmethod
+    def create_passengers_destination(critical_stations, time_start, time_end, n_passengers):
+        time_start = time_start.replace(microsecond=0)
+        time_end = time_end.replace(microsecond=0)
+
+        new_stations_file = open(
+            os.path.join(dirname, "../assets/new_stations.json"),
+            mode="r",
+            encoding="utf-8",
+        )
+        stations_json = json.load(new_stations_file)
+        stations = [x["name"] for x in stations_json]
+
+        rush_hours_weight = 5  # 500% of passengers will be for rush hours
+        critical_stations_weight = 0.25  # 25% of the passengers will be directed to critical stations (perhaps  set it at the constructor?)
+
+        rush_hours_passengers = round(
+            rush_hours_weight * (n_passengers / (rush_hours_weight + 1))
+        )
+        out_rush_hours_passengers = n_passengers - rush_hours_passengers
+        critical_rush_hours = round(rush_hours_passengers * critical_stations_weight)
+        critical_out_rush_hours = round(
+            out_rush_hours_passengers * critical_stations_weight
+        )
+
+        passengers_list = []
+        fake = Faker()
+
+        rush_hours = []
+        out_rush_hours = []
+        time_stamp = time_start
+        while time_stamp < time_end:
+            if time_stamp.hour >= 7 and time_stamp.hour < 11:
+                rush_hours.append(time_stamp)
+            elif time_stamp.hour >= 13 and time_stamp.hour < 18:
+                rush_hours.append(time_stamp)
+            else:
+                out_rush_hours.append(time_stamp)
+            time_stamp += timedelta(seconds=1)
+
+        def add_passenger_to(station, possible_times):
+            start_station = random.choice(stations)
+            destination = random.choice(station)
+            while start_station == destination:
+                destination = random.choice(stations)
+            travel_time = random.choice(possible_times)
+            passengers_list.append(
+                Person(start_station, destination, travel_time, fake.name())
+            )
+
+        for i in range(critical_rush_hours):  # critical + rush
+            add_passenger_to(critical_stations, rush_hours)
+
+        for i in range(rush_hours_passengers - critical_rush_hours):  # rush
+            add_passenger_to(stations, rush_hours)
+
+        for i in range(critical_out_rush_hours):  # critical
+            add_passenger_to(critical_stations, out_rush_hours)
+
+        for i in range(out_rush_hours_passengers - critical_out_rush_hours):  # nothing
+            add_passenger_to(stations, out_rush_hours)
+
+        json_string = json.dumps(
+            [
+                {
+                    "id": p.id,
+                    "start_time": str(p.start_time),
+                    "start_station": p.start_station,
+                    "destination": p.destination,
+                }
+                for p in passengers_list
+            ],
+            indent=4,
+            ensure_ascii=False,
+        )
+        with open(
+            os.path.join(dirname, "../assets/passengers.json"),
+            mode="w",
+            encoding="utf-8",
+        ) as outfile:
+            outfile.write(json_string)
+        return passengers_list
+
     @staticmethod
     def create_passengers_no_rush(critical_stations, time_start, time_end, n_passengers):
         time_start = time_start.replace(microsecond=0)
@@ -147,8 +230,8 @@ class Person:
             time_stamp += timedelta(seconds=1)
 
         def add_passenger_to(station):
-            start_station = random.choice(station)
-            destination = random.choice(stations)
+            start_station = random.choice(stations)
+            destination = random.choice(station)
             while start_station == destination:
                 destination = random.choice(stations)
             travel_time = random.choice(times)
@@ -221,9 +304,9 @@ class Person:
             print(f"travel time: {self._travelTime}")
 
 
-Person.create_passengers(
+Person.create_passengers_destination(
     ["Lyngby", "Nørreport", "Værløse", "København H"],
     datetime(2022,9,24),
     datetime(2022,9,24) + timedelta(hours=24),
-    12500,
+    125000,
 )

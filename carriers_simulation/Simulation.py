@@ -64,11 +64,11 @@ class Simulation:
                     self.Carriers.append(c)
                     num_carriers -= 1
 
-        for c in self.Carriers:
-            env.process(c.printEvents())
+        # for c in self.Carriers:
+        #     env.process(c.printEvents())
         env.process(c.printTime(1000))
         env.run(until=duration)
-        # printAverageCommutingTime("avg_day_c860_p125000_chain.txt")
+        printAverageCommutingTime("avg_day_c860_p125000_chain.txt")
 
     def update_animation(self, figure, env, tick_lenght):
         yield env.timeout(1)
