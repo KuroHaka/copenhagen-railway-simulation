@@ -674,14 +674,14 @@ class CarrierSimulation:
         for key, carrier in self.carriers.items():
                 if carrier._moving:
                     newx, newy = self.get_map_position(
-                            self.stations[carrier._movingFrom], 
-                            self.stations[carrier._movingTo], 
+                            self.stations[carrier._movingFrom.name], 
+                            self.stations[carrier._movingTo.name], 
                             carrier._distanceMovedTowardsStation, 
                             carrier._distanceToStation)
                     p, = self.ax.plot(newx, newy, 'x', color='r')
                     self.pointers[key] = Point(p)
                 else:
-                    starting = carrier._atStation
+                    starting = self.stations[carrier._atStation.name]
                     p, = self.ax.plot(starting.x, starting.y, 'x', color='r')
                     self.pointers[key] = Point(p)
 
@@ -689,23 +689,22 @@ class CarrierSimulation:
             for key, carrier in self.carriers.items():
                 if carrier._moving:
                     newx, newy = self.get_map_position(
-                            self.stations[carrier._movingFrom], 
-                            self.stations[carrier._movingTo], 
+                            self.stations[carrier._movingFrom.name], 
+                            self.stations[carrier._movingTo.name], 
                             carrier._distanceMovedTowardsStation, 
                             carrier._distanceToStation)
                     self.pointers[key].x.append(newx)
                     self.pointers[key].y.append(newy)
                 else:
-                    self.pointers[key].x.append(carrier._atStation.x)
-                    self.pointers[key].y.append(carrier._atStation.y)
-            self.tickPersonGeneration(tick_lenght)
+                    self.pointers[key].x.append(self.stations[carrier._atStation.name].x)
+                    self.pointers[key].y.append(self.stations[carrier._atStation.name].y)
             self.tickCarriers(tick_lenght)
 
-        ani=FuncAnimation(self.fig, self.update_carrier_positions, epoch, interval=1, repeat=False)
+        ani=self.animator.FuncAnimation(self.fig, self.update_carrier_positions, epoch, interval=1, repeat=False)
         
         nx.draw(self.G, pos, node_size=4, node_shape='.',  edge_color='gray' ,node_color='black')
         img = mpimg.imread(os.path.join(dirname, '../assets/map_minmal.png'))
-        imgplot = plt.imshow(img)
+        imgplot = self.plt.imshow(img)
         if output_fig:
             ani.save(os.path.join(dirname, '../assets/animation.gif'), writer='imagemagick', fps=30)
         else:

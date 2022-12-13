@@ -420,12 +420,15 @@ class Carrier():
             self.dot.set_xdata(newx)
             self.dot.set_ydata(newy)
             if self._passengers:
-                self.dot._marker = MarkerStyle('o', fillstyle='full')
+                self.dot._marker = MarkerStyle('o', fillstyle='none')
             else:
-                self.dot._marker = MarkerStyle('o',fillstyle='none')
+                self.dot._marker = MarkerStyle('o', fillstyle='full')
+
+
         else:
             self.dot.set_xdata(self._atStation.x)
             self.dot.set_ydata(self._atStation.y)
+            self.dot._marker = MarkerStyle('o', fillstyle='full')
             
         
 

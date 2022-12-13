@@ -12,10 +12,10 @@ def main():
     # Carrier maxspeed = 80 km/h, 40 km/h
 
     #animation = len(sys.argv)>1 and sys.argv[1] == 'animation'
-    simulationLength = 5000
-    tickLength = 30
-    numberCarriers = 5000
-    numberPassengers = 125000
+    simulationLength = 30*60
+    tickLength = 20
+    numberCarriers = 80
+    numberPassengers = 500
 
 
     #python3 Central_Communication.py -c 500 -p 150000
@@ -73,9 +73,9 @@ def main():
     print("Created simulations")
     print("Running simulations")
     print()
-    simCarrier.run_simulation(simulationLength, tickLength)
+    simCarrier.run_simulation_with_live_visualization(simulationLength, tickLength)
     print("Carrier simulation done")
-    simTrain.run_simulation(simulationLength, tickLength)
+    # simTrain.run_simulation_with_animation(simulationLength, tickLength, output_fig = True)
     print("Trains simulation done")
     print()
     print()
