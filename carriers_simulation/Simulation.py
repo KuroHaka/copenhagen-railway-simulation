@@ -33,7 +33,7 @@ class Simulation:
         )
 
 
-    def run_carriers_simulation(self, duration, simulation_start, num_carriers = 100, baseTickTime = 10):
+    def run_carriers_simulation(self, duration, simulation_start, num_carriers = 860, baseTickTime = 10):
         env = simpy.Environment()
         # get start 
         env.simulation_start = simulation_start
@@ -66,11 +66,12 @@ class Simulation:
 
         for c in self.Carriers:
             env.process(c.printEvents())
-        # env.process(c.printTime(100))
+        env.process(c.printTime(1000))
         env.run(until=duration)
         # printAverageCommutingTime("avg_day_c860_p125000_chain.txt")
 
     def update_animation(self, figure, env, tick_lenght):
+        yield env.timeout(1)
         while True:
             figure.canvas.draw()
             figure.canvas.flush_events()

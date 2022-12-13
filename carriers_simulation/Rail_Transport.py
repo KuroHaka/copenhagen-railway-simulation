@@ -98,7 +98,7 @@ class Carrier:
             else:
                 self.dot.set_xdata(self._atStation.x)
                 self.dot.set_ydata(self._atStation.y)
-                self.dot._marker = MarkerStyle('.')
+                self.dot._marker = MarkerStyle('o',fillstyle='none')
             yield self._env.timeout(tick_lenght)
         
 

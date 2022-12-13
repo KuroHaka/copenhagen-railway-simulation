@@ -221,9 +221,9 @@ class Person:
             print(f"travel time: {self._travelTime}")
 
 
-Person.create_passengers_no_rush(
-    ["Lyngby", "Nørreport", "Værløse", "København H", "Østerport"],
+Person.create_passengers(
+    ["Lyngby", "Nørreport", "Værløse", "København H"],
     datetime(2022,9,24),
-    datetime(2022,9,24) + timedelta(hours=1),
-    3,
+    datetime(2022,9,24) + timedelta(hours=24),
+    12500,
 )
